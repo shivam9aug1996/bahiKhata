@@ -1,7 +1,5 @@
 {
-  "eslintConfig": {
-    "extends": [],
-    "rules": {},
-    "ignorePatterns": ["**/*"]
-  }
+  "extends": [],
+  "rules": {},
+  "ignorePatterns": ["**/*"]
 }
