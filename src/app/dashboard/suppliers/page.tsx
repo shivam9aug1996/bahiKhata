@@ -1,7 +1,8 @@
+import Supplier from "@/app/components/Supplier";
 import React from "react";
 
 const page = () => {
-  return <div>page</div>;
+  return null;
 };
 
 export default page;
