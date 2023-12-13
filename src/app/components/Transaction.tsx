@@ -87,7 +87,10 @@ const Transaction = ({ partyId }) => {
         ) : (
           <div className="grid gap-4">
             {getTransactionData?.data?.map((transaction, index) => (
-              <div className="p-4 border rounded-md flex  flex-col">
+              <div
+                key={transaction?._id}
+                className="p-4 border rounded-md flex  flex-col"
+              >
                 <div
                   key={index}
                   className={`flex sm:flex-row flex-col justify-between ${
