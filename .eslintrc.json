@@ -1,5 +1,3 @@
 {
-  "extends": [],
-  "rules": {},
-  "ignorePatterns": ["**/*"]
+  "extends": "next/core-web-vitals"
 }
