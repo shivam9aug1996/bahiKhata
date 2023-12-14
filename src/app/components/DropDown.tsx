@@ -5,12 +5,16 @@ import {
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import useErrorNotification from "../custom-hooks/useErrorNotification";
+import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import { useDeleteBusinessMutation } from "../redux/features/businessSlice";
 import { useGetCustomerListQuery } from "../redux/features/customerSlice";
 import { useGetSupplierListQuery } from "../redux/features/supplierSlice";
 import BusinessModal from "./BusinessModal";
+import Loader from "./Loader";
 
 const DropDown = ({
   handleDropdownChange,
@@ -24,6 +28,8 @@ const DropDown = ({
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
+  const pathname = usePathname();
+  const router = useRouter();
   const dropdownRef = useRef(null);
   const {
     isSuccess: isGetCustomerSuccess,
@@ -56,6 +62,12 @@ const DropDown = ({
       data: deleteBusinessData,
     },
   ] = useDeleteBusinessMutation();
+  useErrorNotification(deleteBusinessError, isDeleteBusinessError);
+  useSuccessNotification(
+    "Business deleted successfully",
+    null,
+    isDeleteBusinessSuccess
+  );
 
   let [isModalOpen, setIsModalOpen] = useState({
     status: false,
@@ -75,6 +87,16 @@ const DropDown = ({
       setIsOpen(false);
     }
   };
+
+  useEffect(() => {
+    if (isDeleteBusinessSuccess) {
+      if (pathname.includes("customers")) {
+        router.push("/dashboard/customers");
+      } else {
+        router.push("/dashboard/suppliers");
+      }
+    }
+  }, [isDeleteBusinessSuccess]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -176,6 +198,7 @@ const DropDown = ({
 
   return (
     <div>
+      {isDeleteBusinessLoading ? <Loader /> : null}
       <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       <div>
         <div className="bg-white rounded-lg shadow-md p-2 flex flex-col justify-center items-start">

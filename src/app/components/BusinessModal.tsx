@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
@@ -27,6 +27,7 @@ import Loader from "./Loader";
 
 export default function BusinessModal({ isOpen, setIsOpen }) {
   const dispatch = useDispatch();
+  const pathname = usePathname();
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -51,12 +52,33 @@ export default function BusinessModal({ isOpen, setIsOpen }) {
       data: updateBusinessData,
     },
   ] = useUpdateBusinessMutation();
+  useErrorNotification(createBusinessError, isCreateBusinessError);
+  useErrorNotification(updateBusinessError, isUpdateBusinessError);
+  useSuccessNotification(
+    "Business added successfully",
+    null,
+    isCreateBusinessSuccess
+  );
+  useSuccessNotification(
+    "Business updated successfully",
+    null,
+    isUpdateBusinessSuccess
+  );
 
   const [formData, setFormData] = useState({
     name: "",
   });
 
   console.log("iuytredfg", isOpen);
+  useEffect(() => {
+    if (isCreateBusinessSuccess) {
+      if (pathname.includes("customers")) {
+        router.push("/dashboard/customers");
+      } else {
+        router.push("/dashboard/suppliers");
+      }
+    }
+  }, [isCreateBusinessSuccess]);
   useEffect(() => {
     if (isOpen?.value && isOpen?.type === "edit" && isOpen?.status === true) {
       setFormData({

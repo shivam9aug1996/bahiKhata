@@ -101,18 +101,24 @@ const Supplier = () => {
             <span>Add Supplier</span>
           </button>
         </div>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search.."
-            onChange={(e) => setSearchQuery(e.target.value)}
-            value={searchQuery}
-            className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
-          />
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-            <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
-          </span>
-        </div>
+        {getSupplierData?.data?.length > 0 ||
+        (getSupplierData?.data?.length == 0 && debouncedInputValue !== "") ? (
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search.."
+              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery}
+              className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
+            />
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
+            </span>
+          </div>
+        ) : null}
+        {getSupplierData?.data?.length == 0 && debouncedInputValue !== "" ? (
+          <p>No supplier found matching your search.</p>
+        ) : null}
         {isGetSupplierLoading ? (
           <p>Loading...</p>
         ) : isGetSupplierError ? (

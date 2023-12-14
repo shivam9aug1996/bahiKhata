@@ -132,18 +132,24 @@ const Customer = () => {
             <span>Add Customer</span>
           </button>
         </div>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search.."
-            onChange={(e) => setSearchQuery(e.target.value)}
-            value={searchQuery}
-            className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
-          />
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-            <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
-          </span>
-        </div>
+        {getCustomerData?.data?.length > 0 ||
+        (getCustomerData?.data?.length == 0 && debouncedInputValue !== "") ? (
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search.."
+              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery}
+              className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
+            />
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
+            </span>
+          </div>
+        ) : null}
+        {getCustomerData?.data?.length == 0 && debouncedInputValue !== "" ? (
+          <p>No customers found matching your search.</p>
+        ) : null}
         {isGetCustomerLoading ? (
           <p>Loading...</p>
         ) : isGetCustomerError ? (
