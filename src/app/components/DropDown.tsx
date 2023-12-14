@@ -7,12 +7,18 @@ import {
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import { useDeleteBusinessMutation } from "../redux/features/businessSlice";
-import { useGetCustomerListQuery } from "../redux/features/customerSlice";
-import { useGetSupplierListQuery } from "../redux/features/supplierSlice";
+import {
+  customerApi,
+  useGetCustomerListQuery,
+} from "../redux/features/customerSlice";
+import {
+  supplierApi,
+  useGetSupplierListQuery,
+} from "../redux/features/supplierSlice";
 import BusinessModal from "./BusinessModal";
 import Loader from "./Loader";
 
@@ -30,6 +36,7 @@ const DropDown = ({
   );
   const pathname = usePathname();
   const router = useRouter();
+  const dispatch = useDispatch();
   const dropdownRef = useRef(null);
   const {
     isSuccess: isGetCustomerSuccess,
@@ -92,8 +99,10 @@ const DropDown = ({
     if (isDeleteBusinessSuccess) {
       if (pathname.includes("customers")) {
         router.push("/dashboard/customers");
+        dispatch(customerApi.util.invalidateTags(["customer"]));
       } else {
         router.push("/dashboard/suppliers");
+        dispatch(supplierApi.util.invalidateTags(["supplier"]));
       }
     }
   }, [isDeleteBusinessSuccess]);
@@ -270,34 +279,36 @@ const DropDown = ({
                     </div>
                   )}
                 </div>
-                <div className="flex flex-row p-2">
-                  <PencilSquareIcon
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setIsModalOpen({
-                        ...isOpen,
-                        status: true,
-                        type: "edit",
-                        value: { name: selectedBusinessName },
-                      });
-                    }}
-                    className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
-                  ></PencilSquareIcon>
+                {getBusinessData?.data?.length > 0 ? (
+                  <div className="flex flex-row p-2">
+                    <PencilSquareIcon
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsModalOpen({
+                          ...isOpen,
+                          status: true,
+                          type: "edit",
+                          value: { name: selectedBusinessName },
+                        });
+                      }}
+                      className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+                    ></PencilSquareIcon>
 
-                  <TrashIcon
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      deleteBusiness(
-                        JSON.stringify({
-                          id: businessIdSelected,
-                        })
-                      );
-                    }}
-                    className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-                  />
-                </div>
+                    <TrashIcon
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        deleteBusiness(
+                          JSON.stringify({
+                            id: businessIdSelected,
+                          })
+                        );
+                      }}
+                      className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
