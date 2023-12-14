@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useErrorNotification from "../custom-hooks/useErrorNotification";
 import {
   setBusinessIdSelected,
   useGetBusinessListQuery,
@@ -32,6 +33,8 @@ const Dashboard = () => {
       data: updateBusinessData,
     },
   ] = useUpdateBusinessMutation();
+  useErrorNotification(getBusinessError?.error, isGetBusinessError);
+  useErrorNotification(updateBusinessError?.error, isUpdateBusinessError);
   const [selectedItem, setSelectedItem] = useState("");
   console.log("jhgfddfghj", isUpdateBusinessSuccess);
 

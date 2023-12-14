@@ -7,7 +7,9 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import useErrorNotification from "../custom-hooks/useErrorNotification";
 import {
   useDeleteCustomerMutation,
   useGetCustomerListQuery,
@@ -23,6 +25,7 @@ const Customer = () => {
     (state) => state?.business?.businessIdSelected || ""
   );
   const dispatch = useDispatch();
+
   const router = useRouter();
   const {
     isSuccess: isGetCustomerSuccess,
@@ -51,12 +54,42 @@ const Customer = () => {
     value: null,
     part: "customer",
   });
+  useErrorNotification(getCustomerError?.error, isGetCustomerError);
+  useErrorNotification(deleteCustomerError?.error, isDeleteCustomerError);
+
   useEffect(() => {
     if (isDeleteCustomerSuccess) {
       dispatch(transactionApi.util.invalidateTags(["transaction"]));
       router.push("/dashboard/customers");
     }
   }, [isDeleteCustomerSuccess]);
+
+  // useEffect(() => {
+  //   if (
+  //     isGetCustomerError ||
+  //     isDeleteCustomerError ||
+  //     getCustomerError?.error ||
+  //     deleteCustomerError?.error
+  //   ) {
+  //     toast.error(
+  //       JSON.stringify(
+  //         getCustomerError?.error || deleteCustomerError?.error
+  //       )?.substring(0, 50) || "Something went wrong"
+  //     );
+  //   }
+  // }, [
+  //   isGetCustomerError,
+  //   getCustomerError?.error,
+  //   isDeleteCustomerError,
+  //   deleteCustomerError?.error,
+  // ]);
+
+  console.log(
+    "getCustomerError",
+    deleteCustomerError,
+    isDeleteCustomerError,
+    getCustomerError
+  );
   return (
     <div className="container mx-auto p-6 w-1/2">
       {isDeleteCustomerLoading ? <Loader /> : null}
@@ -83,7 +116,10 @@ const Customer = () => {
         {isGetCustomerLoading ? (
           <p>Loading...</p>
         ) : isGetCustomerError ? (
-          <p>Error fetching customers: {getCustomerError?.message}</p>
+          <p>
+            Error fetching customers:{" "}
+            {getCustomerError?.error?.substring(0, 50)}
+          </p>
         ) : (
           <>
             {getCustomerData?.data?.map((item, index) => (
@@ -121,7 +157,9 @@ const Customer = () => {
                 </div>
                 <div className="flex flex-row">
                   <PencilSquareIcon
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
                       setIsOpen({
                         ...isOpen,
                         status: true,
@@ -133,7 +171,9 @@ const Customer = () => {
                   ></PencilSquareIcon>
 
                   <TrashIcon
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
                       deleteCustomer(
                         JSON.stringify({
                           businessId: businessIdSelected,

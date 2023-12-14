@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useErrorNotification from "../custom-hooks/useErrorNotification";
 import {
   customerApi,
   useCreateCustomerMutation,
@@ -66,6 +67,8 @@ export default function PartyModal({ isOpen, setIsOpen }) {
       data: updateSupplierData,
     },
   ] = useUpdateSupplierMutation();
+  useErrorNotification(createCustomerError?.error, isCreateCustomerError);
+  useErrorNotification(updateCustomerError?.error, isUpdateCustomerError);
 
   const [formData, setFormData] = useState({
     name: "",

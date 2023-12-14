@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useErrorNotification from "../custom-hooks/useErrorNotification";
 import { customerApi } from "../redux/features/customerSlice";
 import { supplierApi } from "../redux/features/supplierSlice";
 import {
@@ -44,6 +45,8 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     // businessId: businessIdSelected,
     // partyId: partyId,
   });
+  useErrorNotification(createTransactionError?.error, isCreateTransactionError);
+  useErrorNotification(updateTransactionError?.error, isUpdateTransactionError);
 
   const [formData, setFormData] = useState({
     amount: "",
@@ -207,8 +210,8 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="credit">Credit</option>
-                        <option value="debit">Debit</option>
+                        <option value="credit">You Get</option>
+                        <option value="debit">You Gave</option>
                       </select>
                     </div>
                     {/* Description input field */}

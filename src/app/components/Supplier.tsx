@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useErrorNotification from "../custom-hooks/useErrorNotification";
 import { useGetCustomerListQuery } from "../redux/features/customerSlice";
 import {
   useDeleteSupplierMutation,
@@ -51,6 +52,8 @@ const Supplier = () => {
     value: null,
     part: "supplier",
   });
+  useErrorNotification(getSupplierError?.error, isGetSupplierError);
+  useErrorNotification(deleteSupplierError?.error, isDeleteSupplierError);
   useEffect(() => {
     if (isDeleteSupplierSuccess) {
       dispatch(transactionApi.util.invalidateTags(["transaction"]));

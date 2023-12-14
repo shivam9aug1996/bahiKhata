@@ -65,19 +65,56 @@ const DropDown = ({ handleDropdownChange, selectedItem, getBusinessData }) => {
   //   }, 0),
   //   [getCustomerData?.data, isGetCustomerSuccess]
   // );
-  const customerSum = (getCustomerData?.data || []).reduce(
+
+  const positiveCustomerSum = (getCustomerData?.data || []).reduce(
     (accumulator, currentValue) => {
-      return accumulator + (currentValue?.balance || 0);
+      return (
+        accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
+      );
     },
     0
   );
 
-  const supplierSum = (getSupplierData?.data || []).reduce(
+  const negativeCustomerSum = (getCustomerData?.data || []).reduce(
     (accumulator, currentValue) => {
-      return accumulator + (currentValue?.balance || 0);
+      return (
+        accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
+      );
     },
     0
   );
+
+  const positiveSupplierSum = (getSupplierData?.data || []).reduce(
+    (accumulator, currentValue) => {
+      return (
+        accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
+      );
+    },
+    0
+  );
+
+  const negativeSupplierSum = (getSupplierData?.data || []).reduce(
+    (accumulator, currentValue) => {
+      return (
+        accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
+      );
+    },
+    0
+  );
+
+  // const customerSum = (getCustomerData?.data || []).reduce(
+  //   (accumulator, currentValue) => {
+  //     return accumulator + (currentValue?.balance || 0);
+  //   },
+  //   0
+  // );
+
+  // const supplierSum = (getSupplierData?.data || []).reduce(
+  //   (accumulator, currentValue) => {
+  //     return accumulator + (currentValue?.balance || 0);
+  //   },
+  //   0
+  // );
 
   // const supplierSum = useMemo(
   //   (getSupplierData?.data || []).reduce((accumulator, currentValue) => {
@@ -156,7 +193,7 @@ const DropDown = ({ handleDropdownChange, selectedItem, getBusinessData }) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col mr-10 mt-3">
+      {/* <div className="flex flex-col mr-10 mt-3">
         <div className="flex justify-between items-center mb-4">
           <h4 className="text-center mr-2">
             Customer Balance:{" "}
@@ -177,27 +214,61 @@ const DropDown = ({ handleDropdownChange, selectedItem, getBusinessData }) => {
           >
             ₹{Math.abs(customerSum)}
           </span>
-        </div>
-        <div className="flex justify-between items-center">
-          <h4 className="text-center mr-2">
-            Supplier Balance:{" "}
-            {supplierSum > 0
-              ? "You will give"
-              : supplierSum < 0
-              ? "You will get"
-              : ""}
-          </h4>
-          <span
-            className={`ml-auto min-w-fit ${
-              supplierSum > 0
-                ? "text-green-500"
-                : supplierSum < 0
-                ? "text-red-500"
-                : ""
-            }`}
-          >
-            ₹{Math.abs(supplierSum)}
+        </div> */}
+      {/* <div className="flex flex-col mr-10 mt-3">
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="text-center mr-2">Customer Balance:</h4>
+          <span>{"You will give"}</span>
+          <span className={`ml-auto min-w-fit text-green-500`}>
+            ₹{positiveCustomerSum}
           </span>
+          <span>{"You will get"}</span>
+          <span className={`ml-auto min-w-fit text-red-500`}>
+            ₹{Math.abs(negativeCustomerSum)}
+          </span>
+        </div>
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="text-center mr-2">Supplier Balance:</h4>
+          <span>{"You will give"}</span>
+          <span className={`ml-auto min-w-fit text-green-500`}>
+            ₹{positiveSupplierSum}
+          </span>
+          <span>{"You will get"}</span>
+          <span className={`ml-auto min-w-fit text-red-500`}>
+            ₹{Math.abs(negativeSupplierSum)}
+          </span>
+        </div>
+      </div> */}
+      <div className="flex flex-col mr-10 mt-3">
+        <div className="flex flex-col">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-center mr-2">Customer Balance:</h4>
+            <div className="flex">
+              <div className="flex flex-col">
+                <span className="text-green-500">
+                  You will give: ₹{positiveCustomerSum}
+                </span>
+                <span className="text-red-500">
+                  You will get: ₹{Math.abs(negativeCustomerSum)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-center mr-2">Supplier Balance:</h4>
+            <div className="flex">
+              <div className="flex flex-col">
+                <span className="text-green-500">
+                  You will give: ₹{positiveSupplierSum}
+                </span>
+                <span className="text-red-500">
+                  You will get: ₹{Math.abs(negativeSupplierSum)}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

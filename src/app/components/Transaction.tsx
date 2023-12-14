@@ -17,6 +17,7 @@ import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import { supplierApi } from "../redux/features/supplierSlice";
 import Loader from "./Loader";
+import useErrorNotification from "../custom-hooks/useErrorNotification";
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
@@ -31,10 +32,13 @@ const Transaction = ({ partyId }) => {
     isError: isGetTransactionError,
     error: getTransactionError,
     data: getTransactionData,
-  } = useGetTransactionListQuery({
-    businessId: businessIdSelected,
-    partyId: partyId,
-  });
+  } = useGetTransactionListQuery(
+    {
+      businessId: businessIdSelected,
+      partyId: partyId,
+    },
+    { skip: !businessIdSelected || !partyId }
+  );
   const [
     deleteTransaction,
     {
@@ -45,6 +49,8 @@ const Transaction = ({ partyId }) => {
       data: deleteTransactionData,
     },
   ] = useDeleteTransactionMutation();
+  useErrorNotification(getTransactionError?.error, isGetTransactionError);
+  useErrorNotification(deleteTransactionError?.error, isDeleteTransactionError);
   const [showSidebar, setShowSidebar] = useState(true);
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);

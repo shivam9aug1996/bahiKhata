@@ -1,4 +1,6 @@
 "use client";
+
+import { UsersIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -20,7 +22,10 @@ const TransNoItem = ({ title }) => {
           alignItems: "center",
         }}
       >
-        <div>{title}</div>
+        <div>
+          <UsersIcon className="text-gray-500 w-50 h-50" />
+          {title}
+        </div>
       </div>
     );
   } else return null;
