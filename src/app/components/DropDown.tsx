@@ -1,11 +1,24 @@
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronDownIcon,
+  PencilSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { useDeleteBusinessMutation } from "../redux/features/businessSlice";
 import { useGetCustomerListQuery } from "../redux/features/customerSlice";
 import { useGetSupplierListQuery } from "../redux/features/supplierSlice";
+import BusinessModal from "./BusinessModal";
 
-const DropDown = ({ handleDropdownChange, selectedItem, getBusinessData }) => {
+const DropDown = ({
+  handleDropdownChange,
+  selectedItem,
+  getBusinessData,
+  handleAdd,
+  selectedBusinessName,
+}) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const businessIdSelected = useSelector(
@@ -20,7 +33,7 @@ const DropDown = ({ handleDropdownChange, selectedItem, getBusinessData }) => {
     data: getCustomerData,
     isFetching,
   } = useGetCustomerListQuery(
-    { businessId: businessIdSelected },
+    { businessId: businessIdSelected, searchQuery: "" },
     { skip: !businessIdSelected }
   );
   const {
@@ -30,14 +43,26 @@ const DropDown = ({ handleDropdownChange, selectedItem, getBusinessData }) => {
     error: getSupplierError,
     data: getSupplierData,
   } = useGetSupplierListQuery(
-    { businessId: businessIdSelected },
+    { businessId: businessIdSelected, searchQuery: "" },
     { skip: !businessIdSelected }
   );
-  const [balance, setBalance] = useState({
-    customer: 0,
-    supplier: 0,
-    total: 0,
+  const [
+    deleteBusiness,
+    {
+      isSuccess: isDeleteBusinessSuccess,
+      isLoading: isDeleteBusinessLoading,
+      isError: isDeleteBusinessError,
+      error: deleteBusinessError,
+      data: deleteBusinessData,
+    },
+  ] = useDeleteBusinessMutation();
+
+  let [isModalOpen, setIsModalOpen] = useState({
+    status: false,
+    type: "",
+    value: null,
   });
+
   const options = getBusinessData?.data || [];
   const handleSelectChange = (option) => {
     setSelectedOption(option.name);
@@ -150,124 +175,137 @@ const DropDown = ({ handleDropdownChange, selectedItem, getBusinessData }) => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between sm:items-start mr-10 mt-3">
-      <div className="relative inline-block text-left p-2" ref={dropdownRef}>
-        Select your business
-        <div style={{ width: "200px" }} className="relative">
-          <button
-            type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex justify-between w-full rounded-md border border-gray-400 bg-white px-2 py-3 text-sm font-medium text-gray-700 focus:outline-none"
-            aria-haspopup="listbox"
-            aria-expanded="true"
-          >
-            {getName()}
-            <ChevronDownIcon
-              className="-mr-1 h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
-          </button>
-
-          {isOpen && (
-            <div className="origin-top-right absolute mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-              <div className="py-1">
-                {options?.map((option) => (
-                  <div
-                    key={option?._id}
-                    onClick={() => handleSelectChange(option)}
-                    className="flex flex-row justify-between cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-blue-100"
-                  >
-                    <span className="block font-normal text-gray-900">
-                      {option?.name}
-                    </span>
-                    {option?._id === selectedItem && (
-                      <CheckIcon
-                        className="-mr-1 h-5 w-5 text-gray-600"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
+    <div>
+      <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <div>
+        <div className="bg-white rounded-lg shadow-md p-2 flex flex-col justify-center items-start">
+          <div className="flex flex-row items-center justify-between w-full">
+            <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+              <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-red-500 md:text-black">
+                Bahi
+              </span>
+              <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-black md:text-red-500">
+                Khata
+              </span>
             </div>
-          )}
-        </div>
-      </div>
-      {/* <div className="flex flex-col mr-10 mt-3">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-center mr-2">
-            Customer Balance:{" "}
-            {customerSum > 0
-              ? "You will give"
-              : customerSum < 0
-              ? "You will get"
-              : ""}
-          </h4>
-          <span
-            className={`ml-auto min-w-fit ${
-              customerSum > 0
-                ? "text-green-500"
-                : customerSum < 0
-                ? "text-red-500"
-                : ""
-            }`}
-          >
-            ₹{Math.abs(customerSum)}
-          </span>
-        </div> */}
-      {/* <div className="flex flex-col mr-10 mt-3">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-center mr-2">Customer Balance:</h4>
-          <span>{"You will give"}</span>
-          <span className={`ml-auto min-w-fit text-green-500`}>
-            ₹{positiveCustomerSum}
-          </span>
-          <span>{"You will get"}</span>
-          <span className={`ml-auto min-w-fit text-red-500`}>
-            ₹{Math.abs(negativeCustomerSum)}
-          </span>
-        </div>
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-center mr-2">Supplier Balance:</h4>
-          <span>{"You will give"}</span>
-          <span className={`ml-auto min-w-fit text-green-500`}>
-            ₹{positiveSupplierSum}
-          </span>
-          <span>{"You will get"}</span>
-          <span className={`ml-auto min-w-fit text-red-500`}>
-            ₹{Math.abs(negativeSupplierSum)}
-          </span>
-        </div>
-      </div> */}
-      <div className="flex flex-col mr-10 mt-3">
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center mb-2">
-            <h4 className="text-center mr-2">Customer Balance:</h4>
-            <div className="flex">
-              <div className="flex flex-col">
-                <span className="text-green-500">
-                  You will give: ₹{positiveCustomerSum}
-                </span>
-                <span className="text-red-500">
-                  You will get: ₹{Math.abs(negativeCustomerSum)}
-                </span>
+
+            <div className="flex flex-col">
+              <h3>Select your business</h3>
+              <div className="" ref={dropdownRef}>
+                <div style={{ width: "200px" }} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex justify-between w-full rounded-md border border-gray-400 bg-white px-2 py-3 text-sm font-medium text-gray-700 focus:outline-none"
+                    aria-haspopup="listbox"
+                    aria-expanded="true"
+                  >
+                    {getName()}
+                    <ChevronDownIcon
+                      className="-mr-1 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </button>
+
+                  {isOpen && (
+                    <div className="origin-top-right absolute mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                      <div className="py-1">
+                        {options?.map((option) => (
+                          <div
+                            key={option?._id}
+                            onClick={() => handleSelectChange(option)}
+                            className="flex flex-row justify-between cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-blue-100"
+                          >
+                            <span className="block font-normal text-gray-900">
+                              {option?.name}
+                            </span>
+                            {option?._id === selectedItem && (
+                              <CheckIcon
+                                className="-mr-1 h-5 w-5 text-gray-600"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </div>
+                        ))}
+                        <div
+                          onClick={() => {
+                            setIsOpen(false);
+                            setIsModalOpen({
+                              ...isModalOpen,
+                              status: true,
+                              value: { name: "" },
+                            });
+                          }}
+                          className="flex flex-row justify-center cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-blue-100 items-center"
+                        >
+                          <span className="block font-normal text-gray-900 text-sm">
+                            Add New Business
+                          </span>
+                          <PlusIcon className="w-5 h-5" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-row p-2">
+                  <PencilSquareIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setIsModalOpen({
+                        ...isOpen,
+                        status: true,
+                        type: "edit",
+                        value: { name: selectedBusinessName },
+                      });
+                    }}
+                    className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+                  ></PencilSquareIcon>
+
+                  <TrashIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      deleteBusiness(
+                        JSON.stringify({
+                          id: businessIdSelected,
+                        })
+                      );
+                    }}
+                    className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center mb-2">
-            <h4 className="text-center mr-2">Supplier Balance:</h4>
-            <div className="flex">
-              <div className="flex flex-col">
-                <span className="text-green-500">
-                  You will give: ₹{positiveSupplierSum}
-                </span>
-                <span className="text-red-500">
-                  You will get: ₹{Math.abs(negativeSupplierSum)}
-                </span>
-              </div>
-            </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h4 className="text-center mb-4 font-bold text-lg">
+            Customer Balance:
+          </h4>
+          <div className="flex flex-col items-center">
+            <span className="text-green-500 mb-2">
+              You will give: ₹{positiveCustomerSum}
+            </span>
+            <span className="text-red-500">
+              You will get: ₹{Math.abs(negativeCustomerSum)}
+            </span>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h4 className="text-center mb-4 font-bold text-lg">
+            Supplier Balance:
+          </h4>
+          <div className="flex flex-col items-center">
+            <span className="text-green-500 mb-2">
+              You will give: ₹{positiveSupplierSum}
+            </span>
+            <span className="text-red-500">
+              You will get: ₹{Math.abs(negativeSupplierSum)}
+            </span>
           </div>
         </div>
       </div>

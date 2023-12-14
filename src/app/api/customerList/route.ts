@@ -51,17 +51,33 @@ export async function POST(req, res) {
 export async function GET(req, res) {
   if (req.method === "GET") {
     // Retrieve all businesses
-    const businessId = new URL(req.url).searchParams.get("businessId");
+    const businessId = new URL(req.url)?.searchParams?.get("businessId");
+    const searchQuery = new URL(req.url)?.searchParams?.get("searchQuery");
 
     // const { businessId } = await req.json();
     const db = await connectDB();
     console.log("mjhgf", businessId);
     try {
-      const customers = await db
-        .collection("customers")
-        .find({ businessId })
-        .toArray();
-
+      let customers;
+      if (searchQuery) {
+        customers = await db
+          .collection("customers")
+          .find({
+            businessId,
+            $or: [
+              { name: { $regex: searchQuery, $options: "i" } },
+              { mobileNumber: { $regex: searchQuery, $options: "i" } },
+              // Case-insensitive search for customer name
+              // Add more fields if needed for the search
+            ],
+          })
+          .toArray();
+      } else {
+        customers = await db
+          .collection("customers")
+          .find({ businessId })
+          .toArray();
+      }
       console.log(customers);
 
       return NextResponse.json({ data: customers }, { status: 200 });

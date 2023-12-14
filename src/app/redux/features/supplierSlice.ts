@@ -32,6 +32,7 @@ export const supplierApi = createApi({
           method: "GET",
           params: {
             businessId: data?.businessId,
+            searchQuery: data?.searchQuery,
           },
         };
       },

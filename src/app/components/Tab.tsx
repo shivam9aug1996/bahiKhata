@@ -20,7 +20,7 @@ const MainTab = () => {
     data: getCustomerData,
     isFetching,
   } = useGetCustomerListQuery(
-    { businessId: businessIdSelected },
+    { businessId: businessIdSelected, searchQuery: "" },
     { skip: !businessIdSelected }
   );
   const {
@@ -30,7 +30,7 @@ const MainTab = () => {
     error: getSupplierError,
     data: getSupplierData,
   } = useGetSupplierListQuery(
-    { businessId: businessIdSelected },
+    { businessId: businessIdSelected, searchQuery: "" },
     { skip: !businessIdSelected }
   );
   const pathname = usePathname();

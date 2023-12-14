@@ -7,6 +7,7 @@ import useErrorNotification from "../custom-hooks/useErrorNotification";
 import usePromiseNotification from "../custom-hooks/usePromiseNotification";
 import {
   setBusinessIdSelected,
+  useCreateBusinessMutation,
   useGetBusinessListQuery,
   useUpdateBusinessMutation,
 } from "../redux/features/businessSlice";
@@ -35,10 +36,12 @@ const Dashboard = () => {
       data: updateBusinessData,
     },
   ] = useUpdateBusinessMutation();
+
   useErrorNotification(getBusinessError, isGetBusinessError);
   useErrorNotification(updateBusinessError, isUpdateBusinessError);
   //usePromiseNotification(updateBusiness())
   const [selectedItem, setSelectedItem] = useState("");
+  const [selectedBusinessName, setSelectedBusinessName] = useState("");
   console.log("jhgfddfghj", isUpdateBusinessSuccess);
 
   useEffect(() => {
@@ -59,6 +62,7 @@ const Dashboard = () => {
     if (data?._id) {
       console.log("mjhgfghj", data);
       setSelectedItem(data?._id);
+      setSelectedBusinessName(data?.name);
       dispatch(setBusinessIdSelected(data?._id));
     }
   }, [getBusinessData?.data]);
@@ -117,13 +121,16 @@ const Dashboard = () => {
     // console.log("mjhgtr56789", e.target);
   };
   console.log(states, getBusinessData);
+  const handleAdd = () => {};
   return (
     <>
       {isUpdateBusinessLoading || isGetBusinessLoading ? <Loader /> : null}
       <DropDown
         selectedItem={selectedItem}
+        selectedBusinessName={selectedBusinessName}
         getBusinessData={getBusinessData}
         handleDropdownChange={handleDropdownChange}
+        handleAdd={handleAdd}
       />
     </>
   );

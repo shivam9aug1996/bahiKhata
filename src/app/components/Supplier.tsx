@@ -1,5 +1,6 @@
 "use client";
 import {
+  MagnifyingGlassIcon,
   PencilSquareIcon,
   PlusCircleIcon,
   TrashIcon,
@@ -10,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
-import { useGetCustomerListQuery } from "../redux/features/customerSlice";
+
 import {
   useDeleteSupplierMutation,
   useGetSupplierListQuery,
@@ -27,6 +28,9 @@ const Supplier = () => {
   );
   const dispatch = useDispatch();
   const router = useRouter();
+  const [debouncedInputValue, setDebouncedInputValue] = useState("");
+
+  const [searchQuery, setSearchQuery] = useState("");
   const {
     isSuccess: isGetSupplierSuccess,
     isLoading: isGetSupplierLoading,
@@ -34,7 +38,7 @@ const Supplier = () => {
     error: getSupplierError,
     data: getSupplierData,
   } = useGetSupplierListQuery(
-    { businessId: businessIdSelected },
+    { businessId: businessIdSelected, searchQuery: debouncedInputValue },
     { skip: !businessIdSelected }
   );
   const [
@@ -67,6 +71,13 @@ const Supplier = () => {
     }
   }, [isDeleteSupplierSuccess]);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedInputValue(searchQuery);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, 500]);
+
   console.log("kjhgtr5678iugvhjk", businessIdSelected, getSupplierData);
   return (
     <div className="container mx-auto p-6 w-1/2">
@@ -89,6 +100,18 @@ const Supplier = () => {
             <PlusCircleIcon className="w-6 h-6 mr-1" />
             <span>Add Supplier</span>
           </button>
+        </div>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search.."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+            className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
+          />
+          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
+          </span>
         </div>
         {isGetSupplierLoading ? (
           <p>Loading...</p>
@@ -157,7 +180,8 @@ const Supplier = () => {
               </Link>
             ))}
             {getSupplierData?.data.length == 0 &&
-              isGetSupplierSuccess == true && (
+              isGetSupplierSuccess == true &&
+              debouncedInputValue === "" && (
                 <NoParty title={"Add supplier and maintain your daily khata"} />
               )}
           </>

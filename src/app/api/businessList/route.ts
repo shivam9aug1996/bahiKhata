@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
-import { connectDB } from "../lib/dbconnection";
+import { connectDB, startSession } from "../lib/dbconnection";
 
 export async function POST(req, res) {
   if (req.method === "POST") {
@@ -135,7 +135,6 @@ export async function PUT(req, res) {
 
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
-    // Delete a business
     const { id } = await req.json();
     const db = await connectDB();
 
@@ -157,36 +156,55 @@ export async function DELETE(req, res) {
           { status: 404 }
         );
       }
-
       const isPrimary = businessToDelete?.primaryKey;
+      const session = await startSession();
+      session.startTransaction();
 
-      const result = await db
-        .collection("businesses")
-        .deleteOne({ _id: new ObjectId(id) });
+      try {
+        // Delete the business and its associated data in a transaction
+        await db.collection("businesses").deleteOne({ _id: new ObjectId(id) });
+        await db.collection("customers").deleteMany({ businessId: id });
+        await db.collection("suppliers").deleteMany({ businessId: id });
+        await db.collection("transactions").deleteMany({ businessId: id });
 
-      if (isPrimary) {
-        // If the deleted business was primary, find another business and set it as primary
-        const updatedBusiness = await db
-          .collection("businesses")
-          .findOneAndUpdate(
-            { _id: { $ne: new ObjectId(id) } }, // Exclude the deleted business
-            { $set: { primaryKey: true } },
-            { returnDocument: "after" } // Sort to select the first business
-          );
+        // Commit the transaction
+        await session.commitTransaction();
+        session.endSession();
+        if (isPrimary) {
+          // If the deleted business was primary, find another business and set it as primary
+          const updatedBusiness = await db
+            .collection("businesses")
+            .findOneAndUpdate(
+              { _id: { $ne: new ObjectId(id) } }, // Exclude the deleted business
+              { $set: { primaryKey: true } },
+              { returnDocument: "after" } // Sort to select the first business
+            );
 
-        // if (!updatedBusiness) {
-        //   return NextResponse.json(
-        //     { message: "No other business to set as primary" },
-        //     { status: 404 }
-        //   );
-        // }
+          // if (!updatedBusiness) {
+          //   return NextResponse.json(
+          //     { message: "No other business to set as primary" },
+          //     { status: 404 }
+          //   );
+          // }
+        }
+
+        return NextResponse.json(
+          {
+            message: "Business and its associated data deleted successfully",
+            data: { _id: id },
+          },
+          { status: 200 }
+        );
+      } catch (error) {
+        console.log(error);
+        // If any error occurs during the transaction, rollback changes
+        await session.abortTransaction();
+        session.endSession();
+
+        throw error;
       }
-
-      return NextResponse.json(
-        { message: "Business deleted successfully", data: { _id: id } },
-        { status: 200 }
-      );
     } catch (error) {
+      console.log(error);
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }

@@ -1,5 +1,6 @@
 "use client";
 import {
+  MagnifyingGlassIcon,
   PencilSquareIcon,
   PlusCircleIcon,
   TrashIcon,
@@ -28,6 +29,9 @@ const Customer = () => {
   const dispatch = useDispatch();
 
   const router = useRouter();
+  const [debouncedInputValue, setDebouncedInputValue] = useState("");
+
+  const [searchQuery, setSearchQuery] = useState("");
   const {
     isSuccess: isGetCustomerSuccess,
     isLoading: isGetCustomerLoading,
@@ -36,7 +40,7 @@ const Customer = () => {
     data: getCustomerData,
     isFetching,
   } = useGetCustomerListQuery(
-    { businessId: businessIdSelected },
+    { businessId: businessIdSelected, searchQuery: debouncedInputValue },
     { skip: !businessIdSelected }
   );
   const [
@@ -69,6 +73,13 @@ const Customer = () => {
     }
   }, [isDeleteCustomerSuccess]);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedInputValue(searchQuery);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, 500]);
+
   // useEffect(() => {
   //   if (
   //     isGetCustomerError ||
@@ -93,8 +104,11 @@ const Customer = () => {
     "getCustomerError",
     deleteCustomerError,
     isDeleteCustomerError,
-    getCustomerError
+    getCustomerError,
+    isGetCustomerLoading,
+    isFetching
   );
+
   return (
     <div className="container mx-auto p-6 w-1/2">
       {isDeleteCustomerLoading ? <Loader /> : null}
@@ -117,6 +131,18 @@ const Customer = () => {
             <PlusCircleIcon className="w-6 h-6 mr-1" />
             <span>Add Customer</span>
           </button>
+        </div>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search.."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+            className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
+          />
+          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
+          </span>
         </div>
         {isGetCustomerLoading ? (
           <p>Loading...</p>
@@ -192,7 +218,8 @@ const Customer = () => {
               </Link>
             ))}
             {getCustomerData?.data.length == 0 &&
-              isGetCustomerSuccess == true && (
+              isGetCustomerSuccess == true &&
+              debouncedInputValue === "" && (
                 <NoParty title={"Add customer and maintain your daily khata"} />
               )}
           </>

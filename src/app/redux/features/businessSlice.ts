@@ -85,7 +85,6 @@ export const {
   useGetBusinessListQuery,
   useDeleteBusinessMutation,
   useUpdateBusinessMutation,
-  useLazyGetBusinessListQuery,
 } = businessApi;
 
 export const {
