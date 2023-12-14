@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
+import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import { customerApi } from "../redux/features/customerSlice";
 import { supplierApi } from "../redux/features/supplierSlice";
 import {
@@ -45,8 +46,18 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     // businessId: businessIdSelected,
     // partyId: partyId,
   });
-  useErrorNotification(createTransactionError?.error, isCreateTransactionError);
-  useErrorNotification(updateTransactionError?.error, isUpdateTransactionError);
+  useErrorNotification(createTransactionError, isCreateTransactionError);
+  useErrorNotification(updateTransactionError, isUpdateTransactionError);
+  useSuccessNotification(
+    "Transaction created successfully",
+    null,
+    isCreateTransactionSuccess
+  );
+  useSuccessNotification(
+    "Transaction updated successfully",
+    null,
+    isUpdateTransactionSuccess
+  );
 
   const [formData, setFormData] = useState({
     amount: "",
@@ -54,7 +65,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     description: "", // Add description field
     date: new Date().toISOString().split("T")[0],
   });
-  console.log("iuytredfg", isOpen);
+  console.log("iuytredfg", updateTransactionError);
   useEffect(() => {
     if (isOpen?.value && isOpen?.type == "edit" && isOpen?.status == true) {
       console.log("kjhgrt6789", isOpen?.value);
@@ -210,7 +221,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="credit">You Get</option>
+                        <option value="credit">You Got</option>
                         <option value="debit">You Gave</option>
                       </select>
                     </div>

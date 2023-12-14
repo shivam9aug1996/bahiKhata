@@ -1,8 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
+import usePromiseNotification from "../custom-hooks/usePromiseNotification";
 import {
   setBusinessIdSelected,
   useGetBusinessListQuery,
@@ -33,8 +35,9 @@ const Dashboard = () => {
       data: updateBusinessData,
     },
   ] = useUpdateBusinessMutation();
-  useErrorNotification(getBusinessError?.error, isGetBusinessError);
-  useErrorNotification(updateBusinessError?.error, isUpdateBusinessError);
+  useErrorNotification(getBusinessError, isGetBusinessError);
+  useErrorNotification(updateBusinessError, isUpdateBusinessError);
+  //usePromiseNotification(updateBusiness())
   const [selectedItem, setSelectedItem] = useState("");
   console.log("jhgfddfghj", isUpdateBusinessSuccess);
 
@@ -89,14 +92,27 @@ const Dashboard = () => {
     const selectedBusiness = getBusinessData?.data?.find(
       (item) => item._id === el?._id
     );
-
-    updateBusiness(
-      JSON.stringify({
-        id: el?._id,
-        primaryKey: true,
-        name: selectedBusiness.name,
-      })
+    toast.promise(
+      updateBusiness(
+        JSON.stringify({
+          id: el?._id,
+          primaryKey: true,
+          name: selectedBusiness.name,
+        })
+      ),
+      {
+        loading: "Loading",
+        success: "Got the data",
+        error: "Error when fetching",
+      }
     );
+    // updateBusiness(
+    //   JSON.stringify({
+    //     id: el?._id,
+    //     primaryKey: true,
+    //     name: selectedBusiness.name,
+    //   })
+    // );
 
     // console.log("mjhgtr56789", e.target);
   };

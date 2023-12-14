@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 
-const useErrorNotification = (errorMessage, isError) => {
+const useErrorNotification = (errorObject, isError) => {
+  let error = errorObject?.error || errorObject?.data?.message;
+  error = error?.substring(0, 100);
   useEffect(() => {
     if (isError) {
-      toast.error(errorMessage?.substring(0, 50) || "Something went wrong");
+      toast.error(error);
     }
-  }, [isError, errorMessage, toast]);
+  }, [isError, error]);
 };
 
 export default useErrorNotification;

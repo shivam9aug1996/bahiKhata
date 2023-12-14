@@ -137,10 +137,10 @@ export async function PUT(req, res) {
       } else {
         return NextResponse.json(
           {
-            message: "No changes made or customer not found",
+            message: "No updates were made or changes were found",
             modifiedCount: updatedResult.modifiedCount,
           },
-          { status: 200 }
+          { status: 404 }
         );
       }
     } catch (error) {

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
+import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import {
   customerApi,
   useCreateCustomerMutation,
@@ -67,10 +68,30 @@ export default function PartyModal({ isOpen, setIsOpen }) {
       data: updateSupplierData,
     },
   ] = useUpdateSupplierMutation();
-  useErrorNotification(createCustomerError?.error, isCreateCustomerError);
-  useErrorNotification(updateCustomerError?.error, isUpdateCustomerError);
-  useErrorNotification(createSupplierError?.error, isCreateSupplierError);
-  useErrorNotification(updateSupplierError?.error, isUpdateSupplierError);
+  useErrorNotification(createCustomerError, isCreateCustomerError);
+  useErrorNotification(updateCustomerError, isUpdateCustomerError);
+  useErrorNotification(createSupplierError, isCreateSupplierError);
+  useErrorNotification(updateSupplierError, isUpdateSupplierError);
+  useSuccessNotification(
+    "Customer added successfully, Now you can add transactions to this customer",
+    null,
+    isCreateCustomerSuccess
+  );
+  useSuccessNotification(
+    "Customer updated successfully",
+    null,
+    isUpdateCustomerSuccess
+  );
+  useSuccessNotification(
+    "Supplier created successfully, Now you can add transactions to this supplier",
+    null,
+    isCreateSupplierSuccess
+  );
+  useSuccessNotification(
+    "Supplier updated successfully",
+    null,
+    isUpdateSupplierSuccess
+  );
 
   const [formData, setFormData] = useState({
     name: "",

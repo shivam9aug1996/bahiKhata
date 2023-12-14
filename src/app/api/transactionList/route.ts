@@ -9,7 +9,7 @@ export async function POST(req, res) {
       await req.json();
     const db = await connectDB();
     // console.log(!name, !primaryKey, typeof primaryKey, typeof name);
-    if (!businessId || !partyId || !partyType) {
+    if (!businessId || !partyId || !partyType || amount < 0 || !amount) {
       return NextResponse.json(
         { message: "Invalid data format" },
         { status: 400 }
@@ -240,8 +240,8 @@ export async function PUT(req, res) {
         );
       } else {
         return NextResponse.json(
-          { message: "No changes made or transaction not found" },
-          { status: 304 }
+          { message: "No updates were made or changes were found" },
+          { status: 404 }
         );
       }
     } catch (error) {

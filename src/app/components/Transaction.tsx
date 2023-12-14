@@ -18,6 +18,7 @@ import { usePathname } from "next/navigation";
 import { supplierApi } from "../redux/features/supplierSlice";
 import Loader from "./Loader";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
+import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
@@ -49,8 +50,13 @@ const Transaction = ({ partyId }) => {
       data: deleteTransactionData,
     },
   ] = useDeleteTransactionMutation();
-  useErrorNotification(getTransactionError?.error, isGetTransactionError);
-  useErrorNotification(deleteTransactionError?.error, isDeleteTransactionError);
+  useErrorNotification(getTransactionError, isGetTransactionError);
+  useErrorNotification(deleteTransactionError, isDeleteTransactionError);
+  useSuccessNotification(
+    "Transaction deleted successfully",
+    null,
+    isDeleteTransactionSuccess
+  );
   const [showSidebar, setShowSidebar] = useState(true);
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);

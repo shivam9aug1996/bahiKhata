@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
+import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import {
   useDeleteCustomerMutation,
   useGetCustomerListQuery,
@@ -54,9 +55,13 @@ const Customer = () => {
     value: null,
     part: "customer",
   });
-  useErrorNotification(getCustomerError?.error, isGetCustomerError);
-  useErrorNotification(deleteCustomerError?.error, isDeleteCustomerError);
-
+  useErrorNotification(getCustomerError, isGetCustomerError);
+  useErrorNotification(deleteCustomerError, isDeleteCustomerError);
+  useSuccessNotification(
+    "Customer deleted successfully",
+    null,
+    isDeleteCustomerSuccess
+  );
   useEffect(() => {
     if (isDeleteCustomerSuccess) {
       dispatch(transactionApi.util.invalidateTags(["transaction"]));
