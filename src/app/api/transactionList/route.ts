@@ -245,6 +245,7 @@ export async function PUT(req, res) {
         );
       }
     } catch (error) {
+      console.log(",jhtr567890", error);
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }

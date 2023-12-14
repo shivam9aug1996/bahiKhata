@@ -9,6 +9,7 @@ import {
 } from "../redux/features/businessSlice";
 import { customerApi } from "../redux/features/customerSlice";
 import DropDown from "./DropDown";
+import Loader from "./Loader";
 
 const Dashboard = () => {
   const states = useSelector((state) => state);
@@ -98,11 +99,14 @@ const Dashboard = () => {
   };
   console.log(states, getBusinessData);
   return (
-    <DropDown
-      selectedItem={selectedItem}
-      getBusinessData={getBusinessData}
-      handleDropdownChange={handleDropdownChange}
-    />
+    <>
+      {isUpdateBusinessLoading || isGetBusinessLoading ? <Loader /> : null}
+      <DropDown
+        selectedItem={selectedItem}
+        getBusinessData={getBusinessData}
+        handleDropdownChange={handleDropdownChange}
+      />
+    </>
   );
 };
 

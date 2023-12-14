@@ -16,6 +16,7 @@ import NoTransaction from "./NoTransaction";
 import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import { supplierApi } from "../redux/features/supplierSlice";
+import Loader from "./Loader";
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
@@ -61,6 +62,7 @@ const Transaction = ({ partyId }) => {
   // return <Sidebar showSidebar={showSidebar} toggleSidebar={toggleSidebar} />;
   return (
     <div className="bg-gray-100 min-h-screen flex w-1/2">
+      {isDeleteTransactionLoading ? <Loader /> : null}
       <TransactionModal
         partyId={partyId}
         isOpen={isOpen}

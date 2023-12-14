@@ -10,6 +10,7 @@ import {
   useCreateTransactionMutation,
   useUpdateTransactionMutation,
 } from "../redux/features/transactionSlice";
+import Loader from "./Loader";
 
 export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
   const businessIdSelected = useSelector(
@@ -128,6 +129,9 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
 
   return (
     <>
+      {isCreateTransactionLoading || isUpdateTransactionLoading ? (
+        <Loader />
+      ) : null}
       <Transition appear show={isOpen.status} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
