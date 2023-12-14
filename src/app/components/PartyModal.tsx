@@ -69,6 +69,8 @@ export default function PartyModal({ isOpen, setIsOpen }) {
   ] = useUpdateSupplierMutation();
   useErrorNotification(createCustomerError?.error, isCreateCustomerError);
   useErrorNotification(updateCustomerError?.error, isUpdateCustomerError);
+  useErrorNotification(createSupplierError?.error, isCreateSupplierError);
+  useErrorNotification(updateSupplierError?.error, isUpdateSupplierError);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -213,7 +215,9 @@ export default function PartyModal({ isOpen, setIsOpen }) {
                       as="h3"
                       className="text-lg font-medium leading-6 text-gray-900"
                     >
-                      {`${isOpen?.type == "edit" ? "Edit" : "Add"} Customer`}
+                      {`${isOpen?.type == "edit" ? "Edit" : "Add"} ${
+                        isOpen?.part === "customer" ? "Customer" : "Supplier"
+                      }`}
                     </Dialog.Title>
                     <button
                       onClick={closeModal}
