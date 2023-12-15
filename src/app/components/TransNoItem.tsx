@@ -21,6 +21,7 @@ const TransNoItem = ({ title }) => {
           justifyContent: "center",
           // alignItems: "center",
           padding: 50,
+          height: "fit-content",
         }}
       >
         <div className="flex flex-col justify-center text-center">
