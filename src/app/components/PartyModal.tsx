@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import {
-  customerApi,
   useCreateCustomerMutation,
   useUpdateCustomerMutation,
 } from "../redux/features/customerSlice";
@@ -15,10 +14,7 @@ import {
   useCreateSupplierMutation,
   useUpdateSupplierMutation,
 } from "../redux/features/supplierSlice";
-import {
-  useCreateTransactionMutation,
-  useUpdateTransactionMutation,
-} from "../redux/features/transactionSlice";
+
 import Loader from "./Loader";
 
 export default function PartyModal({ isOpen, setIsOpen }) {

@@ -5,9 +5,10 @@ import {
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
@@ -18,8 +19,12 @@ import {
 } from "../redux/features/customerSlice";
 import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
-import NoParty from "./NoParty";
-import PartyModal from "./PartyModal";
+//const NoParty = lazy(() => import("./NoParty"));
+
+const NoParty = dynamic(() => import("./NoParty"));
+const PartyModal = dynamic(() => import("./PartyModal"));
+// import NoParty from "./NoParty";
+//import PartyModal from "./PartyModal";
 
 const Customer = () => {
   const pathname = usePathname();
@@ -227,7 +232,9 @@ const Customer = () => {
             {getCustomerData?.data.length == 0 &&
               isGetCustomerSuccess == true &&
               debouncedInputValue === "" && (
+                // <Suspense fallback={<p>98765loading...</p>}>
                 <NoParty title={"Add customer and maintain your daily khata"} />
+                // </Suspense>
               )}
           </>
         )}

@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
-import Providers from "./components/Providers";
+// import Providers from "./components/Providers";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
 const inter = Inter({ subsets: ["latin"] });
+const Providers = dynamic(() => import("./components/Providers"));
 
 export const metadata: Metadata = {
   title: "BahiKhata",

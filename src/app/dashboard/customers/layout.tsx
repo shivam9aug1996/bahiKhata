@@ -1,6 +1,11 @@
-import Customer from "@/app/components/Customer";
-import TransNoItem from "@/app/components/TransNoItem";
+// import Customer from "@/app/components/Customer";
+//import Customer from "@/app/components/Customer";
+const Customer = dynamic(() => import("@/app/components/Customer"));
+
+//import TransNoItem from "@/app/components/TransNoItem";
+const TransNoItem = dynamic(() => import("@/app/components/TransNoItem"));
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });

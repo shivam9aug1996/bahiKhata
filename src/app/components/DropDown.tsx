@@ -1,3 +1,4 @@
+"use client";
 import {
   ChevronDownIcon,
   PencilSquareIcon,
@@ -5,6 +6,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +21,8 @@ import {
   supplierApi,
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
-import BusinessModal from "./BusinessModal";
+
+const BusinessModal = dynamic(() => import("./BusinessModal"));
 import Loader from "./Loader";
 
 const DropDown = ({
@@ -266,6 +269,7 @@ const DropDown = ({
                               ...isModalOpen,
                               status: true,
                               value: { name: "" },
+                              type: "add",
                             });
                           }}
                           className="flex flex-row justify-center cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-blue-100 items-center"

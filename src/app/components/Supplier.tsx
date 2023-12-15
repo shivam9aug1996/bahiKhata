@@ -5,6 +5,7 @@ import {
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -18,8 +19,10 @@ import {
 } from "../redux/features/supplierSlice";
 import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
-import NoParty from "./NoParty";
-import PartyModal from "./PartyModal";
+// import NoParty from "./NoParty";
+// import PartyModal from "./PartyModal";
+const NoParty = dynamic(() => import("./NoParty"));
+const PartyModal = dynamic(() => import("./PartyModal"));
 
 const Supplier = () => {
   const pathname = usePathname();

@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,6 +14,7 @@ import {
 } from "../redux/features/businessSlice";
 import { customerApi } from "../redux/features/customerSlice";
 import DropDown from "./DropDown";
+
 import Loader from "./Loader";
 
 const Dashboard = () => {

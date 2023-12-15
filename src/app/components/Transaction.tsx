@@ -11,14 +11,16 @@ import {
   useDeleteTransactionMutation,
   useGetTransactionListQuery,
 } from "../redux/features/transactionSlice";
-import TransactionModal from "./TransactionModal";
-import NoTransaction from "./NoTransaction";
+
 import Sidebar from "./Sidebar";
 import { usePathname } from "next/navigation";
 import { supplierApi } from "../redux/features/supplierSlice";
 import Loader from "./Loader";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
+import dynamic from "next/dynamic";
+const TransactionModal = dynamic(() => import("./TransactionModal"));
+const NoTransaction = dynamic(() => import("./NoTransaction"));
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
