@@ -215,7 +215,12 @@ const DropDown = ({
       <div>
         <div className="bg-white rounded-lg shadow-md p-2 flex flex-col justify-center items-start">
           <div className="flex flex-row items-center justify-between w-full">
-            <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+            <div
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-center cursor-pointer"
+              onClick={() => {
+                router.push("/dashboard/customers");
+              }}
+            >
               <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-red-500 md:text-black">
                 Bahi
               </span>
