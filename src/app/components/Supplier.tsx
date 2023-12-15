@@ -164,7 +164,9 @@ const Supplier = () => {
                 </div>
                 <div className="flex flex-row">
                   <PencilSquareIcon
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
                       setIsOpen({
                         ...isOpen,
                         status: true,
@@ -176,7 +178,9 @@ const Supplier = () => {
                   ></PencilSquareIcon>
 
                   <TrashIcon
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
                       deleteSupplier(
                         JSON.stringify({
                           businessId: businessIdSelected,
