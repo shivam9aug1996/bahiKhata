@@ -308,7 +308,12 @@ const DropDown = ({
                       className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                     />
                   </div>
-                ) : null}
+                ) : (
+                  <div className="flex flex-row p-2">
+                    <div className="w-5 h-5"></div>
+                    <div className="w-5 h-5"></div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

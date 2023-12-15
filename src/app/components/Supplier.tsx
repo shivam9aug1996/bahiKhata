@@ -88,6 +88,7 @@ const Supplier = () => {
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="text-2xl font-bold mb-4 md:mb-0">Supplier List</div>
           <button
+            disabled={!isGetSupplierSuccess}
             onClick={() => {
               setIsOpen({
                 ...isOpen,

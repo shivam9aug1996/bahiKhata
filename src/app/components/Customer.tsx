@@ -119,6 +119,7 @@ const Customer = () => {
           <div className="text-2xl font-bold mb-4 md:mb-0">Customer List</div>
 
           <button
+            disabled={!isGetCustomerSuccess}
             onClick={() => {
               setIsOpen({
                 ...isOpen,

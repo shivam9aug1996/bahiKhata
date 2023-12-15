@@ -23,7 +23,7 @@ const TransNoItem = ({ title }) => {
           padding: 50,
         }}
       >
-        <div>
+        <div className="flex flex-col justify-center text-center">
           <UsersIcon className="text-gray-500 w-50 h-50" />
           {title}
         </div>
