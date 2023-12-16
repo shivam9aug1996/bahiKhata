@@ -212,7 +212,7 @@ const Supplier = () => {
                             : ""
                         }`}
                       >
-                        ₹{Math.abs(item.balance)}
+                        ₹{Math.abs(item.balance)?.toLocaleString()}
                       </div>
                     </div>
                   </div>

@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 import Loader from "./Loader";
+import TransactionSkeleton from "./TransactionSkeleton";
 const Pagination = dynamic(() => import("./Pagination"));
 const TransactionModal = dynamic(() => import("./TransactionModal"));
 const NoTransaction = dynamic(() => import("./NoTransaction"));
@@ -100,8 +101,9 @@ const Sidebar = ({
                 <span>Add Transaction</span>
               </button>
             </div>
+            {!businessIdSelected || !partyId ? <TransactionSkeleton /> : null}
             {isGetTransactionLoading ? (
-              <p>Loading...</p>
+              <TransactionSkeleton />
             ) : isGetTransactionError ? (
               <p>Error: {getTransactionError?.message}</p>
             ) : (
@@ -126,8 +128,12 @@ const Sidebar = ({
                       }`}
                     >
                       <p>
-                        Amount: ₹{transaction.amount} (
-                        {transaction.type === "debit" ? "You Gave" : "You Got"})
+                        Amount: ₹
+                        {transaction?.amount
+                          ? Number(transaction?.amount)?.toLocaleString()
+                          : 0}{" "}
+                        ({transaction.type === "debit" ? "You Gave" : "You Got"}
+                        )
                       </p>
                       <div className="flex flex-row">
                         <PencilSquareIcon

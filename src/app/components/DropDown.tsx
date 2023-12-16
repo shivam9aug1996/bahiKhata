@@ -353,10 +353,11 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              You will give: ₹{customerPositiveBalance}
+              You will give: ₹{customerPositiveBalance?.toLocaleString()}
             </span>
             <span className="text-red-500">
-              You will get: ₹{Math.abs(customerNegativeBalance)}
+              You will get: ₹
+              {Math.abs(customerNegativeBalance)?.toLocaleString()}
             </span>
           </div>
         </div>
@@ -366,10 +367,11 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              You will give: ₹{supplierPositiveBalance}
+              You will give: ₹{supplierPositiveBalance?.toLocaleString()}
             </span>
             <span className="text-red-500">
-              You will get: ₹{Math.abs(supplierNegativeBalance)}
+              You will get: ₹
+              {Math.abs(supplierNegativeBalance)?.toLocaleString()}
             </span>
           </div>
         </div>
