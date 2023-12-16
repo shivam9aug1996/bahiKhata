@@ -15,7 +15,7 @@ const TransNoItem = ({ title }) => {
         style={{
           backgroundColor: "#f5f5f5",
           // height: "100vh",
-          width: "50%",
+          width: "47%",
           color: "black",
           display: "flex",
           justifyContent: "center",

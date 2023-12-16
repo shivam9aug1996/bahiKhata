@@ -1,20 +1,46 @@
+import {
+  PencilSquareIcon,
+  PlusCircleIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/20/solid";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import Loader from "./Loader";
+import NoTransaction from "./NoTransaction";
+import TransactionModal from "./TransactionModal";
 
-const Sidebar = ({ showSidebar, toggleSidebar }) => {
+const Sidebar = ({
+  showSidebar,
+  toggleSidebar,
+  isDeleteTransactionLoading,
+  partyId,
+  isOpen,
+  setIsOpen,
+  isGetTransactionLoading,
+  deleteTransaction,
+  getTransactionData,
+  businessIdSelected,
+  isGetTransactionError,
+  getTransactionError,
+}) => {
   const router = useRouter();
   const pathname = usePathname();
   const closeSidebar = (e) => {
     // Check if the click is outside the sidebar
-    if (showSidebar && !e.target.closest(".w-64")) {
-      if (pathname.includes("/dashboard/customers")) {
-        router.push("/dashboard/customers");
-      }
-      if (pathname.includes("/dashboard/suppliers")) {
-        router.push("/dashboard/suppliers");
-      }
-      //toggleSidebar();
-    }
+    // if (
+    //   showSidebar &&
+    //   !e.target.closest("#sidebar") &&
+    //   isOpen?.status == false
+    // ) {
+    //   if (pathname.includes("/dashboard/customers")) {
+    //     router.push("/dashboard/customers", { scroll: false });
+    //   }
+    //   if (pathname.includes("/dashboard/suppliers")) {
+    //     router.push("/dashboard/suppliers", { scroll: false });
+    //   }
+    //   //toggleSidebar();
+    // }
   };
 
   useEffect(() => {
@@ -29,27 +55,111 @@ const Sidebar = ({ showSidebar, toggleSidebar }) => {
     <div className="flex h-screen">
       {/* Sidebar */}
       <div
-        className={`w-64 bg-gray-800 fixed inset-y-0 right-0 z-50 transition-transform duration-300 ease-in-out transform ${
+        style={{ width: "47%" }}
+        id={"sidebar"}
+        className={`bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full  ${
           showSidebar ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Sidebar content */}
-        <div className="p-4 text-white">
-          <h1 className="text-xl font-bold mb-4">Sidebar</h1>
-          {/* Add links or other content for the sidebar */}
-          <ul>
-            <li className="py-2 hover:bg-gray-700">
-              <a href="#" className="block">
-                Link 1
-              </a>
-            </li>
-            <li className="py-2 hover:bg-gray-700">
-              <a href="#" className="block">
-                Link 2
-              </a>
-            </li>
-            {/* Add more sidebar links as needed */}
-          </ul>
+        <div>
+          {isDeleteTransactionLoading ? <Loader /> : null}
+          <TransactionModal
+            partyId={partyId}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
+          <XMarkIcon
+            onClick={(e) => {
+              if (pathname.includes("/dashboard/customers")) {
+                router.push("/dashboard/customers", { scroll: false });
+              }
+              if (pathname.includes("/dashboard/suppliers")) {
+                router.push("/dashboard/suppliers", { scroll: false });
+              }
+            }}
+            className="w-7 h-7 text-gray-500 hover:text-red-500 cursor-pointer ml-4 mt-2"
+          />
+          <div className="flex-1 p-6">
+            <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+              <h1 className="text-2xl font-bold mb-4 md:mb-0">
+                Transaction List
+              </h1>
+
+              <button
+                onClick={() => {
+                  setIsOpen({ ...isOpen, status: true, type: "add" });
+                }}
+                className="ml-4 flex items-center text-blue-500 hover:text-blue-700"
+              >
+                <PlusCircleIcon className="w-6 h-6 mr-1" />
+                <span>Add Transaction</span>
+              </button>
+            </div>
+            {isGetTransactionLoading ? (
+              <p>Loading...</p>
+            ) : isGetTransactionError ? (
+              <p>Error: {getTransactionError?.message}</p>
+            ) : (
+              <div className="grid gap-4">
+                {getTransactionData?.data?.map((transaction, index) => (
+                  <div
+                    key={transaction?._id}
+                    className="p-4 border rounded-md flex  flex-col"
+                  >
+                    <div
+                      key={index}
+                      className={`flex sm:flex-row flex-col justify-between ${
+                        transaction.type === "debit"
+                          ? "text-red-500"
+                          : "text-green-500"
+                      }`}
+                    >
+                      <p>
+                        Amount: ₹{transaction.amount} (
+                        {transaction.type === "debit" ? "You Gave" : "You Got"})
+                      </p>
+                      <div className="flex flex-row">
+                        <PencilSquareIcon
+                          onClick={() => {
+                            setIsOpen({
+                              status: true,
+                              type: "edit",
+                              value: transaction,
+                            });
+                          }}
+                          className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer mr-2"
+                        ></PencilSquareIcon>
+
+                        <TrashIcon
+                          onClick={() => {
+                            deleteTransaction(
+                              JSON.stringify({
+                                businessId: businessIdSelected,
+                                partyId,
+                                transactionId: transaction?._id,
+                                partyType: pathname.includes("customer")
+                                  ? "customer"
+                                  : "supplier",
+                              })
+                            );
+                          }}
+                          className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                    <p>Description: {transaction?.description}</p>
+                    <p>
+                      Date:{" "}
+                      {transaction.date
+                        ? new Date(transaction?.date)?.toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
+                ))}
+                {getTransactionData?.data?.length == 0 && <NoTransaction />}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

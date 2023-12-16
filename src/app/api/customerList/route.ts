@@ -15,11 +15,11 @@ export async function POST(req, res) {
       );
     }
     let balance = 0;
-
+    const createdAt = new Date();
     try {
       const result = await db
         .collection("customers")
-        .insertOne({ businessId, name, mobileNumber, balance });
+        .insertOne({ businessId, name, mobileNumber, balance, createdAt });
 
       return NextResponse.json(
         {
@@ -30,6 +30,7 @@ export async function POST(req, res) {
             name,
             mobileNumber,
             balance,
+            createdAt,
           },
         },
         { status: 201 }
@@ -53,12 +54,18 @@ export async function GET(req, res) {
     // Retrieve all businesses
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
     const searchQuery = new URL(req.url)?.searchParams?.get("searchQuery");
+    const page = parseInt(new URL(req.url)?.searchParams?.get("page") || "1");
 
+    const limit = parseInt(
+      new URL(req.url)?.searchParams?.get("limit") || "10"
+    );
+    const skip = (page - 1) * limit;
     // const { businessId } = await req.json();
     const db = await connectDB();
     console.log("mjhgf", businessId);
     try {
       let customers;
+      let totalCustomers;
       if (searchQuery) {
         customers = await db
           .collection("customers")
@@ -71,16 +78,40 @@ export async function GET(req, res) {
               // Add more fields if needed for the search
             ],
           })
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
           .toArray();
+        totalCustomers = await db
+          .collection("customers")
+          .find({
+            businessId,
+            $or: [
+              { name: { $regex: searchQuery, $options: "i" } },
+              { mobileNumber: { $regex: searchQuery, $options: "i" } },
+            ],
+          })
+          .count();
       } else {
         customers = await db
           .collection("customers")
           .find({ businessId })
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
           .toArray();
+        totalCustomers = await db
+          .collection("customers")
+          .find({ businessId })
+          .count();
       }
-      console.log(customers);
+      console.log("mjhgtr456y7uio", totalCustomers, limit, page);
+      const totalPages = Math.ceil(totalCustomers / limit); // Calculate total pages
 
-      return NextResponse.json({ data: customers }, { status: 200 });
+      return NextResponse.json(
+        { data: customers, totalPages, currentPage: page },
+        { status: 200 }
+      );
     } catch (error) {
       return NextResponse.json(
         { message: "Something went wrong" },

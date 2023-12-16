@@ -15,7 +15,7 @@ export async function POST(req, res) {
         { status: 400 }
       );
     }
-
+    const createdAt = new Date();
     try {
       const result = await db.collection("transactions").insertOne({
         partyId,
@@ -25,6 +25,7 @@ export async function POST(req, res) {
         description,
         date,
         partyType,
+        createdAt,
       });
 
       const allTransactions = await db
@@ -79,6 +80,7 @@ export async function POST(req, res) {
             date,
             description,
             partyType,
+            createdAt,
           },
         },
         { status: 201 }
@@ -109,6 +111,7 @@ export async function GET(req, res) {
       const transactions = await db
         .collection("transactions")
         .find({ businessId, partyId })
+        .sort({ createdAt: -1 })
         .toArray();
       return NextResponse.json({ data: transactions }, { status: 200 });
     } catch (error) {

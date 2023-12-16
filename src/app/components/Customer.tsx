@@ -8,7 +8,7 @@ import {
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
@@ -31,6 +31,8 @@ const Customer = () => {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
+  const containerRef = useRef(null);
+
   const dispatch = useDispatch();
 
   const router = useRouter();
@@ -71,10 +73,29 @@ const Customer = () => {
     null,
     isDeleteCustomerSuccess
   );
+
+  // useEffect(() => {
+  //   if (
+  //     isGetCustomerSuccess &&
+  //     getCustomerData?.currentPage < getCustomerData?.totalPages
+  //   ) {
+  //     console.log(
+  //       "jhgfghjkl",
+  //       getCustomerData?.currentPage < getCustomerData?.totalPages,
+  //       getCustomerData
+  //     );
+  //     setPage((page) => ({
+  //       ...page,
+  //       currentPage: getCustomerData?.currentPage,
+  //       totalPages: getCustomerData?.totalPages,
+  //     }));
+  //     setAllData([...allData, ...getCustomerData?.data]);
+  //   }
+  // }, [isGetCustomerSuccess, getCustomerData?.data]);
   useEffect(() => {
     if (isDeleteCustomerSuccess) {
       dispatch(transactionApi.util.invalidateTags(["transaction"]));
-      router.push("/dashboard/customers");
+      router.push("/dashboard/customers", { scroll: false });
     }
   }, [isDeleteCustomerSuccess]);
 
@@ -84,6 +105,44 @@ const Customer = () => {
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [searchQuery, 500]);
+
+  // const handleScroll = () => {
+  //   const container = containerRef?.current;
+
+  //   if (container) {
+  //     const { scrollTop, clientHeight, scrollHeight } = container;
+
+  //     // Check if you've reached the bottom of the container
+  //     if (scrollTop + clientHeight >= scrollHeight) {
+  //       console.log(getCustomerData, page);
+
+  //       if (getCustomerData.currentPage < getCustomerData.totalPages) {
+  //         setPage((page) => ({
+  //           ...page,
+  //           currentPage: getCustomerData.currentPage + 1,
+  //           totalPages: getCustomerData.totalPages,
+  //         }));
+  //       }
+
+  //       console.log("Reached the bottom of the container!");
+  //       // Add logic here when you've reached the bottom
+  //     }
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const container = containerRef?.current;
+
+  //   if (container) {
+  //     container.addEventListener("scroll", handleScroll);
+  //   }
+
+  //   return () => {
+  //     if (container) {
+  //       container.removeEventListener("scroll", handleScroll);
+  //     }
+  //   };
+  // }, [page.totalPages]);
 
   // useEffect(() => {
   //   if (
@@ -105,17 +164,12 @@ const Customer = () => {
   //   deleteCustomerError?.error,
   // ]);
 
-  console.log(
-    "getCustomerError",
-    deleteCustomerError,
-    isDeleteCustomerError,
-    getCustomerError,
-    isGetCustomerLoading,
-    isFetching
-  );
-
   return (
-    <div className="container mx-auto p-6 w-1/2">
+    <div
+      className="shadow-lg  container m-3 w-1/2 rounded-lg p-4 border overflow-auto hover:overflow-scroll"
+      style={{ height: 600 }}
+      ref={containerRef}
+    >
       {isDeleteCustomerLoading ? <Loader /> : null}
       <PartyModal isOpen={isOpen} setIsOpen={setIsOpen} />
 
@@ -132,7 +186,7 @@ const Customer = () => {
                 type: "add",
               });
             }}
-            className="ml-4 flex items-center text-blue-500 hover:text-blue-700"
+            className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
           >
             <PlusCircleIcon className="w-6 h-6 mr-1" />
             <span>Add Customer</span>
@@ -165,6 +219,16 @@ const Customer = () => {
           </p>
         ) : (
           <>
+            {isFetching ? (
+              <div className="relative bg-red-300 w-full h-full">
+                <Loader
+                  wrapperStyle={{
+                    position: "absolute",
+                    alignItems: "flex-start",
+                  }}
+                />
+              </div>
+            ) : null}
             {getCustomerData?.data?.map((item, index) => (
               <Link
                 key={index}
@@ -174,6 +238,7 @@ const Customer = () => {
                     : "text-black hover:text-blue-500 font-normal"
                 }`}
                 href={`/dashboard/customers/${item?._id}`}
+                scroll={false}
               >
                 <div className="flex flex-col sm:flex-row justify-between ">
                   <span>{item?.name}</span>

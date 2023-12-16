@@ -15,11 +15,11 @@ export async function POST(req, res) {
       );
     }
     let balance = 0;
-
+    const createdAt = new Date();
     try {
       const result = await db
         .collection("suppliers")
-        .insertOne({ businessId, name, mobileNumber, balance });
+        .insertOne({ businessId, name, mobileNumber, balance, createdAt });
 
       return NextResponse.json(
         {
@@ -30,6 +30,7 @@ export async function POST(req, res) {
             name,
             mobileNumber,
             balance,
+            createdAt,
           },
         },
         { status: 201 }
@@ -71,11 +72,13 @@ export async function GET(req, res) {
               // Add more fields if needed for the search
             ],
           })
+          .sort({ createdAt: -1 })
           .toArray();
       } else {
         result = await db
           .collection("suppliers")
           .find({ businessId })
+          .sort({ createdAt: -1 })
           .toArray();
       }
 

@@ -49,8 +49,8 @@ const DropDown = ({
     data: getCustomerData,
     isFetching,
   } = useGetCustomerListQuery(
-    { businessId: businessIdSelected, searchQuery: "" },
-    { skip: !businessIdSelected }
+    { businessId: businessIdSelected, searchQuery: "", page: -1 },
+    { skip: true }
   );
   const {
     isSuccess: isGetSupplierSuccess,

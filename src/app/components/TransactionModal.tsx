@@ -147,7 +147,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
         <Loader />
       ) : null}
       <Transition appear show={isOpen.status} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="relative z-50" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

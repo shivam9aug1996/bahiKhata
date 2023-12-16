@@ -21,7 +21,7 @@ const MainTab = () => {
     isFetching,
   } = useGetCustomerListQuery(
     { businessId: businessIdSelected, searchQuery: "" },
-    { skip: !businessIdSelected }
+    { skip: true }
   );
   const {
     isSuccess: isGetSupplierSuccess,

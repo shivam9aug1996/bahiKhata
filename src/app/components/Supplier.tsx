@@ -40,6 +40,7 @@ const Supplier = () => {
     isError: isGetSupplierError,
     error: getSupplierError,
     data: getSupplierData,
+    isFetching,
   } = useGetSupplierListQuery(
     { businessId: businessIdSelected, searchQuery: debouncedInputValue },
     { skip: !businessIdSelected }
@@ -70,7 +71,7 @@ const Supplier = () => {
   useEffect(() => {
     if (isDeleteSupplierSuccess) {
       dispatch(transactionApi.util.invalidateTags(["transaction"]));
-      router.push("/dashboard/suppliers");
+      router.push("/dashboard/suppliers", { scroll: false });
     }
   }, [isDeleteSupplierSuccess]);
 
@@ -83,7 +84,10 @@ const Supplier = () => {
 
   console.log("kjhgtr5678iugvhjk", businessIdSelected, getSupplierData);
   return (
-    <div className="container mx-auto p-6 w-1/2">
+    <div
+      className="shadow-lg  container m-3 w-1/2 rounded-lg p-4 border overflow-auto hover:overflow-scroll"
+      style={{ height: 600 }}
+    >
       {isDeleteSupplierLoading ? <Loader /> : null}
       <PartyModal isOpen={isOpen} setIsOpen={setIsOpen} />
 
@@ -99,7 +103,7 @@ const Supplier = () => {
                 type: "add",
               });
             }}
-            className="ml-4 flex items-center text-blue-500 hover:text-blue-700"
+            className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
           >
             <PlusCircleIcon className="w-6 h-6 mr-1" />
             <span>Add Supplier</span>
@@ -129,6 +133,16 @@ const Supplier = () => {
           <p>Error fetching suppliers: {getSupplierError?.message}</p>
         ) : (
           <>
+            {isFetching ? (
+              <div className="relative bg-red-300 w-full h-full">
+                <Loader
+                  wrapperStyle={{
+                    position: "absolute",
+                    alignItems: "flex-start",
+                  }}
+                />
+              </div>
+            ) : null}
             {getSupplierData?.data?.map((item, index) => (
               <Link
                 key={index}
@@ -138,6 +152,7 @@ const Supplier = () => {
                     : "text-black hover:text-blue-500 font-normal"
                 }`}
                 href={`/dashboard/suppliers/${item?._id}`}
+                scroll={false}
               >
                 <div className="flex justify-between">
                   <span>{item?.name}</span>

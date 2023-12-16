@@ -37,9 +37,6 @@ export const customerApi = createApi({
         };
       },
       providesTags: ["customer"],
-      // forceRefetch() {
-      //   return true;
-      // },
     }),
     deleteCustomer: builder.mutation({
       query: (data) => ({

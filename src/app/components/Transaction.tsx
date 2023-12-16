@@ -73,96 +73,111 @@ const Transaction = ({ partyId }) => {
       }
     }
   }, [isDeleteTransactionSuccess]);
-  // return <Sidebar showSidebar={showSidebar} toggleSidebar={toggleSidebar} />;
   return (
-    <div className="bg-gray-100 min-h-screen flex w-1/2">
-      {isDeleteTransactionLoading ? <Loader /> : null}
-      <TransactionModal
-        partyId={partyId}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
-      <div className="flex-1 p-6">
-        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-          <h1 className="text-2xl font-bold mb-4 md:mb-0">Transaction List</h1>
-
-          <button
-            onClick={() => {
-              setIsOpen({ ...isOpen, status: true, type: "add" });
-            }}
-            className="ml-4 flex items-center text-blue-500 hover:text-blue-700"
-          >
-            <PlusCircleIcon className="w-6 h-6 mr-1" />
-            <span>Add Transaction</span>
-          </button>
-        </div>
-        {isGetTransactionLoading ? (
-          <p>Loading...</p>
-        ) : isGetTransactionError ? (
-          <p>Error: {getTransactionError?.message}</p>
-        ) : (
-          <div className="grid gap-4">
-            {getTransactionData?.data?.map((transaction, index) => (
-              <div
-                key={transaction?._id}
-                className="p-4 border rounded-md flex  flex-col"
-              >
-                <div
-                  key={index}
-                  className={`flex sm:flex-row flex-col justify-between ${
-                    transaction.type === "debit"
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }`}
-                >
-                  <p>
-                    Amount: ₹{transaction.amount} (
-                    {transaction.type === "debit" ? "You Gave" : "You Got"})
-                  </p>
-                  <div className="flex flex-row">
-                    <PencilSquareIcon
-                      onClick={() => {
-                        setIsOpen({
-                          status: true,
-                          type: "edit",
-                          value: transaction,
-                        });
-                      }}
-                      className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer mr-2"
-                    ></PencilSquareIcon>
-
-                    <TrashIcon
-                      onClick={() => {
-                        deleteTransaction(
-                          JSON.stringify({
-                            businessId: businessIdSelected,
-                            partyId,
-                            transactionId: transaction?._id,
-                            partyType: pathname.includes("customer")
-                              ? "customer"
-                              : "supplier",
-                          })
-                        );
-                      }}
-                      className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-                    />
-                  </div>
-                </div>
-                <p>Description: {transaction?.description}</p>
-                <p>
-                  Date:{" "}
-                  {transaction.date
-                    ? new Date(transaction?.date)?.toLocaleDateString()
-                    : ""}
-                </p>
-              </div>
-            ))}
-            {getTransactionData?.data?.length == 0 && <NoTransaction />}
-          </div>
-        )}
-      </div>
-    </div>
+    <Sidebar
+      isDeleteTransactionLoading={isDeleteTransactionLoading}
+      partyId={partyId}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      isGetTransactionLoading={isGetTransactionLoading}
+      deleteTransaction={deleteTransaction}
+      getTransactionData={getTransactionData}
+      businessIdSelected={businessIdSelected}
+      isGetTransactionError={isGetTransactionError}
+      getTransactionError={getTransactionError}
+      showSidebar={showSidebar}
+      toggleSidebar={toggleSidebar}
+    />
   );
+  // return (
+  //   <div className="bg-gray-100 min-h-screen flex w-1/2">
+  //     {isDeleteTransactionLoading ? <Loader /> : null}
+  //     <TransactionModal
+  //       partyId={partyId}
+  //       isOpen={isOpen}
+  //       setIsOpen={setIsOpen}
+  //     />
+  //     <div className="flex-1 p-6">
+  //       <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+  //         <h1 className="text-2xl font-bold mb-4 md:mb-0">Transaction List</h1>
+
+  //         <button
+  //           onClick={() => {
+  //             setIsOpen({ ...isOpen, status: true, type: "add" });
+  //           }}
+  //           className="ml-4 flex items-center text-blue-500 hover:text-blue-700"
+  //         >
+  //           <PlusCircleIcon className="w-6 h-6 mr-1" />
+  //           <span>Add Transaction</span>
+  //         </button>
+  //       </div>
+  //       {isGetTransactionLoading ? (
+  //         <p>Loading...</p>
+  //       ) : isGetTransactionError ? (
+  //         <p>Error: {getTransactionError?.message}</p>
+  //       ) : (
+  //         <div className="grid gap-4">
+  //           {getTransactionData?.data?.map((transaction, index) => (
+  //             <div
+  //               key={transaction?._id}
+  //               className="p-4 border rounded-md flex  flex-col"
+  //             >
+  //               <div
+  //                 key={index}
+  //                 className={`flex sm:flex-row flex-col justify-between ${
+  //                   transaction.type === "debit"
+  //                     ? "text-red-500"
+  //                     : "text-green-500"
+  //                 }`}
+  //               >
+  //                 <p>
+  //                   Amount: ₹{transaction.amount} (
+  //                   {transaction.type === "debit" ? "You Gave" : "You Got"})
+  //                 </p>
+  //                 <div className="flex flex-row">
+  //                   <PencilSquareIcon
+  //                     onClick={() => {
+  //                       setIsOpen({
+  //                         status: true,
+  //                         type: "edit",
+  //                         value: transaction,
+  //                       });
+  //                     }}
+  //                     className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer mr-2"
+  //                   ></PencilSquareIcon>
+
+  //                   <TrashIcon
+  //                     onClick={() => {
+  //                       deleteTransaction(
+  //                         JSON.stringify({
+  //                           businessId: businessIdSelected,
+  //                           partyId,
+  //                           transactionId: transaction?._id,
+  //                           partyType: pathname.includes("customer")
+  //                             ? "customer"
+  //                             : "supplier",
+  //                         })
+  //                       );
+  //                     }}
+  //                     className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+  //                   />
+  //                 </div>
+  //               </div>
+  //               <p>Description: {transaction?.description}</p>
+  //               <p>
+  //                 Date:{" "}
+  //                 {transaction.date
+  //                   ? new Date(transaction?.date)?.toLocaleDateString()
+  //                   : ""}
+  //               </p>
+  //             </div>
+  //           ))}
+  //           {getTransactionData?.data?.length == 0 && <NoTransaction />}
+  //         </div>
+  //       )}
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default Transaction;
