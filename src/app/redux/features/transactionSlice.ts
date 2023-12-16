@@ -34,6 +34,7 @@ export const transactionApi = createApi({
           params: {
             businessId: data?.businessId,
             partyId: data?.partyId,
+            page: data?.page,
           },
         };
       },

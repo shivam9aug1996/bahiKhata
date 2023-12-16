@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
+import { dashboardApi } from "../redux/features/dashboardSlice";
 
 import {
   useDeleteSupplierMutation,
@@ -21,6 +22,7 @@ import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
 // import NoParty from "./NoParty";
 // import PartyModal from "./PartyModal";
+const Pagination = dynamic(() => import("./Pagination"));
 const NoParty = dynamic(() => import("./NoParty"));
 const PartyModal = dynamic(() => import("./PartyModal"));
 
@@ -31,6 +33,7 @@ const Supplier = () => {
   );
   const dispatch = useDispatch();
   const router = useRouter();
+  const [page, setPage] = useState(1);
   const [debouncedInputValue, setDebouncedInputValue] = useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,7 +45,11 @@ const Supplier = () => {
     data: getSupplierData,
     isFetching,
   } = useGetSupplierListQuery(
-    { businessId: businessIdSelected, searchQuery: debouncedInputValue },
+    {
+      businessId: businessIdSelected,
+      searchQuery: debouncedInputValue,
+      page: page,
+    },
     { skip: !businessIdSelected }
   );
   const [
@@ -70,7 +77,7 @@ const Supplier = () => {
   );
   useEffect(() => {
     if (isDeleteSupplierSuccess) {
-      dispatch(transactionApi.util.invalidateTags(["transaction"]));
+      dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push("/dashboard/suppliers", { scroll: false });
     }
   }, [isDeleteSupplierSuccess]);
@@ -208,6 +215,11 @@ const Supplier = () => {
                 </div>
               </Link>
             ))}
+            <Pagination
+              totalPages={getSupplierData?.totalPages}
+              currentPage={page}
+              setPage={setPage}
+            />
             {getSupplierData?.data.length == 0 &&
               isGetSupplierSuccess == true &&
               debouncedInputValue === "" && (

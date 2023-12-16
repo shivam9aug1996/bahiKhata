@@ -33,6 +33,7 @@ export const supplierApi = createApi({
           params: {
             businessId: data?.businessId,
             searchQuery: data?.searchQuery,
+            page: data?.page,
           },
         };
       },

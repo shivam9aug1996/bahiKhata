@@ -6,10 +6,12 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
+import { businessApi } from "../redux/features/businessSlice";
 import {
   useCreateCustomerMutation,
   useUpdateCustomerMutation,
 } from "../redux/features/customerSlice";
+import { dashboardApi } from "../redux/features/dashboardSlice";
 import {
   useCreateSupplierMutation,
   useUpdateSupplierMutation,
@@ -123,12 +125,14 @@ export default function PartyModal({ isOpen, setIsOpen }) {
   useEffect(() => {
     if (isCreateCustomerSuccess) {
       console.log("jhgfdsdfghj", createCustomerData?.data?._id);
+      dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push(`/dashboard/customers/${createCustomerData?.data?._id}`);
     }
   }, [isCreateCustomerSuccess]);
   useEffect(() => {
     if (isCreateSupplierSuccess) {
       console.log("jhgfdsdfghj", createSupplierData?.data?._id);
+      dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push(`/dashboard/suppliers/${createSupplierData?.data?._id}`);
     }
   }, [isCreateSupplierSuccess]);

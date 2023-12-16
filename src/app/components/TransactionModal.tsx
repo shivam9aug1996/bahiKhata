@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import { customerApi } from "../redux/features/customerSlice";
+import { dashboardApi } from "../redux/features/dashboardSlice";
 import { supplierApi } from "../redux/features/supplierSlice";
 import {
   useCreateTransactionMutation,
@@ -82,8 +83,10 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     if (isCreateTransactionSuccess || isUpdateTransactionSuccess) {
       if (pathname.includes("customer")) {
         dispatch(customerApi.util.invalidateTags(["customer"]));
+        dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       } else {
         dispatch(supplierApi.util.invalidateTags(["supplier"]));
+        dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       }
 
       closeModal();

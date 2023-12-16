@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { useGetCustomerListQuery } from "../redux/features/customerSlice";
 import { useGetSupplierListQuery } from "../redux/features/supplierSlice";
+import { useGetDashboardQuery } from "../redux/features/dashboardSlice";
 
 const MainTab = () => {
   const [currentTab, setCurrentTab] = useState("customer");
@@ -24,6 +25,16 @@ const MainTab = () => {
     { skip: true }
   );
   const {
+    isSuccess: isGetDashboardSuccess,
+    isLoading: isGetDashboardLoading,
+    isError: isGetDashboardError,
+    error: getDashboardError,
+    data: getDashboardData,
+  } = useGetDashboardQuery(
+    { businessId: businessIdSelected },
+    { skip: !businessIdSelected }
+  );
+  const {
     isSuccess: isGetSupplierSuccess,
     isLoading: isGetSupplierLoading,
     isError: isGetSupplierError,
@@ -31,7 +42,7 @@ const MainTab = () => {
     data: getSupplierData,
   } = useGetSupplierListQuery(
     { businessId: businessIdSelected, searchQuery: "" },
-    { skip: !businessIdSelected }
+    { skip: true }
   );
   const pathname = usePathname();
   const isActive = (tabName) => {
@@ -50,8 +61,8 @@ const MainTab = () => {
             href="/dashboard/customers"
           >
             {`Customer ${
-              getCustomerData?.data?.length >= 0
-                ? `(${getCustomerData?.data?.length})`
+              getDashboardData?.totalCustomers >= 0
+                ? `(${getDashboardData?.totalCustomers})`
                 : ""
             } `}
           </Link>
@@ -62,8 +73,8 @@ const MainTab = () => {
             href="/dashboard/suppliers"
           >
             {`Supplier ${
-              getSupplierData?.data?.length >= 0
-                ? `(${getSupplierData?.data?.length})`
+              getDashboardData?.totalSuppliers >= 0
+                ? `(${getDashboardData?.totalSuppliers})`
                 : ""
             } `}
           </Link>

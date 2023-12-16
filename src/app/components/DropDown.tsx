@@ -17,6 +17,7 @@ import {
   customerApi,
   useGetCustomerListQuery,
 } from "../redux/features/customerSlice";
+import { useGetDashboardQuery } from "../redux/features/dashboardSlice";
 import {
   supplierApi,
   useGetSupplierListQuery,
@@ -53,6 +54,16 @@ const DropDown = ({
     { skip: true }
   );
   const {
+    isSuccess: isGetDashboardSuccess,
+    isLoading: isGetDashboardLoading,
+    isError: isGetDashboardError,
+    error: getDashboardError,
+    data: getDashboardData,
+  } = useGetDashboardQuery(
+    { businessId: businessIdSelected },
+    { skip: !businessIdSelected }
+  );
+  const {
     isSuccess: isGetSupplierSuccess,
     isLoading: isGetSupplierLoading,
     isError: isGetSupplierError,
@@ -60,7 +71,7 @@ const DropDown = ({
     data: getSupplierData,
   } = useGetSupplierListQuery(
     { businessId: businessIdSelected, searchQuery: "" },
-    { skip: !businessIdSelected }
+    { skip: true }
   );
   const [
     deleteBusiness,
@@ -125,41 +136,47 @@ const DropDown = ({
   //   [getCustomerData?.data, isGetCustomerSuccess]
   // );
 
-  const positiveCustomerSum = (getCustomerData?.data || []).reduce(
-    (accumulator, currentValue) => {
-      return (
-        accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
-      );
-    },
-    0
-  );
+  // const positiveCustomerSum = (getCustomerData?.data || []).reduce(
+  //   (accumulator, currentValue) => {
+  //     return (
+  //       accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
+  //     );
+  //   },
+  //   0
+  // );
 
-  const negativeCustomerSum = (getCustomerData?.data || []).reduce(
-    (accumulator, currentValue) => {
-      return (
-        accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
-      );
-    },
-    0
-  );
+  // const negativeCustomerSum = (getCustomerData?.data || []).reduce(
+  //   (accumulator, currentValue) => {
+  //     return (
+  //       accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
+  //     );
+  //   },
+  //   0
+  // );
 
-  const positiveSupplierSum = (getSupplierData?.data || []).reduce(
-    (accumulator, currentValue) => {
-      return (
-        accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
-      );
-    },
-    0
-  );
+  // const positiveSupplierSum = (getSupplierData?.data || []).reduce(
+  //   (accumulator, currentValue) => {
+  //     return (
+  //       accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
+  //     );
+  //   },
+  //   0
+  // );
 
-  const negativeSupplierSum = (getSupplierData?.data || []).reduce(
-    (accumulator, currentValue) => {
-      return (
-        accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
-      );
-    },
-    0
-  );
+  // const negativeSupplierSum = (getSupplierData?.data || []).reduce(
+  //   (accumulator, currentValue) => {
+  //     return (
+  //       accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
+  //     );
+  //   },
+  //   0
+  // );
+  const {
+    customerNegativeBalance = 0,
+    customerPositiveBalance = 0,
+    supplierNegativeBalance = 0,
+    supplierPositiveBalance = 0,
+  } = getDashboardData || {};
 
   // const customerSum = (getCustomerData?.data || []).reduce(
   //   (accumulator, currentValue) => {
@@ -207,7 +224,7 @@ const DropDown = ({
     });
     return data?.name || "Select a business";
   };
-
+  console.log("hgfdsdfghjk", getDashboardData);
   return (
     <div>
       {isDeleteBusinessLoading ? <Loader /> : null}
@@ -336,10 +353,10 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              You will give: ₹{positiveCustomerSum}
+              You will give: ₹{customerPositiveBalance}
             </span>
             <span className="text-red-500">
-              You will get: ₹{Math.abs(negativeCustomerSum)}
+              You will get: ₹{Math.abs(customerNegativeBalance)}
             </span>
           </div>
         </div>
@@ -349,10 +366,10 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              You will give: ₹{positiveSupplierSum}
+              You will give: ₹{supplierPositiveBalance}
             </span>
             <span className="text-red-500">
-              You will get: ₹{Math.abs(negativeSupplierSum)}
+              You will get: ₹{Math.abs(supplierNegativeBalance)}
             </span>
           </div>
         </div>

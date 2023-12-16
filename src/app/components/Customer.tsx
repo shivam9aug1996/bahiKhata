@@ -8,7 +8,7 @@ import {
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
@@ -17,9 +17,11 @@ import {
   useDeleteCustomerMutation,
   useGetCustomerListQuery,
 } from "../redux/features/customerSlice";
+import { dashboardApi } from "../redux/features/dashboardSlice";
 import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
-//const NoParty = lazy(() => import("./NoParty"));
+
+const Pagination = dynamic(() => import("./Pagination"));
 
 const NoParty = dynamic(() => import("./NoParty"));
 const PartyModal = dynamic(() => import("./PartyModal"));
@@ -31,13 +33,17 @@ const Customer = () => {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
+  const customerList = useSelector(
+    (state) => state?.customer?.customerList || []
+  );
+  console.log("kjhgfghjkgfghjkl", customerList);
   const containerRef = useRef(null);
 
   const dispatch = useDispatch();
 
   const router = useRouter();
   const [debouncedInputValue, setDebouncedInputValue] = useState("");
-
+  const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const {
     isSuccess: isGetCustomerSuccess,
@@ -47,7 +53,11 @@ const Customer = () => {
     data: getCustomerData,
     isFetching,
   } = useGetCustomerListQuery(
-    { businessId: businessIdSelected, searchQuery: debouncedInputValue },
+    {
+      businessId: businessIdSelected,
+      searchQuery: debouncedInputValue,
+      page: page,
+    },
     { skip: !businessIdSelected }
   );
   const [
@@ -74,30 +84,18 @@ const Customer = () => {
     isDeleteCustomerSuccess
   );
 
-  // useEffect(() => {
-  //   if (
-  //     isGetCustomerSuccess &&
-  //     getCustomerData?.currentPage < getCustomerData?.totalPages
-  //   ) {
-  //     console.log(
-  //       "jhgfghjkl",
-  //       getCustomerData?.currentPage < getCustomerData?.totalPages,
-  //       getCustomerData
-  //     );
-  //     setPage((page) => ({
-  //       ...page,
-  //       currentPage: getCustomerData?.currentPage,
-  //       totalPages: getCustomerData?.totalPages,
-  //     }));
-  //     setAllData([...allData, ...getCustomerData?.data]);
-  //   }
-  // }, [isGetCustomerSuccess, getCustomerData?.data]);
   useEffect(() => {
     if (isDeleteCustomerSuccess) {
-      dispatch(transactionApi.util.invalidateTags(["transaction"]));
+      dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push("/dashboard/customers", { scroll: false });
     }
   }, [isDeleteCustomerSuccess]);
+
+  useEffect(() => {
+    if (businessIdSelected) {
+      setSearchQuery("");
+    }
+  }, [businessIdSelected]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -105,64 +103,6 @@ const Customer = () => {
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [searchQuery, 500]);
-
-  // const handleScroll = () => {
-  //   const container = containerRef?.current;
-
-  //   if (container) {
-  //     const { scrollTop, clientHeight, scrollHeight } = container;
-
-  //     // Check if you've reached the bottom of the container
-  //     if (scrollTop + clientHeight >= scrollHeight) {
-  //       console.log(getCustomerData, page);
-
-  //       if (getCustomerData.currentPage < getCustomerData.totalPages) {
-  //         setPage((page) => ({
-  //           ...page,
-  //           currentPage: getCustomerData.currentPage + 1,
-  //           totalPages: getCustomerData.totalPages,
-  //         }));
-  //       }
-
-  //       console.log("Reached the bottom of the container!");
-  //       // Add logic here when you've reached the bottom
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const container = containerRef?.current;
-
-  //   if (container) {
-  //     container.addEventListener("scroll", handleScroll);
-  //   }
-
-  //   return () => {
-  //     if (container) {
-  //       container.removeEventListener("scroll", handleScroll);
-  //     }
-  //   };
-  // }, [page.totalPages]);
-
-  // useEffect(() => {
-  //   if (
-  //     isGetCustomerError ||
-  //     isDeleteCustomerError ||
-  //     getCustomerError?.error ||
-  //     deleteCustomerError?.error
-  //   ) {
-  //     toast.error(
-  //       JSON.stringify(
-  //         getCustomerError?.error || deleteCustomerError?.error
-  //       )?.substring(0, 50) || "Something went wrong"
-  //     );
-  //   }
-  // }, [
-  //   isGetCustomerError,
-  //   getCustomerError?.error,
-  //   isDeleteCustomerError,
-  //   deleteCustomerError?.error,
-  // ]);
 
   return (
     <div
@@ -229,6 +169,7 @@ const Customer = () => {
                 />
               </div>
             ) : null}
+
             {getCustomerData?.data?.map((item, index) => (
               <Link
                 key={index}
@@ -294,6 +235,11 @@ const Customer = () => {
                 </div>
               </Link>
             ))}
+            <Pagination
+              totalPages={getCustomerData?.totalPages}
+              currentPage={page}
+              setPage={setPage}
+            />
             {getCustomerData?.data.length == 0 &&
               isGetCustomerSuccess == true &&
               debouncedInputValue === "" && (

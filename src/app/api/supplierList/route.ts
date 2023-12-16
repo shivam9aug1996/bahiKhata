@@ -54,12 +54,18 @@ export async function GET(req, res) {
     // Retrieve all businesses
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
     const searchQuery = new URL(req.url)?.searchParams?.get("searchQuery");
+    const page = parseInt(new URL(req.url)?.searchParams?.get("page") || "1");
+    const limit = parseInt(
+      new URL(req.url)?.searchParams?.get("limit") || "10"
+    );
+    const skip = (page - 1) * limit;
 
     // const { businessId } = await req.json();
     const db = await connectDB();
     console.log("mjhgf", businessId);
     try {
       let result;
+      let totalSuppliers;
       if (searchQuery) {
         result = await db
           .collection("suppliers")
@@ -73,18 +79,39 @@ export async function GET(req, res) {
             ],
           })
           .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
           .toArray();
+        totalSuppliers = await db
+          .collection("suppliers")
+          .find({
+            businessId,
+            $or: [
+              { name: { $regex: searchQuery, $options: "i" } },
+              { mobileNumber: { $regex: searchQuery, $options: "i" } },
+            ],
+          })
+          .count();
       } else {
         result = await db
           .collection("suppliers")
           .find({ businessId })
           .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
           .toArray();
+        totalSuppliers = await db
+          .collection("suppliers")
+          .find({ businessId })
+          .count();
       }
 
       console.log(result);
-
-      return NextResponse.json({ data: result }, { status: 200 });
+      const totalPages = Math.ceil(totalSuppliers / limit);
+      return NextResponse.json(
+        { data: result, totalPages, currentPage: page },
+        { status: 200 }
+      );
     } catch (error) {
       return NextResponse.json(
         { message: "Something went wrong" },

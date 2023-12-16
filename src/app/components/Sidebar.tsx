@@ -5,10 +5,12 @@ import {
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { usePathname, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 import Loader from "./Loader";
-import NoTransaction from "./NoTransaction";
-import TransactionModal from "./TransactionModal";
+const Pagination = dynamic(() => import("./Pagination"));
+const TransactionModal = dynamic(() => import("./TransactionModal"));
+const NoTransaction = dynamic(() => import("./NoTransaction"));
 
 const Sidebar = ({
   showSidebar,
@@ -23,6 +25,8 @@ const Sidebar = ({
   businessIdSelected,
   isGetTransactionError,
   getTransactionError,
+  page,
+  setPage,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -156,6 +160,11 @@ const Sidebar = ({
                     </p>
                   </div>
                 ))}
+                <Pagination
+                  totalPages={getTransactionData?.totalPages}
+                  currentPage={page}
+                  setPage={setPage}
+                />
                 {getTransactionData?.data?.length == 0 && <NoTransaction />}
               </div>
             )}

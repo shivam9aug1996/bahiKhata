@@ -6,6 +6,7 @@ export const customerApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "/api",
   }),
+
   tagTypes: ["customer"],
   endpoints: (builder) => ({
     createCustomer: builder.mutation({
@@ -33,6 +34,7 @@ export const customerApi = createApi({
           params: {
             businessId: data?.businessId,
             searchQuery: data?.searchQuery,
+            page: data?.page,
           },
         };
       },
@@ -90,9 +92,14 @@ const customerSlice = createSlice({
     builder.addMatcher(
       customerApi.endpoints.getCustomerList.matchFulfilled,
       (state, action) => {
-        console.log(action.payload.data);
-        state.customerList = action.payload.data;
-        // state.triggerGetCustomerApi = true;
+        // If it's the first page, replace the data; otherwise, append it
+        console.log("kjuhytrdfghjkl;", action);
+        if (action?.meta?.arg?.originalArgs?.page === 1) {
+          console.log("iuytrfghjkjhgfghjkl");
+          state.customerList = action.payload.data; // Replace data for page 1
+        } else {
+          state.customerList = [...state.customerList, ...action.payload.data]; // Append new data
+        }
       }
     );
     // builder.addMatcher(

@@ -104,16 +104,32 @@ export async function GET(req, res) {
     // Retrieve all businesses
     const businessId = new URL(req.url).searchParams.get("businessId");
     const partyId = new URL(req.url).searchParams.get("partyId");
+    const page = parseInt(new URL(req.url)?.searchParams?.get("page") || "1");
+    const limit = parseInt(
+      new URL(req.url)?.searchParams?.get("limit") || "10"
+    );
     // const { businessId } = await req.json();
     const db = await connectDB();
     console.log("mjhgf", businessId);
+    const skip = (page - 1) * limit;
     try {
+      let totalTransactions;
       const transactions = await db
         .collection("transactions")
         .find({ businessId, partyId })
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
         .toArray();
-      return NextResponse.json({ data: transactions }, { status: 200 });
+      totalTransactions = await db
+        .collection("transactions")
+        .find({ businessId, partyId })
+        .count();
+      const totalPages = Math.ceil(totalTransactions / limit);
+      return NextResponse.json(
+        { data: transactions, totalPages, currentPage: page },
+        { status: 200 }
+      );
     } catch (error) {
       return NextResponse.json(
         { message: "Something went wrong" },
