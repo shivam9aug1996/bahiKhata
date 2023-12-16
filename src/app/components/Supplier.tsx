@@ -161,40 +161,44 @@ const Supplier = () => {
               </div>
             ) : null}
             {getSupplierData?.data?.map((item, index) => (
-              <Link
-                key={index}
-                className={`block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
-                  pathname.includes(item._id)
-                    ? "text-blue-500 bg-blue-100 font-semibold"
-                    : "text-black hover:text-blue-500 font-normal"
-                }`}
-                href={`/dashboard/suppliers/${item?._id}`}
-                scroll={false}
-              >
-                <div className="flex justify-between">
-                  <span>{item?.name}</span>
-                  <div className="flex flex-col items-end">
-                    <div>
-                      {item.balance > 0
-                        ? "You will give"
-                        : item.balance < 0
-                        ? "You will get"
-                        : ""}{" "}
-                    </div>
-                    <div
-                      className={`ml-2 ${
-                        item.balance > 0
-                          ? "text-green-500"
+              <div className="relative">
+                <Link
+                  key={index}
+                  className={`block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
+                    pathname.includes(item._id)
+                      ? "text-blue-500 bg-blue-100 font-semibold"
+                      : "text-black hover:text-blue-500 font-normal"
+                  }`}
+                  href={`/dashboard/suppliers/${item?._id}`}
+                  scroll={false}
+                >
+                  <div className="flex justify-between">
+                    <span>{item?.name}</span>
+                    <div className="flex flex-col items-end">
+                      <div>
+                        {item.balance > 0
+                          ? "You will give"
                           : item.balance < 0
-                          ? "text-red-500"
-                          : ""
-                      }`}
-                    >
-                      ₹{Math.abs(item.balance)}
+                          ? "You will get"
+                          : ""}{" "}
+                      </div>
+                      {item.balance == 0 && <div className="h-6"></div>}
+                      <div
+                        className={`ml-2 ${
+                          item.balance > 0
+                            ? "text-green-500"
+                            : item.balance < 0
+                            ? "text-red-500"
+                            : ""
+                        }`}
+                      >
+                        ₹{Math.abs(item.balance)}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-row">
+                  <div className="h-5"></div>
+                </Link>
+                <div className="flex flex-row absolute bottom-0 p-4">
                   <PencilSquareIcon
                     onClick={(e) => {
                       e.stopPropagation();
@@ -223,7 +227,7 @@ const Supplier = () => {
                     className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                   />
                 </div>
-              </Link>
+              </div>
             ))}
 
             {getSupplierData?.data.length == 0 &&
