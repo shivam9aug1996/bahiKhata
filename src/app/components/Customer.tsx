@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
+import { useGetBusinessListQuery } from "../redux/features/businessSlice";
 import {
   useDeleteCustomerMutation,
   useGetCustomerListQuery,
@@ -20,6 +21,7 @@ import {
 import { dashboardApi } from "../redux/features/dashboardSlice";
 import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
+import PartySkeleton from "./PartySkeleton";
 
 const Pagination = dynamic(() => import("./Pagination"));
 
@@ -60,6 +62,13 @@ const Customer = () => {
     },
     { skip: !businessIdSelected }
   );
+  const {
+    isSuccess: isGetBusinessSuccess,
+    isLoading: isGetBusinessLoading,
+    isError: isGetBusinessError,
+    error: getBusinessError,
+    data: getBusinessData,
+  } = useGetBusinessListQuery();
   const [
     deleteCustomer,
     {
@@ -118,13 +127,16 @@ const Customer = () => {
           <div className="text-2xl font-bold mb-4 md:mb-0">Customer List</div>
 
           <button
-            disabled={!isGetCustomerSuccess}
             onClick={() => {
-              setIsOpen({
-                ...isOpen,
-                status: true,
-                type: "add",
-              });
+              if (businessIdSelected) {
+                setIsOpen({
+                  ...isOpen,
+                  status: true,
+                  type: "add",
+                });
+              } else {
+                toast.error("Create business first");
+              }
             }}
             className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
           >
@@ -147,11 +159,15 @@ const Customer = () => {
             </span>
           </div>
         ) : null}
+        {!businessIdSelected && isGetBusinessSuccess ? (
+          <p>No business exists</p>
+        ) : null}
+        {!businessIdSelected && isGetBusinessLoading ? <PartySkeleton /> : null}
         {getCustomerData?.data?.length == 0 && debouncedInputValue !== "" ? (
           <p>No customers found matching your search.</p>
         ) : null}
         {isGetCustomerLoading ? (
-          <p>Loading...</p>
+          <PartySkeleton />
         ) : isGetCustomerError ? (
           <p>
             Error fetching customers:{" "}

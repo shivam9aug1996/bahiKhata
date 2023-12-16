@@ -9,10 +9,13 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
+import { useGetBusinessListQuery } from "../redux/features/businessSlice";
 import { dashboardApi } from "../redux/features/dashboardSlice";
+import Skeleton from "react-loading-skeleton";
 
 import {
   useDeleteSupplierMutation,
@@ -20,6 +23,7 @@ import {
 } from "../redux/features/supplierSlice";
 import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
+import PartySkeleton from "./PartySkeleton";
 // import NoParty from "./NoParty";
 // import PartyModal from "./PartyModal";
 const Pagination = dynamic(() => import("./Pagination"));
@@ -62,6 +66,13 @@ const Supplier = () => {
       data: deleteSupplierData,
     },
   ] = useDeleteSupplierMutation();
+  const {
+    isSuccess: isGetBusinessSuccess,
+    isLoading: isGetBusinessLoading,
+    isError: isGetBusinessError,
+    error: getBusinessError,
+    data: getBusinessData,
+  } = useGetBusinessListQuery();
   let [isOpen, setIsOpen] = useState({
     status: false,
     type: "",
@@ -102,13 +113,16 @@ const Supplier = () => {
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="text-2xl font-bold mb-4 md:mb-0">Supplier List</div>
           <button
-            disabled={!isGetSupplierSuccess}
             onClick={() => {
-              setIsOpen({
-                ...isOpen,
-                status: true,
-                type: "add",
-              });
+              if (businessIdSelected) {
+                setIsOpen({
+                  ...isOpen,
+                  status: true,
+                  type: "add",
+                });
+              } else {
+                toast.error("Create business first");
+              }
             }}
             className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
           >
@@ -131,11 +145,17 @@ const Supplier = () => {
             </span>
           </div>
         ) : null}
+        {!businessIdSelected && isGetBusinessSuccess ? (
+          <p>No business exists</p>
+        ) : null}
+        {!businessIdSelected && isGetBusinessLoading ? <PartySkeleton /> : null}
         {getSupplierData?.data?.length == 0 && debouncedInputValue !== "" ? (
           <p>No supplier found matching your search.</p>
         ) : null}
         {isGetSupplierLoading ? (
-          <p>Loading...</p>
+          <>
+            <PartySkeleton />
+          </>
         ) : isGetSupplierError ? (
           <p>Error fetching suppliers: {getSupplierError?.message}</p>
         ) : (
