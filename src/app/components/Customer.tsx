@@ -159,7 +159,7 @@ const Customer = () => {
           </p>
         ) : (
           <>
-            {isFetching ? (
+            {/* {isFetching ? (
               <div className="relative bg-red-300 w-full h-full">
                 <Loader
                   wrapperStyle={{
@@ -168,8 +168,17 @@ const Customer = () => {
                   }}
                 />
               </div>
+            ) : null} */}
+            <Pagination
+              totalPages={getCustomerData?.totalPages}
+              currentPage={page}
+              setPage={setPage}
+            />
+            {isFetching ? (
+              <div className="relative">
+                <Loader wrapperStyle={{ position: "absolute", top: 20 }} />
+              </div>
             ) : null}
-
             {getCustomerData?.data?.map((item, index) => (
               <Link
                 key={index}
@@ -235,11 +244,7 @@ const Customer = () => {
                 </div>
               </Link>
             ))}
-            <Pagination
-              totalPages={getCustomerData?.totalPages}
-              currentPage={page}
-              setPage={setPage}
-            />
+
             {getCustomerData?.data.length == 0 &&
               isGetCustomerSuccess == true &&
               debouncedInputValue === "" && (

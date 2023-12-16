@@ -140,7 +140,7 @@ const Supplier = () => {
           <p>Error fetching suppliers: {getSupplierError?.message}</p>
         ) : (
           <>
-            {isFetching ? (
+            {/* {isFetching ? (
               <div className="relative bg-red-300 w-full h-full">
                 <Loader
                   wrapperStyle={{
@@ -148,6 +148,16 @@ const Supplier = () => {
                     alignItems: "flex-start",
                   }}
                 />
+              </div>
+            ) : null} */}
+            <Pagination
+              totalPages={getSupplierData?.totalPages}
+              currentPage={page}
+              setPage={setPage}
+            />
+            {isFetching ? (
+              <div className="relative">
+                <Loader wrapperStyle={{ position: "absolute", top: 20 }} />
               </div>
             ) : null}
             {getSupplierData?.data?.map((item, index) => (
@@ -215,11 +225,7 @@ const Supplier = () => {
                 </div>
               </Link>
             ))}
-            <Pagination
-              totalPages={getSupplierData?.totalPages}
-              currentPage={page}
-              setPage={setPage}
-            />
+
             {getSupplierData?.data.length == 0 &&
               isGetSupplierSuccess == true &&
               debouncedInputValue === "" && (

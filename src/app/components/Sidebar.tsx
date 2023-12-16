@@ -27,6 +27,7 @@ const Sidebar = ({
   getTransactionError,
   page,
   setPage,
+  isFetching,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -105,6 +106,12 @@ const Sidebar = ({
               <p>Error: {getTransactionError?.message}</p>
             ) : (
               <div className="grid gap-4">
+                <Pagination
+                  totalPages={getTransactionData?.totalPages}
+                  currentPage={page}
+                  setPage={setPage}
+                />
+                {isFetching && <Loader />}
                 {getTransactionData?.data?.map((transaction, index) => (
                   <div
                     key={transaction?._id}
@@ -160,11 +167,7 @@ const Sidebar = ({
                     </p>
                   </div>
                 ))}
-                <Pagination
-                  totalPages={getTransactionData?.totalPages}
-                  currentPage={page}
-                  setPage={setPage}
-                />
+
                 {getTransactionData?.data?.length == 0 && <NoTransaction />}
               </div>
             )}

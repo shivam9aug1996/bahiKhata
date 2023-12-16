@@ -33,6 +33,7 @@ const Transaction = ({ partyId }) => {
     isError: isGetTransactionError,
     error: getTransactionError,
     data: getTransactionData,
+    isFetching,
   } = useGetTransactionListQuery(
     {
       businessId: businessIdSelected,
@@ -90,6 +91,7 @@ const Transaction = ({ partyId }) => {
       toggleSidebar={toggleSidebar}
       page={page}
       setPage={setPage}
+      isFetching={isFetching}
     />
   );
 };
