@@ -13,7 +13,10 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
-import { useGetBusinessListQuery } from "../redux/features/businessSlice";
+import {
+  setSelectedCustomer,
+  useGetBusinessListQuery,
+} from "../redux/features/businessSlice";
 import { dashboardApi } from "../redux/features/dashboardSlice";
 import Skeleton from "react-loading-skeleton";
 
@@ -188,6 +191,7 @@ const Supplier = () => {
             {getSupplierData?.data?.map((item, index) => (
               <div className="relative">
                 <Link
+                  onClick={() => dispatch(setSelectedCustomer(item))}
                   key={index}
                   className={`block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
                     pathname.includes(item._id)
