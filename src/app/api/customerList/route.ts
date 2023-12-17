@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
-import { invalidateCache } from "../lib/dashboardCacheData";
+import { invalidateCache } from "../businessList/dashboard/route";
+
 import { connectDB } from "../lib/dbconnection";
 
 export async function POST(req, res) {
