@@ -7,7 +7,7 @@ let cachedData = {};
 export async function GET(req, res) {
   if (req.method === "GET") {
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
-
+    console.log("jhgfert6y7890987654567890", businessId, cachedData);
     try {
       // Check if data is already cached
       if (cachedData[businessId]) {
@@ -88,6 +88,6 @@ const getBalanceSum = (data = [], balanceType) => {
 };
 
 export function invalidateCache(businessId) {
-  console.log("jhgfdfghjkl");
+  console.log("jhgfdfghjkl", cachedData, businessId);
   delete cachedData[businessId];
 }
