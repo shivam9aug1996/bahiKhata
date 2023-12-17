@@ -232,7 +232,7 @@ export async function DELETE(req, res) {
           { status: 404 }
         );
       }
-
+      invalidateCache(businessId);
       // Delete customer and their corresponding transactions
       const deleteCustomerResult = await db
         .collection("customers")
@@ -243,7 +243,6 @@ export async function DELETE(req, res) {
         .deleteMany({ partyId: customerId, businessId });
 
       if (deleteCustomerResult.deletedCount === 1) {
-        invalidateCache(businessId);
         return NextResponse.json(
           {
             message:
