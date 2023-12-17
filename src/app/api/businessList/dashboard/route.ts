@@ -8,11 +8,11 @@ export async function GET(req, res) {
     let cachedData = getFromCache(businessId);
     console.log("000000000S", cachedData);
     // Check if the cached data exists for the specific businessId
-    if (cachedData) {
-      console.log("87654567ughj", cachedData);
-      // Return the cached data if available
-      return NextResponse.json(cachedData, { status: 200 });
-    }
+    // if (cachedData) {
+    //   console.log("87654567ughj", cachedData);
+    //   // Return the cached data if available
+    //   return NextResponse.json(cachedData, { status: 200 });
+    // }
 
     // If no cached data exists, perform database operations
     const db = await connectDB();
