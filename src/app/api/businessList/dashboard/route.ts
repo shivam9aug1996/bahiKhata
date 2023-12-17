@@ -9,14 +9,14 @@ import { connectDB } from "../../lib/dbconnection";
 export async function GET(req, res) {
   if (req.method === "GET") {
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
-    let cachedData = getFromCache(businessId);
+    // let cachedData = getFromCache(businessId);
 
-    // Check if the cached data exists for the specific businessId
-    if (!isObjectEmpty(cachedData)) {
-      console.log("87654567ughj", cachedData);
-      // Return the cached data if available
-      return NextResponse.json(cachedData, { status: 200 });
-    }
+    // // Check if the cached data exists for the specific businessId
+    // if (!isObjectEmpty(cachedData)) {
+    //   console.log("87654567ughj", cachedData);
+    //   // Return the cached data if available
+    //   return NextResponse.json(cachedData, { status: 200 });
+    // }
 
     // If no cached data exists, perform database operations
     const db = await connectDB();
@@ -58,7 +58,7 @@ export async function GET(req, res) {
         supplierNegativeBalance,
       };
 
-      setToCache(businessId, aggregatedData); // Cache the data
+      //setToCache(businessId, aggregatedData); // Cache the data
 
       // Return the aggregated data
       return NextResponse.json(aggregatedData, { status: 200 });
