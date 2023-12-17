@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
+import { invalidateCache } from "../lib/dashboardCacheData";
 import { connectDB } from "../lib/dbconnection";
 
 export async function POST(req, res) {
@@ -20,7 +21,7 @@ export async function POST(req, res) {
       const result = await db
         .collection("suppliers")
         .insertOne({ businessId, name, mobileNumber, balance, createdAt });
-
+      invalidateCache(businessId);
       return NextResponse.json(
         {
           message: "Supplier created successfully",
@@ -241,6 +242,7 @@ export async function DELETE(req, res) {
         .deleteMany({ partyId: supplierId, businessId });
 
       if (deleteSupplierResult.deletedCount === 1) {
+        invalidateCache(businessId);
         return NextResponse.json(
           {
             message:

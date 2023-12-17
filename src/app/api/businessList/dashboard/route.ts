@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
+import { getFromCache, setToCache } from "../../lib/dashboardCacheData";
 import { connectDB } from "../../lib/dbconnection";
 
 export async function GET(req, res) {
   if (req.method === "GET") {
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
-    // Connect to the database and perform necessary operations
+    let cachedData = getFromCache(businessId);
+    console.log("000000000S", cachedData);
+    // Check if the cached data exists for the specific businessId
+    if (cachedData) {
+      console.log("87654567ughj", cachedData);
+      // Return the cached data if available
+      return NextResponse.json(cachedData, { status: 200 });
+    }
+
+    // If no cached data exists, perform database operations
     const db = await connectDB();
 
     try {
-      // Retrieve total count of customers and suppliers based on businessId
       const totalCustomers = await db
         .collection("customers")
         .find({ businessId })
@@ -36,19 +45,19 @@ export async function GET(req, res) {
 
       const supplierPositiveBalance = getBalanceSum(suppliers, "positive");
       const supplierNegativeBalance = getBalanceSum(suppliers, "negative");
+      const aggregatedData = {
+        totalCustomers,
+        totalSuppliers,
+        customerPositiveBalance,
+        customerNegativeBalance,
+        supplierPositiveBalance,
+        supplierNegativeBalance,
+      };
+
+      setToCache(businessId, aggregatedData); // Cache the data
 
       // Return the aggregated data
-      return NextResponse.json(
-        {
-          totalCustomers,
-          totalSuppliers,
-          customerPositiveBalance,
-          customerNegativeBalance,
-          supplierPositiveBalance,
-          supplierNegativeBalance,
-        },
-        { status: 200 }
-      );
+      return NextResponse.json(aggregatedData, { status: 200 });
     } catch (error) {
       return NextResponse.json(
         { message: "Something went wrong" },
