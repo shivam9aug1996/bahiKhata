@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
-import { getFromCache, setToCache } from "../../lib/dashboardCacheData";
+import {
+  getFromCache,
+  isObjectEmpty,
+  setToCache,
+} from "../../lib/dashboardCacheData";
 import { connectDB } from "../../lib/dbconnection";
 
 export async function GET(req, res) {
   if (req.method === "GET") {
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
     let cachedData = getFromCache(businessId);
-    console.log("000000000S", cachedData);
+
     // Check if the cached data exists for the specific businessId
-    if (cachedData) {
+    if (!isObjectEmpty(cachedData)) {
       console.log("87654567ughj", cachedData);
       // Return the cached data if available
       return NextResponse.json(cachedData, { status: 200 });
