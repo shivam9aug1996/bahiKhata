@@ -23,6 +23,7 @@ import {
   supplierApi,
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
+import { formatNumberOrStringWithFallback } from "../utils/function";
 
 const BusinessModal = dynamic(() => import("./BusinessModal"));
 import Loader from "./Loader";
@@ -352,11 +353,14 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              You will give: ₹{customerPositiveBalance?.toLocaleString()}
+              You will give: ₹
+              {formatNumberOrStringWithFallback(customerPositiveBalance)}
             </span>
             <span className="text-red-500">
               You will get: ₹
-              {Math.abs(customerNegativeBalance)?.toLocaleString()}
+              {formatNumberOrStringWithFallback(
+                Math.abs(customerNegativeBalance)
+              )}
             </span>
           </div>
         </div>
@@ -366,11 +370,14 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              You will give: ₹{supplierPositiveBalance?.toLocaleString()}
+              You will give: ₹
+              {formatNumberOrStringWithFallback(supplierPositiveBalance)}
             </span>
             <span className="text-red-500">
               You will get: ₹
-              {Math.abs(supplierNegativeBalance)?.toLocaleString()}
+              {formatNumberOrStringWithFallback(
+                Math.abs(supplierNegativeBalance)
+              )}
             </span>
           </div>
         </div>

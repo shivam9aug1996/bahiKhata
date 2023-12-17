@@ -20,6 +20,7 @@ import {
 } from "../redux/features/customerSlice";
 import { dashboardApi } from "../redux/features/dashboardSlice";
 import { transactionApi } from "../redux/features/transactionSlice";
+import { formatNumberOrStringWithFallback } from "../utils/function";
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
 
@@ -220,7 +221,10 @@ const Customer = () => {
                             : ""
                         }`}
                       >
-                        ₹{Math.abs(item.balance)?.toLocaleString()}
+                        ₹
+                        {formatNumberOrStringWithFallback(
+                          Math.abs(item.balance)
+                        )}
                       </div>
                     </div>
                   </div>

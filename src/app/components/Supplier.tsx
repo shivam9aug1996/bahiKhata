@@ -24,6 +24,7 @@ import {
 import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
+import { formatNumberOrStringWithFallback } from "../utils/function";
 // import NoParty from "./NoParty";
 // import PartyModal from "./PartyModal";
 const Pagination = dynamic(() => import("./Pagination"));
@@ -216,7 +217,10 @@ const Supplier = () => {
                             : ""
                         }`}
                       >
-                        ₹{Math.abs(item.balance)?.toLocaleString()}
+                        ₹
+                        {formatNumberOrStringWithFallback(
+                          Math.abs(item.balance)
+                        )}
                       </div>
                     </div>
                   </div>

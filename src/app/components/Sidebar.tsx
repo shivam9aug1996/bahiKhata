@@ -10,6 +10,7 @@ import React, { useEffect } from "react";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
 import Link from "next/link";
+import { formatNumberOrStringWithFallback } from "../utils/function";
 const Pagination = dynamic(() => import("./Pagination"));
 const TransactionModal = dynamic(() => import("./TransactionModal"));
 const NoTransaction = dynamic(() => import("./NoTransaction"));
@@ -130,11 +131,8 @@ const Sidebar = ({
                     >
                       <p>
                         Amount: ₹
-                        {transaction?.amount
-                          ? Number(transaction?.amount)?.toLocaleString()
-                          : 0}{" "}
-                        ({transaction.type === "debit" ? "You Gave" : "You Got"}
-                        )
+                        {formatNumberOrStringWithFallback(transaction?.amount)}(
+                        {transaction.type === "debit" ? "You Gave" : "You Got"})
                       </p>
                       <div className="flex flex-row">
                         <PencilSquareIcon
