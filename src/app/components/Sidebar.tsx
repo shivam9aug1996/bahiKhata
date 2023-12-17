@@ -1,4 +1,5 @@
 import {
+  AdjustmentsHorizontalIcon,
   PencilSquareIcon,
   PlusCircleIcon,
   TrashIcon,
@@ -6,11 +7,21 @@ import {
 } from "@heroicons/react/20/solid";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
 import Link from "next/link";
-import { formatNumberOrStringWithFallback } from "../utils/function";
+import {
+  countNonEmptyKeys,
+  formatNumberOrStringWithFallback,
+} from "../utils/function";
+import TransactionFilterModal from "./TransactionFilterModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getSelectedCustomer } from "../redux/features/businessSlice";
+import Skeleton from "react-loading-skeleton";
+import { useRef } from "react";
+import generatePDF, { Margin } from "react-to-pdf";
+
 const Pagination = dynamic(() => import("./Pagination"));
 const TransactionModal = dynamic(() => import("./TransactionModal"));
 const NoTransaction = dynamic(() => import("./NoTransaction"));
@@ -31,25 +42,22 @@ const Sidebar = ({
   page,
   setPage,
   isFetching,
+  isFilterOpen,
+  setIsFilterOpen,
 }) => {
+  const customerSelected = useSelector(
+    (state) => state?.business?.customerSelected || null
+  );
   const router = useRouter();
   const pathname = usePathname();
-  const closeSidebar = (e) => {
-    // Check if the click is outside the sidebar
-    // if (
-    //   showSidebar &&
-    //   !e.target.closest("#sidebar") &&
-    //   isOpen?.status == false
-    // ) {
-    //   if (pathname.includes("/dashboard/customers")) {
-    //     router.push("/dashboard/customers", { scroll: false });
-    //   }
-    //   if (pathname.includes("/dashboard/suppliers")) {
-    //     router.push("/dashboard/suppliers", { scroll: false });
-    //   }
-    //   //toggleSidebar();
-    // }
-  };
+  console.log("jhgfdxchjkhgfdfghj", isFilterOpen);
+  const dispatch = useDispatch();
+  const targetRef = useRef();
+
+  useEffect(() => {
+    dispatch(getSelectedCustomer());
+  }, []);
+  const closeSidebar = (e) => {};
 
   useEffect(() => {
     document.addEventListener("mousedown", closeSidebar);
@@ -58,6 +66,7 @@ const Sidebar = ({
       document.removeEventListener("mousedown", closeSidebar);
     };
   }, [showSidebar, toggleSidebar]);
+  console.log("customerSelected", customerSelected);
 
   return (
     <div className="flex h-screen">
@@ -69,12 +78,26 @@ const Sidebar = ({
           showSidebar ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div>
+        {/* <button
+          onClick={() =>
+            generatePDF(targetRef, {
+              filename: "page.pdf",
+            })
+          }
+        >
+          Download PDF
+        </button> */}
+        {/* <div>{JSON.stringify(isFilterOpen)}</div> */}
+        <div ref={targetRef}>
           {isDeleteTransactionLoading ? <Loader /> : null}
           <TransactionModal
             partyId={partyId}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+          />
+          <TransactionFilterModal
+            setIsOpen={setIsFilterOpen}
+            isOpen={isFilterOpen}
           />
           <Link
             href={
@@ -87,7 +110,14 @@ const Sidebar = ({
             <XMarkIcon className="w-7 h-7 text-gray-500 hover:text-red-500 cursor-pointer ml-4 mt-2" />
           </Link>
 
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-6 pb-2 pt-2">
+            {customerSelected?.name ? (
+              <div className="mb-3  p-2 rounded-md shadow-md text-sm">
+                {customerSelected?.name}
+              </div>
+            ) : (
+              <Skeleton duration={0.3} height={38} />
+            )}
             <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
               <h1 className="text-2xl font-bold mb-4 md:mb-0">
                 Transaction List
@@ -97,12 +127,27 @@ const Sidebar = ({
                 onClick={() => {
                   setIsOpen({ ...isOpen, status: true, type: "add" });
                 }}
-                className="ml-4 flex items-center text-blue-500 hover:text-blue-700"
+                className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
               >
                 <PlusCircleIcon className="w-6 h-6 mr-1" />
                 <span>Add Transaction</span>
               </button>
             </div>
+
+            <button
+              onClick={() => setIsFilterOpen({ ...isFilterOpen, status: true })}
+              className="flex items-center relative"
+            >
+              <span className="relative">
+                <AdjustmentsHorizontalIcon className="h-5 w-5 mr-1" />
+                Filter
+              </span>
+              {countNonEmptyKeys(isFilterOpen?.value) > 0 && (
+                <span className="bg-blue-500 text-white rounded-full px-1 py-0.5 text-xs leading-none absolute top-0 right-0 -mt-1 -mr-1">
+                  {countNonEmptyKeys(isFilterOpen?.value)}
+                </span>
+              )}
+            </button>
             {!businessIdSelected || !partyId ? <TransactionSkeleton /> : null}
             {isGetTransactionLoading ? (
               <TransactionSkeleton />

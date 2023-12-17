@@ -13,7 +13,10 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
-import { useGetBusinessListQuery } from "../redux/features/businessSlice";
+import {
+  setSelectedCustomer,
+  useGetBusinessListQuery,
+} from "../redux/features/businessSlice";
 import {
   useDeleteCustomerMutation,
   useGetCustomerListQuery,
@@ -107,6 +110,14 @@ const Customer = () => {
     }
   }, [businessIdSelected]);
 
+  // useEffect(() => {
+  //   if (isGetBusinessSuccess) {
+  //     if (pathname.includes(item._id)) {
+  //       dispatch(setSelectedCustomer(item));
+  //     }
+  //   }
+  // }, [isGetCustomerSuccess]);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedInputValue(searchQuery);
@@ -199,6 +210,7 @@ const Customer = () => {
                       ? "text-blue-500 bg-blue-100 font-semibold"
                       : "text-black hover:text-blue-500 font-normal"
                   }`}
+                  onClick={() => dispatch(setSelectedCustomer(item))}
                   href={`/dashboard/customers/${item?._id}`}
                   scroll={false}
                 >

@@ -28,20 +28,34 @@ export const transactionApi = createApi({
     getTransactionList: builder.query({
       query: (data) => {
         console.log("kjhgfghj", data);
+        let params = {
+          businessId: data?.businessId,
+          partyId: data?.partyId,
+          page: data?.page,
+        };
+        if (data?.type) {
+          params.type = data.type;
+        }
+        if (data?.startDate && !data?.endDate) {
+          params.startDate = data.startDate;
+        }
+        if (!data?.startDate && data?.endDate) {
+          params.endDate = data.endDate;
+        }
+        if (data?.startDate && data?.endDate) {
+          params.startDate = data.startDate;
+          params.endDate = data.endDate;
+        }
+        if (data?.limit) {
+          params.limit = data?.limit || 10;
+        }
         return {
           url: "/transactionList",
           method: "GET",
-          params: {
-            businessId: data?.businessId,
-            partyId: data?.partyId,
-            page: data?.page,
-          },
+          params: params,
         };
       },
       providesTags: ["transaction"],
-      // forceRefetch() {
-      //   return true;
-      // },
     }),
     deleteTransaction: builder.mutation({
       query: (data) => ({

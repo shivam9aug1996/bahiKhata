@@ -13,6 +13,7 @@ import {
   useCreateTransactionMutation,
   useUpdateTransactionMutation,
 } from "../redux/features/transactionSlice";
+import { todayDate } from "../utils/function";
 import Loader from "./Loader";
 
 export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
@@ -64,9 +65,9 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     amount: "",
     type: "credit", // Default value for type as "credit"
     description: "", // Add description field
-    date: new Date().toISOString().split("T")[0],
+    date: todayDate(),
   });
-  console.log("iuytredfg", updateTransactionError);
+  console.log("iuytredfg", todayDate());
   useEffect(() => {
     if (isOpen?.value && isOpen?.type == "edit" && isOpen?.status == true) {
       console.log("kjhgrt6789", isOpen?.value);
@@ -98,7 +99,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
       amount: "",
       type: "credit", // Default value for type as "credit"
       description: "", // Add description field
-      date: new Date().toISOString().split("T")[0],
+      date: todayDate(),
     });
     setIsOpen({ ...isOpen, status: false });
   }

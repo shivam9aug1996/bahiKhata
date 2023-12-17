@@ -18,9 +18,18 @@ import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 
 import { dashboardApi } from "../redux/features/dashboardSlice";
+import {
+  getSelectedCustomer,
+  setSelectedCustomer,
+} from "../redux/features/businessSlice";
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
+  let [isFilterOpen, setIsFilterOpen] = useState({
+    status: false,
+    value: {},
+  });
+  console.log("jhgfdsdfghjk", isFilterOpen);
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -39,6 +48,7 @@ const Transaction = ({ partyId }) => {
       businessId: businessIdSelected,
       partyId: partyId,
       page: page,
+      ...isFilterOpen.value,
     },
     { skip: !businessIdSelected || !partyId }
   );
@@ -75,6 +85,7 @@ const Transaction = ({ partyId }) => {
       }
     }
   }, [isDeleteTransactionSuccess]);
+
   return (
     <Sidebar
       isDeleteTransactionLoading={isDeleteTransactionLoading}
@@ -92,6 +103,8 @@ const Transaction = ({ partyId }) => {
       page={page}
       setPage={setPage}
       isFetching={isFetching}
+      isFilterOpen={isFilterOpen}
+      setIsFilterOpen={setIsFilterOpen}
     />
   );
 };

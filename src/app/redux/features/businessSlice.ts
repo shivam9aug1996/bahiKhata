@@ -49,6 +49,7 @@ const businessSlice = createSlice({
     triggerGetBusinessApi: false,
     triggerUpdateBusinessApi: false,
     businessIdSelected: "",
+    customerSelected: "",
   },
   reducers: {
     setTriggerGetBusinessApi: (state, action) => {
@@ -59,6 +60,22 @@ const businessSlice = createSlice({
     },
     setBusinessIdSelected: (state, action) => {
       state.businessIdSelected = action.payload;
+    },
+    setSelectedCustomer: (state, action) => {
+      state.customerSelected = action.payload;
+      localStorage.setItem(
+        "customerSelected",
+        JSON.stringify(state.customerSelected)
+      );
+    },
+    getSelectedCustomer: (state) => {
+      let data = localStorage.getItem("customerSelected");
+      if (data) {
+        data = JSON.parse(data);
+        state.customerSelected = data;
+      } else {
+        state.customerSelected = "";
+      }
     },
   },
   extraReducers: (builder) => {
@@ -97,6 +114,8 @@ export const {
   setTriggerGetBusinessApi,
   setTriggerUpdateBusinessApi,
   setBusinessIdSelected,
+  setSelectedCustomer,
+  getSelectedCustomer,
 } = businessSlice.actions;
 
 export default businessSlice.reducer;

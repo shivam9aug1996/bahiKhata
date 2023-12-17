@@ -31,3 +31,22 @@ export function formatNumberOrStringWithFallback(input = 0) {
 const userInput = "1234567.89"; // User input as a string
 const formatted = formatNumberOrStringWithFallback(userInput);
 console.log("Formatted Number:", formatted);
+
+export const countNonEmptyKeys = (obj) => {
+  let count = 0;
+  for (const key in obj) {
+    console.log("kjuytr4567890", key, obj[key]);
+    if (obj[key] !== "" && obj[key] !== undefined && obj[key] !== null) {
+      count++;
+    }
+  }
+  return count;
+};
+
+export const todayDate = () => {
+  return new Date()
+    .toLocaleDateString("en-IN")
+    ?.split("/")
+    ?.reverse()
+    ?.join("-");
+};

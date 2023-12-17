@@ -108,6 +108,51 @@ export async function GET(req, res) {
     const limit = parseInt(
       new URL(req.url)?.searchParams?.get("limit") || "10"
     );
+    const startDate = new URL(req.url)?.searchParams?.get("startDate");
+    const endDate = new URL(req.url)?.searchParams?.get("endDate");
+    const type = new URL(req.url)?.searchParams?.get("type");
+    if (!businessId || !partyId) {
+      return NextResponse.json(
+        { message: "Invalid data format" },
+        { status: 400 }
+      );
+    }
+    let data = {
+      businessId,
+      partyId,
+    };
+    if (startDate && !endDate) {
+      data = {
+        ...data,
+        date: {
+          $gte: startDate,
+        },
+      };
+    }
+    if (endDate && !startDate) {
+      data = {
+        ...data,
+        date: {
+          $lte: endDate,
+        },
+      };
+    }
+    if (startDate && endDate) {
+      data = {
+        ...data,
+        date: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      };
+    }
+    if (type) {
+      data = {
+        ...data,
+        type: type,
+      };
+    }
+
     // const { businessId } = await req.json();
     const db = await connectDB();
     console.log("mjhgf", businessId);
@@ -116,14 +161,14 @@ export async function GET(req, res) {
       let totalTransactions;
       const transactions = await db
         .collection("transactions")
-        .find({ businessId, partyId })
-        .sort({ createdAt: -1 })
+        .find(data)
+        .sort({ date: -1, createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .toArray();
       totalTransactions = await db
         .collection("transactions")
-        .find({ businessId, partyId })
+        .find(data)
         .count();
       const totalPages = Math.ceil(totalTransactions / limit);
       return NextResponse.json(
