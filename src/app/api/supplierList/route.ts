@@ -19,10 +19,11 @@ export async function POST(req, res) {
     let balance = 0;
     const createdAt = new Date();
     try {
+      invalidateCache(businessId);
       const result = await db
         .collection("suppliers")
         .insertOne({ businessId, name, mobileNumber, balance, createdAt });
-      invalidateCache(businessId);
+
       return NextResponse.json(
         {
           message: "Supplier created successfully",
@@ -232,7 +233,7 @@ export async function DELETE(req, res) {
           { status: 404 }
         );
       }
-
+      invalidateCache(businessId);
       // Delete customer and their corresponding transactions
       const deleteSupplierResult = await db
         .collection("suppliers")
@@ -243,7 +244,6 @@ export async function DELETE(req, res) {
         .deleteMany({ partyId: supplierId, businessId });
 
       if (deleteSupplierResult.deletedCount === 1) {
-        invalidateCache(businessId);
         return NextResponse.json(
           {
             message:

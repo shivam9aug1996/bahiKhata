@@ -19,10 +19,11 @@ export async function POST(req, res) {
     let balance = 0;
     const createdAt = new Date();
     try {
+      invalidateCache(businessId);
       const result = await db
         .collection("customers")
         .insertOne({ businessId, name, mobileNumber, balance, createdAt });
-      invalidateCache(businessId);
+
       return NextResponse.json(
         {
           message: "Customer created successfully",
