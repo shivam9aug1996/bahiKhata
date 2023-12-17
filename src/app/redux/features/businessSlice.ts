@@ -77,6 +77,12 @@ const businessSlice = createSlice({
         state.triggerUpdateBusinessApi = true;
       }
     );
+    builder.addMatcher(
+      businessApi.endpoints.deleteBusiness.matchFulfilled,
+      (state, action) => {
+        state.businessIdSelected = "";
+      }
+    );
   },
 });
 

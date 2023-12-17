@@ -146,9 +146,6 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
 
   return (
     <>
-      {isCreateTransactionLoading || isUpdateTransactionLoading ? (
-        <Loader />
-      ) : null}
       <Transition appear show={isOpen.status} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={closeModal}>
           <Transition.Child
@@ -162,7 +159,9 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
           >
             <div className="fixed inset-0 bg-black/25" />
           </Transition.Child>
-
+          {isCreateTransactionLoading || isUpdateTransactionLoading ? (
+            <Loader wrapperStyle={{ zIndex: 5500 }} />
+          ) : null}
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child

@@ -63,7 +63,7 @@ const Sidebar = ({
       <div
         style={{ width: "47%" }}
         id={"sidebar"}
-        className={`bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full  ${
+        className={`shadow-md border bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full  ${
           showSidebar ? "translate-x-0" : "translate-x-full"
         }`}
       >

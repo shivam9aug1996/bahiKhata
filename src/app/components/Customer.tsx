@@ -175,16 +175,6 @@ const Customer = () => {
           </p>
         ) : (
           <>
-            {/* {isFetching ? (
-              <div className="relative bg-red-300 w-full h-full">
-                <Loader
-                  wrapperStyle={{
-                    position: "absolute",
-                    alignItems: "flex-start",
-                  }}
-                />
-              </div>
-            ) : null} */}
             <Pagination
               totalPages={getCustomerData?.totalPages}
               currentPage={page}
