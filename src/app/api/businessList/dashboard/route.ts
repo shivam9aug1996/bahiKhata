@@ -11,7 +11,7 @@ export async function GET(req, res) {
     try {
       // Check if data is already cached
       if (cachedData[businessId]) {
-        console.log("9876543edfghj");
+        console.log("9876543edfghj", cachedData, businessId);
         return NextResponse.json(cachedData[businessId], { status: 200 });
       } else {
         const db = await connectDB();
@@ -88,5 +88,6 @@ const getBalanceSum = (data = [], balanceType) => {
 };
 
 export function invalidateCache(businessId) {
+  console.log("jhgfdfghjkl");
   delete cachedData[businessId];
 }
