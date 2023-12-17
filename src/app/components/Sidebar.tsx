@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
+import Link from "next/link";
 const Pagination = dynamic(() => import("./Pagination"));
 const TransactionModal = dynamic(() => import("./TransactionModal"));
 const NoTransaction = dynamic(() => import("./NoTransaction"));
@@ -74,17 +75,17 @@ const Sidebar = ({
             isOpen={isOpen}
             setIsOpen={setIsOpen}
           />
-          <XMarkIcon
-            onClick={(e) => {
-              if (pathname.includes("/dashboard/customers")) {
-                router.push("/dashboard/customers", { scroll: false });
-              }
-              if (pathname.includes("/dashboard/suppliers")) {
-                router.push("/dashboard/suppliers", { scroll: false });
-              }
-            }}
-            className="w-7 h-7 text-gray-500 hover:text-red-500 cursor-pointer ml-4 mt-2"
-          />
+          <Link
+            href={
+              pathname.includes("/dashboard/customers")
+                ? "/dashboard/customers"
+                : "/dashboard/suppliers"
+            }
+            scroll={false}
+          >
+            <XMarkIcon className="w-7 h-7 text-gray-500 hover:text-red-500 cursor-pointer ml-4 mt-2" />
+          </Link>
+
           <div className="flex-1 p-6">
             <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
               <h1 className="text-2xl font-bold mb-4 md:mb-0">

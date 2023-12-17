@@ -19,7 +19,7 @@ import {
 
 import Loader from "./Loader";
 
-export default function PartyModal({ isOpen, setIsOpen }) {
+export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -127,6 +127,7 @@ export default function PartyModal({ isOpen, setIsOpen }) {
       console.log("jhgfdsdfghj", createCustomerData?.data?._id);
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push(`/dashboard/customers/${createCustomerData?.data?._id}`);
+      setSearchQuery("");
     }
   }, [isCreateCustomerSuccess]);
   useEffect(() => {
@@ -134,6 +135,7 @@ export default function PartyModal({ isOpen, setIsOpen }) {
       console.log("jhgfdsdfghj", createSupplierData?.data?._id);
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push(`/dashboard/suppliers/${createSupplierData?.data?._id}`);
+      setSearchQuery("");
     }
   }, [isCreateSupplierSuccess]);
 

@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -232,11 +233,9 @@ const DropDown = ({
       <div>
         <div className="bg-white rounded-lg shadow-md p-2 flex flex-col justify-center items-start">
           <div className="flex flex-row items-center justify-between w-full">
-            <div
+            <Link
               className="text-3xl md:text-4xl lg:text-5xl font-bold text-center cursor-pointer"
-              onClick={() => {
-                router.push("/dashboard/customers");
-              }}
+              href={"/dashboard/customers"}
             >
               <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-red-500 md:text-black">
                 Bahi
@@ -244,7 +243,7 @@ const DropDown = ({
               <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-black md:text-red-500">
                 Khata
               </span>
-            </div>
+            </Link>
 
             <div className="flex flex-col">
               <h3>Select your business</h3>

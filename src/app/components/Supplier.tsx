@@ -107,7 +107,11 @@ const Supplier = () => {
       style={{ height: 600 }}
     >
       {isDeleteSupplierLoading ? <Loader /> : null}
-      <PartyModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <PartyModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        setSearchQuery={setSearchQuery}
+      />
 
       <div className="space-y-4">
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
