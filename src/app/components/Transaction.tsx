@@ -36,12 +36,17 @@ import {
 } from "../redux/features/businessSlice";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
+import DeleteModal from "./DeleteModal";
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
   let [isFilterOpen, setIsFilterOpen] = useState({
     status: false,
     value: {},
+  });
+  const [isDeleteOpen, setIsDeleteOpen] = useState({
+    status: false,
+    value: null,
   });
   console.log("jhgfdsdfghjk", isFilterOpen);
   const businessIdSelected = useSelector(
@@ -90,6 +95,7 @@ const Transaction = ({ partyId }) => {
   console.log("kjhghjk3333", getTransactionData);
   useEffect(() => {
     if (isDeleteTransactionSuccess) {
+      setIsDeleteOpen({ status: false, value: null });
       if (pathname.includes("customer")) {
         dispatch(customerApi.util.invalidateTags(["customer"]));
         dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
@@ -100,26 +106,44 @@ const Transaction = ({ partyId }) => {
     }
   }, [isDeleteTransactionSuccess]);
 
+  const handleSubmitDelete = () => {
+    deleteTransaction(JSON.stringify(isDeleteOpen?.value));
+  };
+
   return (
-    <Sidebar
-      isDeleteTransactionLoading={isDeleteTransactionLoading}
-      partyId={partyId}
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-      isGetTransactionLoading={isGetTransactionLoading}
-      deleteTransaction={deleteTransaction}
-      getTransactionData={getTransactionData}
-      businessIdSelected={businessIdSelected}
-      isGetTransactionError={isGetTransactionError}
-      getTransactionError={getTransactionError}
-      showSidebar={showSidebar}
-      toggleSidebar={toggleSidebar}
-      page={page}
-      setPage={setPage}
-      isFetching={isFetching}
-      isFilterOpen={isFilterOpen}
-      setIsFilterOpen={setIsFilterOpen}
-    />
+    <>
+      {isDeleteTransactionLoading && <Loader />}
+      <DeleteModal
+        setIsOpen={setIsDeleteOpen}
+        isOpen={isDeleteOpen}
+        title={"Delete Transaction"}
+        subtitle={
+          "Deleting this item will remove it permanently. Are you sure you want to continue?"
+        }
+        handleSubmit={handleSubmitDelete}
+      />
+      <Sidebar
+        isDeleteTransactionLoading={isDeleteTransactionLoading}
+        partyId={partyId}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        isGetTransactionLoading={isGetTransactionLoading}
+        deleteTransaction={deleteTransaction}
+        getTransactionData={getTransactionData}
+        businessIdSelected={businessIdSelected}
+        isGetTransactionError={isGetTransactionError}
+        getTransactionError={getTransactionError}
+        showSidebar={showSidebar}
+        toggleSidebar={toggleSidebar}
+        page={page}
+        setPage={setPage}
+        isFetching={isFetching}
+        isFilterOpen={isFilterOpen}
+        setIsFilterOpen={setIsFilterOpen}
+        setIsDeleteOpen={setIsDeleteOpen}
+        isDeleteOpen={isDeleteOpen}
+      />
+    </>
   );
 };
 

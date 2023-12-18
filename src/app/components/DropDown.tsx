@@ -24,6 +24,7 @@ import {
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
+import DeleteModal from "./DeleteModal";
 
 const BusinessModal = dynamic(() => import("./BusinessModal"));
 import Loader from "./Loader";
@@ -37,6 +38,10 @@ const DropDown = ({
 }) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState({
+    status: false,
+    value: null,
+  });
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -113,8 +118,9 @@ const DropDown = ({
 
   useEffect(() => {
     if (isDeleteBusinessSuccess) {
+      setIsDeleteOpen({ ...isDeleteOpen, status: false, value: null });
       if (pathname.includes("customers")) {
-        router.push("/dashboard/customers");
+        // router.push("/dashboard/customers");
         dispatch(customerApi.util.invalidateTags(["customer"]));
       } else {
         router.push("/dashboard/suppliers");
@@ -227,10 +233,26 @@ const DropDown = ({
     return data?.name || "Select a business";
   };
   console.log("hgfdsdfghjk", getDashboardData);
+  const handleDelete = () => {
+    deleteBusiness(
+      JSON.stringify({
+        id: businessIdSelected,
+      })
+    );
+  };
   return (
     <div>
       {isDeleteBusinessLoading ? <Loader /> : null}
       <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <DeleteModal
+        setIsOpen={setIsDeleteOpen}
+        isOpen={isDeleteOpen}
+        title={"Delete Business"}
+        subtitle={
+          "Deleting this item will remove it permanently, along with all associated customer/supplier records and their transactions. Are you sure you want to continue?"
+        }
+        handleSubmit={handleDelete}
+      />
       <div>
         <div className="bg-white rounded-lg shadow-md p-2 flex flex-col justify-center items-start">
           <div className="flex flex-row items-center justify-between w-full">
@@ -325,11 +347,11 @@ const DropDown = ({
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        deleteBusiness(
-                          JSON.stringify({
-                            id: businessIdSelected,
-                          })
-                        );
+                        setIsDeleteOpen({
+                          ...isDeleteOpen,
+                          status: true,
+                          value: businessIdSelected,
+                        });
                       }}
                       className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                     />

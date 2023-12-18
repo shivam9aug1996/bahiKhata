@@ -24,7 +24,9 @@ import {
 import { dashboardApi } from "../redux/features/dashboardSlice";
 import { transactionApi } from "../redux/features/transactionSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
+import DeleteModal from "./DeleteModal";
 import Loader from "./Loader";
+import NoBusinessExists from "./NoBusinessExists";
 import PartySkeleton from "./PartySkeleton";
 
 // import CustomerData from "./CustomerData";
@@ -57,6 +59,10 @@ const Customer = () => {
   const [debouncedInputValue, setDebouncedInputValue] = useState("");
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDeleteOpen, setIsDeleteOpen] = useState({
+    status: false,
+    value: null,
+  });
   const {
     isSuccess: isGetCustomerSuccess,
     isLoading: isGetCustomerLoading,
@@ -105,6 +111,7 @@ const Customer = () => {
 
   useEffect(() => {
     if (isDeleteCustomerSuccess) {
+      setIsDeleteOpen({ status: false, value: null });
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push("/dashboard/customers", { scroll: false });
     }
@@ -130,7 +137,17 @@ const Customer = () => {
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [searchQuery, 500]);
-
+  console.log("kjhgfdsfghjhgfghj", getCustomerData);
+  const handleDelete = (data) => {
+    setIsDeleteOpen({
+      ...isDeleteOpen,
+      status: true,
+      value: data,
+    });
+  };
+  const handleSubmitDelete = () => {
+    deleteCustomer(JSON.stringify(isDeleteOpen?.value));
+  };
   return (
     <div
       className="shadow-lg  container m-3 w-1/2 rounded-lg p-4 border overflow-auto hover:overflow-scroll"
@@ -143,29 +160,40 @@ const Customer = () => {
         setIsOpen={setIsOpen}
         setSearchQuery={setSearchQuery}
       />
+      <DeleteModal
+        setIsOpen={setIsDeleteOpen}
+        isOpen={isDeleteOpen}
+        title={"Delete Customer"}
+        subtitle={
+          "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
+        }
+        handleSubmit={handleSubmitDelete}
+      />
 
       <div className="space-y-4">
-        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="text-2xl font-bold mb-4 md:mb-0">Customer List</div>
+        {businessIdSelected && (
+          <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+            <div className="text-2xl font-bold mb-4 md:mb-0">Customer List</div>
 
-          <button
-            onClick={() => {
-              if (businessIdSelected) {
-                setIsOpen({
-                  ...isOpen,
-                  status: true,
-                  type: "add",
-                });
-              } else {
-                toast.error("Create business first");
-              }
-            }}
-            className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
-          >
-            <PlusCircleIcon className="w-6 h-6 mr-1" />
-            <span>Add Customer</span>
-          </button>
-        </div>
+            <button
+              onClick={() => {
+                if (businessIdSelected) {
+                  setIsOpen({
+                    ...isOpen,
+                    status: true,
+                    type: "add",
+                  });
+                } else {
+                  toast.error("Create business first");
+                }
+              }}
+              className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
+            >
+              <PlusCircleIcon className="w-6 h-6 mr-1" />
+              <span>Add Customer</span>
+            </button>
+          </div>
+        )}
         {getCustomerData?.data?.length > 0 ||
         (getCustomerData?.data?.length == 0 && debouncedInputValue !== "") ? (
           <div className="relative">
@@ -182,7 +210,7 @@ const Customer = () => {
           </div>
         ) : null}
         {!businessIdSelected && isGetBusinessSuccess ? (
-          <p>No business exists</p>
+          <NoBusinessExists />
         ) : null}
         {!businessIdSelected && isGetBusinessLoading ? <PartySkeleton /> : null}
         {getCustomerData?.data?.length == 0 && debouncedInputValue !== "" ? (
@@ -195,7 +223,7 @@ const Customer = () => {
             Error fetching customers:{" "}
             {getCustomerError?.error?.substring(0, 50)}
           </p>
-        ) : (
+        ) : !businessIdSelected ? null : (
           <CustomerData
             getCustomerData={getCustomerData}
             page={page}
@@ -207,6 +235,7 @@ const Customer = () => {
             setIsOpen={setIsOpen}
             isOpen={isOpen}
             isFetching={isFetching}
+            handleDelete={handleDelete}
           />
           // <>
           //   <Pagination

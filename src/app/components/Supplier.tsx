@@ -28,6 +28,8 @@ import { transactionApi } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
 import { formatNumberOrStringWithFallback } from "../utils/function";
+import DeleteModal from "./DeleteModal";
+import NoBusinessExists from "./NoBusinessExists";
 // import NoParty from "./NoParty";
 // import PartyModal from "./PartyModal";
 // const Pagination = dynamic(() => import("./Pagination"));
@@ -48,7 +50,10 @@ const Supplier = () => {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [debouncedInputValue, setDebouncedInputValue] = useState("");
-
+  const [isDeleteOpen, setIsDeleteOpen] = useState({
+    status: false,
+    value: null,
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const {
     isSuccess: isGetSupplierSuccess,
@@ -97,6 +102,7 @@ const Supplier = () => {
   );
   useEffect(() => {
     if (isDeleteSupplierSuccess) {
+      setIsDeleteOpen({ status: false, value: null });
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       router.push("/dashboard/suppliers", { scroll: false });
     }
@@ -110,6 +116,9 @@ const Supplier = () => {
   }, [searchQuery, 500]);
 
   console.log("kjhgtr5678iugvhjk", businessIdSelected, getSupplierData);
+  const handleSubmitDelete = () => {
+    deleteSupplier(JSON.stringify(isDeleteOpen?.value));
+  };
   return (
     <div
       className="shadow-lg  container m-3 w-1/2 rounded-lg p-4 border overflow-auto hover:overflow-scroll"
@@ -121,28 +130,39 @@ const Supplier = () => {
         setIsOpen={setIsOpen}
         setSearchQuery={setSearchQuery}
       />
+      <DeleteModal
+        setIsOpen={setIsDeleteOpen}
+        isOpen={isDeleteOpen}
+        title={"Delete Supplier"}
+        subtitle={
+          "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
+        }
+        handleSubmit={handleSubmitDelete}
+      />
 
       <div className="space-y-4">
-        <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="text-2xl font-bold mb-4 md:mb-0">Supplier List</div>
-          <button
-            onClick={() => {
-              if (businessIdSelected) {
-                setIsOpen({
-                  ...isOpen,
-                  status: true,
-                  type: "add",
-                });
-              } else {
-                toast.error("Create business first");
-              }
-            }}
-            className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
-          >
-            <PlusCircleIcon className="w-6 h-6 mr-1" />
-            <span>Add Supplier</span>
-          </button>
-        </div>
+        {businessIdSelected && (
+          <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+            <div className="text-2xl font-bold mb-4 md:mb-0">Supplier List</div>
+            <button
+              onClick={() => {
+                if (businessIdSelected) {
+                  setIsOpen({
+                    ...isOpen,
+                    status: true,
+                    type: "add",
+                  });
+                } else {
+                  toast.error("Create business first");
+                }
+              }}
+              className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
+            >
+              <PlusCircleIcon className="w-6 h-6 mr-1" />
+              <span>Add Supplier</span>
+            </button>
+          </div>
+        )}
         {getSupplierData?.data?.length > 0 ||
         (getSupplierData?.data?.length == 0 && debouncedInputValue !== "") ? (
           <div className="relative">
@@ -159,7 +179,7 @@ const Supplier = () => {
           </div>
         ) : null}
         {!businessIdSelected && isGetBusinessSuccess ? (
-          <p>No business exists</p>
+          <NoBusinessExists />
         ) : null}
         {!businessIdSelected && isGetBusinessLoading ? <PartySkeleton /> : null}
         {getSupplierData?.data?.length == 0 && debouncedInputValue !== "" ? (
@@ -171,7 +191,7 @@ const Supplier = () => {
           </>
         ) : isGetSupplierError ? (
           <p>Error fetching suppliers: {getSupplierError?.message}</p>
-        ) : (
+        ) : !businessIdSelected ? null : (
           <>
             {/* {isFetching ? (
               <div className="relative bg-red-300 w-full h-full">
@@ -254,12 +274,14 @@ const Supplier = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      deleteSupplier(
-                        JSON.stringify({
+                      setIsDeleteOpen({
+                        ...isDeleteOpen,
+                        status: true,
+                        value: {
                           businessId: businessIdSelected,
                           supplierId: item?._id,
-                        })
-                      );
+                        },
+                      });
                     }}
                     className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                   />
@@ -269,9 +291,7 @@ const Supplier = () => {
 
             {getSupplierData?.data.length == 0 &&
               isGetSupplierSuccess == true &&
-              debouncedInputValue === "" && (
-                <NoParty title={"Add supplier and maintain your daily khata"} />
-              )}
+              debouncedInputValue === "" && <NoParty title={"Supplier"} />}
           </>
         )}
       </div>

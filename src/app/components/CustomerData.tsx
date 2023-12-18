@@ -29,7 +29,9 @@ const CustomerData = ({
   setIsOpen,
   isOpen,
   isFetching,
+  handleDelete,
 }) => {
+  console.log("customerdata4567890", getCustomerData);
   const pathname = usePathname();
   const dispatch = useDispatch();
   return (
@@ -101,12 +103,10 @@ const CustomerData = ({
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                deleteCustomer(
-                  JSON.stringify({
-                    businessId: businessIdSelected,
-                    customerId: item?._id,
-                  })
-                );
+                handleDelete({
+                  businessId: businessIdSelected,
+                  customerId: item?._id,
+                });
               }}
               className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
             />
@@ -118,7 +118,7 @@ const CustomerData = ({
         isGetCustomerSuccess == true &&
         debouncedInputValue === "" && (
           // <Suspense fallback={<p>98765loading...</p>}>
-          <NoParty title={"Add customer and maintain your daily khata"} />
+          <NoParty title={"Customer"} />
           // </Suspense>
         )}
     </>
