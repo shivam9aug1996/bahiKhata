@@ -163,8 +163,9 @@ const Supplier = () => {
             </button>
           </div>
         )}
-        {getSupplierData?.data?.length > 0 ||
-        (getSupplierData?.data?.length == 0 && debouncedInputValue !== "") ? (
+        {(getSupplierData?.data?.length > 0 ||
+          (getSupplierData?.data?.length == 0 && debouncedInputValue !== "")) &&
+        businessIdSelected ? (
           <div className="relative">
             <input
               type="text"
@@ -182,7 +183,9 @@ const Supplier = () => {
           <NoBusinessExists />
         ) : null}
         {!businessIdSelected && isGetBusinessLoading ? <PartySkeleton /> : null}
-        {getSupplierData?.data?.length == 0 && debouncedInputValue !== "" ? (
+        {getSupplierData?.data?.length == 0 &&
+        debouncedInputValue !== "" &&
+        businessIdSelected ? (
           <p>No supplier found matching your search.</p>
         ) : null}
         {isGetSupplierLoading ? (

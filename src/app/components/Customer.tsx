@@ -18,6 +18,7 @@ import {
   useGetBusinessListQuery,
 } from "../redux/features/businessSlice";
 import {
+  customerApi,
   useDeleteCustomerMutation,
   useGetCustomerListQuery,
 } from "../redux/features/customerSlice";
@@ -50,7 +51,7 @@ const Customer = () => {
   const customerList = useSelector(
     (state) => state?.customer?.customerList || []
   );
-  console.log("kjhgfghjkgfghjkl", customerList);
+
   const containerRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -108,7 +109,7 @@ const Customer = () => {
     null,
     isDeleteCustomerSuccess
   );
-
+  console.log("kjhgfghjkgfghjkl", getCustomerData);
   useEffect(() => {
     if (isDeleteCustomerSuccess) {
       setIsDeleteOpen({ status: false, value: null });
@@ -121,6 +122,14 @@ const Customer = () => {
     if (businessIdSelected) {
       setSearchQuery("");
     }
+    // if (!businessIdSelected && getBusinessData?.data?.length == 0) {
+    //   //dispatch(customerApi.endpoints.getCustomerList.initiate(undefined, { forceRefetch: true }));
+    //   dispatch(
+    //     customerApi.endpoints.getCustomerList.initiate(undefined, {
+    //       forceRefetch: true,
+    //     })
+    //   );
+    // }
   }, [businessIdSelected]);
 
   // useEffect(() => {
@@ -194,8 +203,9 @@ const Customer = () => {
             </button>
           </div>
         )}
-        {getCustomerData?.data?.length > 0 ||
-        (getCustomerData?.data?.length == 0 && debouncedInputValue !== "") ? (
+        {(getCustomerData?.data?.length > 0 ||
+          (getCustomerData?.data?.length == 0 && debouncedInputValue !== "")) &&
+        businessIdSelected ? (
           <div className="relative">
             <input
               type="text"
@@ -213,7 +223,9 @@ const Customer = () => {
           <NoBusinessExists />
         ) : null}
         {!businessIdSelected && isGetBusinessLoading ? <PartySkeleton /> : null}
-        {getCustomerData?.data?.length == 0 && debouncedInputValue !== "" ? (
+        {getCustomerData?.data?.length == 0 &&
+        debouncedInputValue !== "" &&
+        businessIdSelected ? (
           <p>No customers found matching your search.</p>
         ) : null}
         {isGetCustomerLoading ? (
@@ -223,7 +235,7 @@ const Customer = () => {
             Error fetching customers:{" "}
             {getCustomerError?.error?.substring(0, 50)}
           </p>
-        ) : !businessIdSelected ? null : (
+        ) : !businessIdSelected || getBusinessData?.length == 0 ? null : (
           <CustomerData
             getCustomerData={getCustomerData}
             page={page}

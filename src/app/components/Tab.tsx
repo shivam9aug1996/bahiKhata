@@ -61,7 +61,7 @@ const MainTab = () => {
             href="/dashboard/customers"
           >
             {`Customer ${
-              getDashboardData?.totalCustomers >= 0
+              getDashboardData?.totalCustomers >= 0 && businessIdSelected
                 ? `(${getDashboardData?.totalCustomers})`
                 : ""
             } `}
@@ -73,7 +73,7 @@ const MainTab = () => {
             href="/dashboard/suppliers"
           >
             {`Supplier ${
-              getDashboardData?.totalSuppliers >= 0
+              getDashboardData?.totalSuppliers >= 0 && businessIdSelected
                 ? `(${getDashboardData?.totalSuppliers})`
                 : ""
             } `}

@@ -13,12 +13,18 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
-import { useDeleteBusinessMutation } from "../redux/features/businessSlice";
+import {
+  setBusinessIdSelected,
+  useDeleteBusinessMutation,
+} from "../redux/features/businessSlice";
 import {
   customerApi,
   useGetCustomerListQuery,
 } from "../redux/features/customerSlice";
-import { useGetDashboardQuery } from "../redux/features/dashboardSlice";
+import {
+  dashboardApi,
+  useGetDashboardQuery,
+} from "../redux/features/dashboardSlice";
 import {
   supplierApi,
   useGetSupplierListQuery,
@@ -121,10 +127,22 @@ const DropDown = ({
       setIsDeleteOpen({ ...isDeleteOpen, status: false, value: null });
       if (pathname.includes("customers")) {
         // router.push("/dashboard/customers");
+        // setTimeout(() => {
         dispatch(customerApi.util.invalidateTags(["customer"]));
+        dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
+        setTimeout(() => {
+          dispatch(setBusinessIdSelected(""));
+        }, 500);
+        //}, 500);
       } else {
         router.push("/dashboard/suppliers");
+        //setTimeout(() => {
         dispatch(supplierApi.util.invalidateTags(["supplier"]));
+        dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
+        setTimeout(() => {
+          dispatch(setBusinessIdSelected(""));
+        }, 500);
+        //}, 500);
       }
     }
   }, [isDeleteBusinessSuccess]);
@@ -136,6 +154,11 @@ const DropDown = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (businessIdSelected) {
+    }
+  }, [businessIdSelected]);
 
   // const customerSum = useMemo(
   //   (getCustomerData?.data || []).reduce((accumulator, currentValue) => {
@@ -179,13 +202,17 @@ const DropDown = ({
   //   },
   //   0
   // );
-  const {
+  let {
     customerNegativeBalance = 0,
     customerPositiveBalance = 0,
     supplierNegativeBalance = 0,
     supplierPositiveBalance = 0,
   } = getDashboardData || {};
 
+  customerNegativeBalance = businessIdSelected ? customerNegativeBalance : 0;
+  customerPositiveBalance = businessIdSelected ? customerPositiveBalance : 0;
+  supplierNegativeBalance = businessIdSelected ? supplierNegativeBalance : 0;
+  supplierPositiveBalance = businessIdSelected ? supplierPositiveBalance : 0;
   // const customerSum = (getCustomerData?.data || []).reduce(
   //   (accumulator, currentValue) => {
   //     return accumulator + (currentValue?.balance || 0);

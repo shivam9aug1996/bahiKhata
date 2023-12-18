@@ -1,12 +1,38 @@
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
 
 export async function GET(req, res) {
   if (req.method === "GET") {
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
-
+    if (!businessId) {
+      return NextResponse.json(
+        { message: "Invalid data format" },
+        { status: 400 }
+      );
+    }
     try {
       const db = await connectDB();
+      const business = await db
+        .collection("businesses")
+        .findOne({ _id: new ObjectId(businessId) });
+
+      if (!business) {
+        return NextResponse.json(
+          {
+            message: "Business not found",
+            data: {
+              totalCustomers: 0,
+              totalSuppliers: 0,
+              customerPositiveBalance: 0,
+              customerNegativeBalance: 0,
+              supplierPositiveBalance: 0,
+              supplierNegativeBalance: 0,
+            },
+          },
+          { status: 200 }
+        );
+      }
 
       const totalCustomers = await db
         .collection("customers")

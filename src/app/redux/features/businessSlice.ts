@@ -70,7 +70,12 @@ const businessSlice = createSlice({
     },
     getSelectedCustomer: (state) => {
       let data = localStorage.getItem("customerSelected");
-      if (data) {
+      if (
+        data !== undefined &&
+        data !== "undefined" &&
+        data !== "null" &&
+        data !== null
+      ) {
         data = JSON.parse(data);
         state.customerSelected = data;
       } else {
@@ -97,7 +102,7 @@ const businessSlice = createSlice({
     builder.addMatcher(
       businessApi.endpoints.deleteBusiness.matchFulfilled,
       (state, action) => {
-        state.businessIdSelected = "";
+        //state.businessIdSelected = "";
       }
     );
   },

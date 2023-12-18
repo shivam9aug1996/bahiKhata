@@ -18,7 +18,10 @@ import {
 } from "../utils/function";
 import TransactionFilterModal from "./TransactionFilterModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getSelectedCustomer } from "../redux/features/businessSlice";
+import {
+  getSelectedCustomer,
+  setSelectedCustomer,
+} from "../redux/features/businessSlice";
 import Skeleton from "react-loading-skeleton";
 import { useRef } from "react";
 import generatePDF, { Margin } from "react-to-pdf";
@@ -132,6 +135,9 @@ const Sidebar = ({
                 ? "/dashboard/customers"
                 : "/dashboard/suppliers"
             }
+            onClick={() => {
+              dispatch(setSelectedCustomer(""));
+            }}
             scroll={false}
           >
             <XMarkIcon className="w-7 h-7 text-gray-500 hover:text-red-500 cursor-pointer ml-4 mt-2" />

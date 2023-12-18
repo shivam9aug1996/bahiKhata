@@ -61,12 +61,28 @@ export async function GET(req, res) {
       new URL(req.url)?.searchParams?.get("limit") || "10"
     );
     const skip = (page - 1) * limit;
+    if (!businessId) {
+      return NextResponse.json(
+        { message: "Invalid data format" },
+        { status: 400 }
+      );
+    }
     // const { businessId } = await req.json();
     const db = await connectDB();
     console.log("mjhgf", businessId);
     try {
       let customers;
       let totalCustomers;
+      const business = await db
+        .collection("businesses")
+        .findOne({ _id: new ObjectId(businessId) });
+
+      if (!business) {
+        return NextResponse.json(
+          { message: "Business not found", data: [] },
+          { status: 200 }
+        );
+      }
       if (searchQuery) {
         customers = await db
           .collection("customers")
