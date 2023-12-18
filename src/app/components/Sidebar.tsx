@@ -1,5 +1,6 @@
 import {
   AdjustmentsHorizontalIcon,
+  ArrowDownTrayIcon,
   PencilSquareIcon,
   PlusCircleIcon,
   TrashIcon,
@@ -21,10 +22,21 @@ import { getSelectedCustomer } from "../redux/features/businessSlice";
 import Skeleton from "react-loading-skeleton";
 import { useRef } from "react";
 import generatePDF, { Margin } from "react-to-pdf";
+import {
+  transactionApi,
+  useLazyGetAllTransactionQuery,
+} from "../redux/features/transactionSlice";
+// import TransactionReport from "./TransactionReport";
+import toast from "react-hot-toast";
 
-const Pagination = dynamic(() => import("./Pagination"));
+const Pagination = dynamic(() => import("./Pagination"), {
+  loading: () => (
+    <Skeleton duration={0.3} height={42} style={{ marginTop: 16 }} />
+  ),
+});
 const TransactionModal = dynamic(() => import("./TransactionModal"));
 const NoTransaction = dynamic(() => import("./NoTransaction"));
+const TransactionReport = dynamic(() => import("./TransactionReport"));
 
 const Sidebar = ({
   showSidebar,
@@ -48,11 +60,23 @@ const Sidebar = ({
   const customerSelected = useSelector(
     (state) => state?.business?.customerSelected || null
   );
+  const [
+    getAllTransactions,
+    {
+      isSuccess: isGetAllTransactionSuccess,
+      isLoading: isGetAllTransactionLoading,
+      isError: isGetAllTransactionError,
+      error: getAllTransactionError,
+      data: getAllTransactionData,
+    },
+  ] = useLazyGetAllTransactionQuery();
+
   const router = useRouter();
   const pathname = usePathname();
   console.log("jhgfdxchjkhgfdfghj", isFilterOpen);
   const dispatch = useDispatch();
   const targetRef = useRef();
+  const [isPdfDownloading, setIsPdfDownloading] = useState(false);
 
   useEffect(() => {
     dispatch(getSelectedCustomer());
@@ -66,7 +90,8 @@ const Sidebar = ({
       document.removeEventListener("mousedown", closeSidebar);
     };
   }, [showSidebar, toggleSidebar]);
-  console.log("customerSelected", customerSelected);
+
+  console.log("customerSelected567890", getAllTransactionData);
 
   return (
     <div className="flex h-screen">
@@ -78,17 +103,15 @@ const Sidebar = ({
           showSidebar ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* <button
-          onClick={() =>
-            generatePDF(targetRef, {
-              filename: "page.pdf",
-            })
-          }
-        >
-          Download PDF
-        </button> */}
+        <TransactionReport
+          filterData={isFilterOpen?.value}
+          targetRef={targetRef}
+          getAllTransactionData={getAllTransactionData}
+          customerSelected={customerSelected}
+        />
+
         {/* <div>{JSON.stringify(isFilterOpen)}</div> */}
-        <div ref={targetRef}>
+        <div>
           {isDeleteTransactionLoading ? <Loader /> : null}
           <TransactionModal
             partyId={partyId}
@@ -100,6 +123,7 @@ const Sidebar = ({
             isOpen={isFilterOpen}
           />
           <Link
+            className="inline-block"
             href={
               pathname.includes("/dashboard/customers")
                 ? "/dashboard/customers"
@@ -133,21 +157,77 @@ const Sidebar = ({
                 <span>Add Transaction</span>
               </button>
             </div>
-
-            <button
-              onClick={() => setIsFilterOpen({ ...isFilterOpen, status: true })}
-              className="flex items-center relative"
-            >
-              <span className="relative">
+            <div className="flex justify-between items-center">
+              <button
+                onClick={() =>
+                  setIsFilterOpen({ ...isFilterOpen, status: true })
+                }
+                className="flex items-center relative"
+              >
                 <AdjustmentsHorizontalIcon className="h-5 w-5 mr-1" />
-                Filter
-              </span>
-              {countNonEmptyKeys(isFilterOpen?.value) > 0 && (
-                <span className="bg-blue-500 text-white rounded-full px-1 py-0.5 text-xs leading-none absolute top-0 right-0 -mt-1 -mr-1">
-                  {countNonEmptyKeys(isFilterOpen?.value)}
-                </span>
-              )}
-            </button>
+                {countNonEmptyKeys(isFilterOpen?.value) > 0 && (
+                  <span className="bg-blue-500 text-white rounded-full px-1 py-0.5 text-xs leading-none absolute top-0 right-0 -mt-1 -mr-1">
+                    {countNonEmptyKeys(isFilterOpen?.value)}
+                  </span>
+                )}
+              </button>
+
+              {/* <button
+                className=""
+                onClick={() => {
+                 
+                }}
+              >
+                Download PDF
+              </button> */}
+              <ArrowDownTrayIcon
+                className="w-5 h-5 cursor-pointer"
+                onClick={() => {
+                  if (!isPdfDownloading) {
+                    setIsPdfDownloading(true);
+                    toast.promise(
+                      getAllTransactions({
+                        businessId: businessIdSelected,
+                        partyId: partyId,
+                        ...isFilterOpen.value,
+                      })
+                        .unwrap()
+                        .then(() => {})
+                        .then(() => {
+                          setTimeout(() => {
+                            toast.promise(
+                              generatePDF(targetRef, {
+                                filename: "page.pdf",
+                                page: { margin: Margin.MEDIUM },
+                              })
+                                ?.then(() => {
+                                  setIsPdfDownloading(false);
+                                })
+                                ?.catch(() => {
+                                  setIsPdfDownloading(false);
+                                }),
+                              {
+                                loading: "Downloading",
+                                success: "Downloaded successfully",
+                                error: "Error when downloading",
+                              }
+                            );
+                          }, 500);
+                        })
+                        .catch((error) => {
+                          setIsPdfDownloading(false);
+                          console.log("Error:", error);
+                        }),
+                      {
+                        loading: "Data preparing",
+                        success: "Data prepared",
+                        error: "Error when preparing data",
+                      }
+                    );
+                  }
+                }}
+              />
+            </div>
             {!businessIdSelected || !partyId ? <TransactionSkeleton /> : null}
             {isGetTransactionLoading ? (
               <TransactionSkeleton />
@@ -160,6 +240,7 @@ const Sidebar = ({
                   currentPage={page}
                   setPage={setPage}
                 />
+
                 {isFetching && <Loader />}
                 {getTransactionData?.data?.map((transaction, index) => (
                   <div

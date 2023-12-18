@@ -65,6 +65,37 @@ export const transactionApi = createApi({
       }),
       invalidatesTags: ["transaction"],
     }),
+    getAllTransaction: builder.query({
+      query: (data) => {
+        console.log("kjhgfghj", data);
+        let params = {
+          businessId: data?.businessId,
+          partyId: data?.partyId,
+          page: data?.page,
+        };
+        if (data?.type) {
+          params.type = data.type;
+        }
+        if (data?.startDate && !data?.endDate) {
+          params.startDate = data.startDate;
+        }
+        if (!data?.startDate && data?.endDate) {
+          params.endDate = data.endDate;
+        }
+        if (data?.startDate && data?.endDate) {
+          params.startDate = data.startDate;
+          params.endDate = data.endDate;
+        }
+        if (data?.limit) {
+          params.limit = data?.limit || 10;
+        }
+        return {
+          url: "/transactionList/downloadPdf",
+          method: "GET",
+          params: params,
+        };
+      },
+    }),
   }),
 });
 
@@ -144,6 +175,7 @@ export const {
   useCreateTransactionMutation,
   useDeleteTransactionMutation,
   useUpdateTransactionMutation,
+  useLazyGetAllTransactionQuery,
 } = transactionApi;
 
 export const { setTriggerGetTransactionApi } = transactionSlice.actions;
