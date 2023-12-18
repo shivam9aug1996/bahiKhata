@@ -16,8 +16,10 @@ const Sidebar = dynamic(() => import("./Sidebar"), {
       <div
         style={{ width: "47%" }}
         id={"sidebar"}
-        className={`shadow-md border bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full`}
-      ></div>
+        className={`shadow-md border bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full pb-10`}
+      >
+        <TransactionSkeleton />
+      </div>
     </div>
   ),
 });
@@ -33,6 +35,7 @@ import {
   setSelectedCustomer,
 } from "../redux/features/businessSlice";
 import Loader from "./Loader";
+import TransactionSkeleton from "./TransactionSkeleton";
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
