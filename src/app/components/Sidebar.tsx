@@ -104,6 +104,7 @@ const Sidebar = ({
         }`}
       >
         <TransactionReport
+          isPdfDownloading={isPdfDownloading}
           filterData={isFilterOpen?.value}
           targetRef={targetRef}
           getAllTransactionData={getAllTransactionData}

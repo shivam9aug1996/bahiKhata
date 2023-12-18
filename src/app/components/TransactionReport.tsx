@@ -7,6 +7,7 @@ const TransactionReport = ({
   targetRef,
   customerSelected,
   filterData,
+  isPdfDownloading,
 }) => {
   let creditAmount = 0;
   let debitAmount = 0;
@@ -26,7 +27,9 @@ const TransactionReport = ({
     <div
       ref={targetRef}
       className={"absolute"}
-      style={{ right: -5000, width: "100%" }}
+      style={
+        isPdfDownloading ? { right: -5000, width: "100%" } : { display: "none" }
+      }
     >
       <div className="mb-3 p-2 rounded-md shadow-md text-sm">
         {customerSelected?.name}
@@ -35,10 +38,10 @@ const TransactionReport = ({
       <div className="mb-3 p-2 rounded-md shadow-md">
         Transactions Type:
         {filterData?.type === "credit"
-          ? "You Got"
+          ? "Credit"
           : filterData?.type === "debit"
-          ? "You Gave"
-          : "You Got and You Gave"}
+          ? "Debit"
+          : "Credit/Debit"}
       </div>
 
       {filterData?.startDate && filterData?.endDate ? (
@@ -60,6 +63,11 @@ const TransactionReport = ({
           )?.toLocaleDateString()} onwards`}
         </div>
       ) : null}
+      {!filterData?.startDate && !filterData?.endDate ? (
+        <div className="mb-3 p-2 rounded-md shadow-md">
+          {`All Transactions`}
+        </div>
+      ) : null}
       {!filterData?.startDate && filterData?.endDate ? (
         <div className="mb-3 p-2 rounded-md shadow-md">
           {`Transactions Till ${new Date(
@@ -71,7 +79,7 @@ const TransactionReport = ({
       {getAllTransactionData?.data?.map((transaction, index) => (
         <div
           key={transaction?._id}
-          className="p-4 border rounded-md flex flex-col"
+          className="p-4 border rounded-md flex flex-col m-2"
         >
           <div
             key={index}
@@ -81,10 +89,10 @@ const TransactionReport = ({
           >
             <p>
               Amount: ₹{formatNumberOrStringWithFallback(transaction?.amount)} (
-              {transaction.type === "debit" ? "You Gave" : "You Got"})
+              {transaction.type === "debit" ? "Debit" : "Credit"})
             </p>
           </div>
-          <p>Description: {transaction?.description}</p>
+          {/* <p>Description: {transaction?.description}</p> */}
           <p>
             Date:{" "}
             {transaction.date
@@ -101,7 +109,6 @@ const TransactionReport = ({
               Total Credit Amount: ₹
               {formatNumberOrStringWithFallback(creditAmount)}
             </p>
-            <p>(You Received)</p>
           </div>
           <hr className="mt-2 mb-2" />
           <div className="text-red-500">
@@ -109,7 +116,19 @@ const TransactionReport = ({
               Total Debit Amount: ₹
               {formatNumberOrStringWithFallback(debitAmount)}
             </p>
-            <p>(You Gave)</p>
+          </div>
+          <hr className="mt-2 mb-2" />
+          <div className="text-red-500">
+            <p>
+              Total Balance:
+              {balance < 0
+                ? `Customer will pay - ₹${formatNumberOrStringWithFallback(
+                    Math.abs(balance)
+                  )}`
+                : `Customer will receive ${formatNumberOrStringWithFallback(
+                    balance
+                  )} `}
+            </p>
           </div>
         </div>
       </div>
