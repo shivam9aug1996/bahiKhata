@@ -10,7 +10,17 @@ import {
 
 //import Sidebar from "./Sidebar";
 import dynamic from "next/dynamic";
-const Sidebar = dynamic(() => import("./Sidebar"));
+const Sidebar = dynamic(() => import("./Sidebar"), {
+  loading: () => (
+    <div className="flex h-screen">
+      <div
+        style={{ width: "47%" }}
+        id={"sidebar"}
+        className={`shadow-md border bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full`}
+      ></div>
+    </div>
+  ),
+});
 import { usePathname } from "next/navigation";
 import { supplierApi } from "../redux/features/supplierSlice";
 
@@ -22,6 +32,7 @@ import {
   getSelectedCustomer,
   setSelectedCustomer,
 } from "../redux/features/businessSlice";
+import Loader from "./Loader";
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
