@@ -16,7 +16,7 @@ import {
   countNonEmptyKeys,
   formatNumberOrStringWithFallback,
 } from "../utils/function";
-import TransactionFilterModal from "./TransactionFilterModal";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   getSelectedCustomer,
@@ -40,7 +40,9 @@ const Pagination = dynamic(() => import("./Pagination"), {
 const TransactionModal = dynamic(() => import("./TransactionModal"));
 const NoTransaction = dynamic(() => import("./NoTransaction"));
 const TransactionReport = dynamic(() => import("./TransactionReport"));
-
+const TransactionFilterModal = dynamic(
+  () => import("./TransactionFilterModal")
+);
 const Sidebar = ({
   showSidebar,
   toggleSidebar,
@@ -108,26 +110,33 @@ const Sidebar = ({
           showSidebar ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <TransactionReport
-          isPdfDownloading={isPdfDownloading}
-          filterData={isFilterOpen?.value}
-          targetRef={targetRef}
-          getAllTransactionData={getAllTransactionData}
-          customerSelected={customerSelected}
-        />
+        {isPdfDownloading && (
+          <TransactionReport
+            isPdfDownloading={isPdfDownloading}
+            filterData={isFilterOpen?.value}
+            targetRef={targetRef}
+            getAllTransactionData={getAllTransactionData}
+            customerSelected={customerSelected}
+          />
+        )}
 
         {/* <div>{JSON.stringify(isFilterOpen)}</div> */}
         <div>
           {isDeleteTransactionLoading ? <Loader /> : null}
-          <TransactionModal
-            partyId={partyId}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-          />
-          <TransactionFilterModal
-            setIsOpen={setIsFilterOpen}
-            isOpen={isFilterOpen}
-          />
+          {isOpen?.status && (
+            <TransactionModal
+              partyId={partyId}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            />
+          )}
+          {isFilterOpen?.status && (
+            <TransactionFilterModal
+              setIsOpen={setIsFilterOpen}
+              isOpen={isFilterOpen}
+            />
+          )}
+
           <Link
             className="inline-block"
             href={

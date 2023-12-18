@@ -36,7 +36,7 @@ import {
 } from "../redux/features/businessSlice";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
-import DeleteModal from "./DeleteModal";
+const DeleteModal = dynamic(() => import("./DeleteModal"));
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
@@ -113,15 +113,17 @@ const Transaction = ({ partyId }) => {
   return (
     <>
       {isDeleteTransactionLoading && <Loader />}
-      <DeleteModal
-        setIsOpen={setIsDeleteOpen}
-        isOpen={isDeleteOpen}
-        title={"Delete Transaction"}
-        subtitle={
-          "Deleting this item will remove it permanently. Are you sure you want to continue?"
-        }
-        handleSubmit={handleSubmitDelete}
-      />
+      {isDeleteOpen?.status && (
+        <DeleteModal
+          setIsOpen={setIsDeleteOpen}
+          isOpen={isDeleteOpen}
+          title={"Delete Transaction"}
+          subtitle={
+            "Deleting this item will remove it permanently. Are you sure you want to continue?"
+          }
+          handleSubmit={handleSubmitDelete}
+        />
+      )}
       <Sidebar
         isDeleteTransactionLoading={isDeleteTransactionLoading}
         partyId={partyId}

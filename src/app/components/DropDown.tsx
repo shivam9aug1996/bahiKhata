@@ -270,7 +270,9 @@ const DropDown = ({
   return (
     <div>
       {isDeleteBusinessLoading ? <Loader /> : null}
-      <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      {isModalOpen?.status && (
+        <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      )}
       <DeleteModal
         setIsOpen={setIsDeleteOpen}
         isOpen={isDeleteOpen}

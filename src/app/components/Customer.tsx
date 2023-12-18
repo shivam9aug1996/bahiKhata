@@ -1,47 +1,29 @@
 "use client";
-import {
-  MagnifyingGlassIcon,
-  PencilSquareIcon,
-  PlusCircleIcon,
-  TrashIcon,
-} from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon, PlusCircleIcon } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
+import { useGetBusinessListQuery } from "../redux/features/businessSlice";
 import {
-  setSelectedCustomer,
-  useGetBusinessListQuery,
-} from "../redux/features/businessSlice";
-import {
-  customerApi,
   useDeleteCustomerMutation,
   useGetCustomerListQuery,
 } from "../redux/features/customerSlice";
 import { dashboardApi } from "../redux/features/dashboardSlice";
-import { transactionApi } from "../redux/features/transactionSlice";
-import { formatNumberOrStringWithFallback } from "../utils/function";
-import DeleteModal from "./DeleteModal";
+
 import Loader from "./Loader";
-import NoBusinessExists from "./NoBusinessExists";
+
 import PartySkeleton from "./PartySkeleton";
 
-// import CustomerData from "./CustomerData";
 const CustomerData = dynamic(() => import("./CustomerData"), {
   loading: () => <PartySkeleton />,
 });
 const PartyModal = dynamic(() => import("./PartyModal"));
-// const Pagination = dynamic(() => import("./Pagination"), {
-//   loading: () => (
-//     <Skeleton duration={0.3} height={42} style={{ marginTop: 16 }} />
-//   ),
-// });
-// import NoParty from "./NoParty";
-//import PartyModal from "./PartyModal";
+const NoBusinessExists = dynamic(() => import("./NoBusinessExists"));
+const DeleteModal = dynamic(() => import("./DeleteModal"));
 
 const Customer = () => {
   const pathname = usePathname();
@@ -122,23 +104,7 @@ const Customer = () => {
     if (businessIdSelected) {
       setSearchQuery("");
     }
-    // if (!businessIdSelected && getBusinessData?.data?.length == 0) {
-    //   //dispatch(customerApi.endpoints.getCustomerList.initiate(undefined, { forceRefetch: true }));
-    //   dispatch(
-    //     customerApi.endpoints.getCustomerList.initiate(undefined, {
-    //       forceRefetch: true,
-    //     })
-    //   );
-    // }
   }, [businessIdSelected]);
-
-  // useEffect(() => {
-  //   if (isGetBusinessSuccess) {
-  //     if (pathname.includes(item._id)) {
-  //       dispatch(setSelectedCustomer(item));
-  //     }
-  //   }
-  // }, [isGetCustomerSuccess]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -164,20 +130,6 @@ const Customer = () => {
       ref={containerRef}
     >
       {isDeleteCustomerLoading ? <Loader /> : null}
-      <PartyModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        setSearchQuery={setSearchQuery}
-      />
-      <DeleteModal
-        setIsOpen={setIsDeleteOpen}
-        isOpen={isDeleteOpen}
-        title={"Delete Customer"}
-        subtitle={
-          "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
-        }
-        handleSubmit={handleSubmitDelete}
-      />
 
       <div className="space-y-4">
         {businessIdSelected && (
@@ -249,100 +201,30 @@ const Customer = () => {
             isFetching={isFetching}
             handleDelete={handleDelete}
           />
-          // <>
-          //   <Pagination
-          //     totalPages={getCustomerData?.totalPages}
-          //     currentPage={page}
-          //     setPage={setPage}
-          //   />
-          //   {isFetching ? (
-          //     <div className="relative">
-          //       <Loader wrapperStyle={{ position: "absolute", top: 20 }} />
-          //     </div>
-          //   ) : null}
-          //   {getCustomerData?.data?.map((item, index) => (
-          //     <div className="relative">
-          //       <Link
-          //         key={index}
-          //         className={`block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
-          //           pathname.includes(item._id)
-          //             ? "text-blue-500 bg-blue-100 font-semibold"
-          //             : "text-black hover:text-blue-500 font-normal"
-          //         }`}
-          //         onClick={() => dispatch(setSelectedCustomer(item))}
-          //         href={`/dashboard/customers/${item?._id}`}
-          //         scroll={false}
-          //       >
-          //         <div className="flex flex-col sm:flex-row justify-between ">
-          //           <span>{item?.name}</span>
-          //           <div className="flex flex-col items-end">
-          //             <div>
-          //               {item.balance > 0
-          //                 ? "You will give"
-          //                 : item.balance < 0
-          //                 ? "You will get"
-          //                 : ""}{" "}
-          //             </div>
-          //             <div
-          //               className={`ml-2 ${
-          //                 item.balance > 0
-          //                   ? "text-green-500"
-          //                   : item.balance < 0
-          //                   ? "text-red-500"
-          //                   : ""
-          //               }`}
-          //             >
-          //               ₹
-          //               {formatNumberOrStringWithFallback(
-          //                 Math.abs(item.balance)
-          //               )}
-          //             </div>
-          //           </div>
-          //         </div>
-          //         <div className="h-5"></div>
-          //       </Link>
-          //       <div className="flex flex-row absolute bottom-0 p-4">
-          //         <PencilSquareIcon
-          //           onClick={(e) => {
-          //             e.stopPropagation();
-          //             e.preventDefault();
-          //             setIsOpen({
-          //               ...isOpen,
-          //               status: true,
-          //               type: "edit",
-          //               value: item,
-          //             });
-          //           }}
-          //           className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
-          //         ></PencilSquareIcon>
-
-          //         <TrashIcon
-          //           onClick={(e) => {
-          //             e.stopPropagation();
-          //             e.preventDefault();
-          //             deleteCustomer(
-          //               JSON.stringify({
-          //                 businessId: businessIdSelected,
-          //                 customerId: item?._id,
-          //               })
-          //             );
-          //           }}
-          //           className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-          //         />
-          //       </div>
-          //     </div>
-          //   ))}
-
-          //   {getCustomerData?.data.length == 0 &&
-          //     isGetCustomerSuccess == true &&
-          //     debouncedInputValue === "" && (
-          //       // <Suspense fallback={<p>98765loading...</p>}>
-          //       <NoParty title={"Add customer and maintain your daily khata"} />
-          //       // </Suspense>
-          //     )}
-          // </>
         )}
       </div>
+      {businessIdSelected ? (
+        <>
+          {isOpen?.status && (
+            <PartyModal
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              setSearchQuery={setSearchQuery}
+            />
+          )}
+          {isDeleteOpen.status && (
+            <DeleteModal
+              setIsOpen={setIsDeleteOpen}
+              isOpen={isDeleteOpen}
+              title={"Delete Customer"}
+              subtitle={
+                "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
+              }
+              handleSubmit={handleSubmitDelete}
+            />
+          )}
+        </>
+      ) : null}
     </div>
   );
 };

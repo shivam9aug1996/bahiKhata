@@ -24,12 +24,12 @@ import {
   useDeleteSupplierMutation,
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
-import { transactionApi } from "../redux/features/transactionSlice";
+
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
 import { formatNumberOrStringWithFallback } from "../utils/function";
-import DeleteModal from "./DeleteModal";
-import NoBusinessExists from "./NoBusinessExists";
+const NoBusinessExists = dynamic(() => import("./NoBusinessExists"));
+const DeleteModal = dynamic(() => import("./DeleteModal"));
 // import NoParty from "./NoParty";
 // import PartyModal from "./PartyModal";
 // const Pagination = dynamic(() => import("./Pagination"));
@@ -125,20 +125,24 @@ const Supplier = () => {
       style={{ height: 600 }}
     >
       {isDeleteSupplierLoading ? <Loader /> : null}
-      <PartyModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        setSearchQuery={setSearchQuery}
-      />
-      <DeleteModal
-        setIsOpen={setIsDeleteOpen}
-        isOpen={isDeleteOpen}
-        title={"Delete Supplier"}
-        subtitle={
-          "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
-        }
-        handleSubmit={handleSubmitDelete}
-      />
+      {isOpen?.status && (
+        <PartyModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          setSearchQuery={setSearchQuery}
+        />
+      )}
+      {isDeleteOpen?.status && (
+        <DeleteModal
+          setIsOpen={setIsDeleteOpen}
+          isOpen={isDeleteOpen}
+          title={"Delete Supplier"}
+          subtitle={
+            "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
+          }
+          handleSubmit={handleSubmitDelete}
+        />
+      )}
 
       <div className="space-y-4">
         {businessIdSelected && (
