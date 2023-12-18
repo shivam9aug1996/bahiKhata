@@ -30,7 +30,12 @@ import PartySkeleton from "./PartySkeleton";
 import { formatNumberOrStringWithFallback } from "../utils/function";
 // import NoParty from "./NoParty";
 // import PartyModal from "./PartyModal";
-const Pagination = dynamic(() => import("./Pagination"));
+// const Pagination = dynamic(() => import("./Pagination"));
+const Pagination = dynamic(() => import("./Pagination"), {
+  loading: () => (
+    <Skeleton duration={0.3} height={42} style={{ marginTop: 16 }} />
+  ),
+});
 const NoParty = dynamic(() => import("./NoParty"));
 const PartyModal = dynamic(() => import("./PartyModal"));
 
