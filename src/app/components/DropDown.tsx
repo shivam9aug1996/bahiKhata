@@ -30,10 +30,14 @@ import {
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
-import DeleteModal from "./DeleteModal";
 
-const BusinessModal = dynamic(() => import("./BusinessModal"));
+const DeleteModal = dynamic(() => import("./DeleteModal"), {
+  loading: () => <Loader />,
+});
 import Loader from "./Loader";
+const BusinessModal = dynamic(() => import("./BusinessModal"), {
+  loading: () => <Loader />,
+});
 
 const DropDown = ({
   handleDropdownChange,
@@ -273,15 +277,17 @@ const DropDown = ({
       {isModalOpen?.status && (
         <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       )}
-      <DeleteModal
-        setIsOpen={setIsDeleteOpen}
-        isOpen={isDeleteOpen}
-        title={"Delete Business"}
-        subtitle={
-          "Deleting this item will remove it permanently, along with all associated customer/supplier records and their transactions. Are you sure you want to continue?"
-        }
-        handleSubmit={handleDelete}
-      />
+      {isDeleteOpen?.status && (
+        <DeleteModal
+          setIsOpen={setIsDeleteOpen}
+          isOpen={isDeleteOpen}
+          title={"Delete Business"}
+          subtitle={
+            "Deleting this item will remove it permanently, along with all associated customer/supplier records and their transactions. Are you sure you want to continue?"
+          }
+          handleSubmit={handleDelete}
+        />
+      )}
       <div>
         <div className="bg-white rounded-lg shadow-md p-2 flex flex-col justify-center items-start">
           <div className="flex flex-row items-center justify-between w-full">

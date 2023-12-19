@@ -36,7 +36,9 @@ import {
 } from "../redux/features/businessSlice";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
-const DeleteModal = dynamic(() => import("./DeleteModal"));
+const DeleteModal = dynamic(() => import("./DeleteModal"), {
+  loading: () => <Loader />,
+});
 
 const Transaction = ({ partyId }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });

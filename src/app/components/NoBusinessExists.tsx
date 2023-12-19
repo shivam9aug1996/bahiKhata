@@ -1,7 +1,12 @@
 "use client";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
 import React, { useState } from "react";
-import BusinessModal from "./BusinessModal";
+import Loader from "./Loader";
+
+const BusinessModal = dynamic(() => import("./BusinessModal"), {
+  loading: () => <Loader />,
+});
 
 const NoBusinessExists = () => {
   let [isModalOpen, setIsModalOpen] = useState({
@@ -12,7 +17,9 @@ const NoBusinessExists = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      {isModalOpen?.status && (
+        <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      )}
       <BanknotesIcon className="text-gray-500 h-20 w-20 sm:h-24 sm:w-24 md:h-32 md:w-32 lg:h-40 lg:w-40 mb-4" />
       <h2 className="text-lg text-gray-700 text-center">
         Welcome! Let's get started with your business.

@@ -21,11 +21,15 @@ import PartySkeleton from "./PartySkeleton";
 const CustomerData = dynamic(() => import("./CustomerData"), {
   loading: () => <PartySkeleton />,
 });
-const PartyModal = dynamic(() => import("./PartyModal"));
+const PartyModal = dynamic(() => import("./PartyModal"), {
+  loading: () => <Loader />,
+});
 const NoBusinessExists = dynamic(() => import("./NoBusinessExists"), {
   loading: () => <PartySkeleton />,
 });
-const DeleteModal = dynamic(() => import("./DeleteModal"));
+const DeleteModal = dynamic(() => import("./DeleteModal"), {
+  loading: () => <Loader />,
+});
 
 const Customer = () => {
   const pathname = usePathname();

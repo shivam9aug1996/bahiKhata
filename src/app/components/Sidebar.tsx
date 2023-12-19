@@ -37,11 +37,18 @@ const Pagination = dynamic(() => import("./Pagination"), {
     <Skeleton duration={0.3} height={42} style={{ marginTop: 16 }} />
   ),
 });
-const TransactionModal = dynamic(() => import("./TransactionModal"));
-const NoTransaction = dynamic(() => import("./NoTransaction"));
+const TransactionModal = dynamic(() => import("./TransactionModal"), {
+  loading: () => <Loader />,
+});
+const NoTransaction = dynamic(() => import("./NoTransaction"), {
+  loading: () => <TransactionSkeleton />,
+});
 const TransactionReport = dynamic(() => import("./TransactionReport"));
 const TransactionFilterModal = dynamic(
-  () => import("./TransactionFilterModal")
+  () => import("./TransactionFilterModal"),
+  {
+    loading: () => <Loader />,
+  }
 );
 const Sidebar = ({
   showSidebar,
