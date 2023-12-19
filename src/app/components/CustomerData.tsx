@@ -67,8 +67,9 @@ const CustomerData = ({
                     ? "You will give"
                     : item.balance < 0
                     ? "You will get"
-                    : ""}{" "}
+                    : ""}
                 </div>
+                {item.balance == 0 ? <div style={{ height: 24 }}></div> : null}
                 <div
                   className={`ml-2 ${
                     item.balance > 0

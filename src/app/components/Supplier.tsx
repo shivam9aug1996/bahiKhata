@@ -28,7 +28,9 @@ import {
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
 import { formatNumberOrStringWithFallback } from "../utils/function";
-const NoBusinessExists = dynamic(() => import("./NoBusinessExists"));
+const NoBusinessExists = dynamic(() => import("./NoBusinessExists"), {
+  loading: () => <PartySkeleton />,
+});
 const DeleteModal = dynamic(() => import("./DeleteModal"));
 // import NoParty from "./NoParty";
 // import PartyModal from "./PartyModal";
@@ -243,6 +245,9 @@ const Supplier = () => {
                           ? "You will get"
                           : ""}{" "}
                       </div>
+                      {item.balance == 0 ? (
+                        <div style={{ height: 24 }}></div>
+                      ) : null}
                       {item.balance == 0 && <div className="h-6"></div>}
                       <div
                         className={`ml-2 ${

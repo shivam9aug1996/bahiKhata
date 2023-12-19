@@ -22,7 +22,9 @@ const CustomerData = dynamic(() => import("./CustomerData"), {
   loading: () => <PartySkeleton />,
 });
 const PartyModal = dynamic(() => import("./PartyModal"));
-const NoBusinessExists = dynamic(() => import("./NoBusinessExists"));
+const NoBusinessExists = dynamic(() => import("./NoBusinessExists"), {
+  loading: () => <PartySkeleton />,
+});
 const DeleteModal = dynamic(() => import("./DeleteModal"));
 
 const Customer = () => {
