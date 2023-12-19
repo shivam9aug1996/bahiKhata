@@ -24,7 +24,7 @@ export const businessApi = createApi({
       }),
       invalidatesTags: ["business"],
     }),
-    getBusinessList: builder.query({
+    getBusinessList: builder.query<any, void>({
       query: () => ({
         url: "/businessList",
         method: "GET",

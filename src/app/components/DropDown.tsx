@@ -159,11 +159,6 @@ const DropDown = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (businessIdSelected) {
-    }
-  }, [businessIdSelected]);
-
   // const customerSum = useMemo(
   //   (getCustomerData?.data || []).reduce((accumulator, currentValue) => {
   //     return accumulator + (currentValue?.balance || 0);
