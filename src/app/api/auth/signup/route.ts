@@ -44,10 +44,15 @@ export async function POST(req, res) {
 
     const token = jwt.sign({ id: results.insertedId }, "secretkey");
     // cookies().set("token", token);
-    cookies().set("bahi_khata_user_token", token);
+
+    const expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + 86400);
+
+    cookies().set("bahi_khata_user_token", token, { expires: expirationDate });
     cookies().set(
       "bahi_khata_user_data",
-      JSON.stringify({ mobileNumber, userId: results.insertedId })
+      JSON.stringify({ mobileNumber, userId: results.insertedId }),
+      { expires: expirationDate }
     );
     return NextResponse.json(
       {
