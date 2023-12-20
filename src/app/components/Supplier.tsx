@@ -54,6 +54,7 @@ const Supplier = () => {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
+  const userId = useSelector((state) => state?.auth?.userData?.userId || null);
   const dispatch = useDispatch();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -76,7 +77,7 @@ const Supplier = () => {
       searchQuery: debouncedInputValue,
       page: page,
     },
-    { skip: !businessIdSelected }
+    { skip: !businessIdSelected || !userId }
   );
   const [
     deleteSupplier,
@@ -94,7 +95,7 @@ const Supplier = () => {
     isError: isGetBusinessError,
     error: getBusinessError,
     data: getBusinessData,
-  } = useGetBusinessListQuery();
+  } = useGetBusinessListQuery({ userId: userId }, { skip: !userId });
   let [isOpen, setIsOpen] = useState({
     status: false,
     type: "",

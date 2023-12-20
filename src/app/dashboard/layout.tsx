@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-// import Dashboard from "../components/Dashboard";
-// import MainTab from "../components/Tab";
-const MainTab = dynamic(() => import("../components/Tab"));
-const Dashboard = dynamic(() => import("../components/Dashboard"));
+import Dashboard from "../components/Dashboard";
+import MainTab from "../components/Tab";
+//const MainTab = dynamic(() => import("../components/Tab"));
+//const Dashboard = dynamic(() => import("../components/Dashboard"));
 
 export const metadata: Metadata = {
   title: "BahiKhata",

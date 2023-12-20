@@ -19,10 +19,9 @@ export const connectDB = async () => {
 
 const connectCluster = async () => {
   if (cachedClient) {
-    console.log("cachedClient", cachedClient);
     return cachedClient;
   }
-  console.log("765redfghjkuytrdcvbhjk");
+
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

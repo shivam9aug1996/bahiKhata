@@ -1,8 +1,10 @@
 import Supplier from "@/app/components/Supplier";
-import TransNoItem from "@/app/components/TransNoItem";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import TransNoItem from "@/app/components/TransNoItem";
 
+import type { Metadata } from "next";
+import dynamic from "next/dynamic";
+import { Inter } from "next/font/google";
+const TransNoItem = dynamic(() => import("@/app/components/TransNoItem"));
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

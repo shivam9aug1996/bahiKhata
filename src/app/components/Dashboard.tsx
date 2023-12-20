@@ -8,7 +8,6 @@ import useErrorNotification from "../custom-hooks/useErrorNotification";
 import usePromiseNotification from "../custom-hooks/usePromiseNotification";
 import {
   setBusinessIdSelected,
-  useCreateBusinessMutation,
   useGetBusinessListQuery,
   useUpdateBusinessMutation,
 } from "../redux/features/businessSlice";
@@ -18,6 +17,7 @@ import DropDown from "./DropDown";
 import Loader from "./Loader";
 
 const Dashboard = () => {
+  const userId = useSelector((state) => state?.auth?.userData?.userId || null);
   const states = useSelector((state) => state);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const Dashboard = () => {
     isError: isGetBusinessError,
     error: getBusinessError,
     data: getBusinessData,
-  } = useGetBusinessListQuery();
+  } = useGetBusinessListQuery({ userId: userId }, { skip: !userId });
   const [
     updateBusiness,
     {
@@ -98,19 +98,14 @@ const Dashboard = () => {
     const selectedBusiness = getBusinessData?.data?.find(
       (item) => item._id === el?._id
     );
-    toast.promise(
-      updateBusiness(
-        JSON.stringify({
-          id: el?._id,
-          primaryKey: true,
-          name: selectedBusiness.name,
-        })
-      ),
-      {
-        loading: "Loading",
-        success: "Got the data",
-        error: "Error when fetching",
-      }
+
+    updateBusiness(
+      JSON.stringify({
+        id: el?._id,
+        primaryKey: true,
+        name: selectedBusiness.name,
+        userId: userId,
+      })
     );
     // updateBusiness(
     //   JSON.stringify({
@@ -126,7 +121,10 @@ const Dashboard = () => {
   const handleAdd = () => {};
   return (
     <>
-      {isUpdateBusinessLoading || isGetBusinessLoading ? <Loader /> : null}
+      {!userId || isUpdateBusinessLoading || isGetBusinessLoading ? (
+        <Loader />
+      ) : null}
+
       <DropDown
         selectedItem={selectedItem}
         selectedBusinessName={selectedBusinessName}

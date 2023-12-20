@@ -26,6 +26,7 @@ import {
 import Loader from "./Loader";
 
 export default function BusinessModal({ isOpen, setIsOpen }) {
+  const userId = useSelector((state) => state?.auth?.userData?.userId || null);
   const dispatch = useDispatch();
   const pathname = usePathname();
   const businessIdSelected = useSelector(
@@ -115,6 +116,7 @@ export default function BusinessModal({ isOpen, setIsOpen }) {
           id: businessIdSelected,
           name: formData.name,
           primaryKey: true,
+          userId: userId,
         })
       );
     } else {
@@ -122,6 +124,7 @@ export default function BusinessModal({ isOpen, setIsOpen }) {
         JSON.stringify({
           name: formData?.name,
           primaryKey: true,
+          userId: userId,
         })
       );
     }

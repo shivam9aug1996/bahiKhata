@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import authSlice, { authApi } from "./features/authSlice";
 import businessSlice, { businessApi } from "./features/businessSlice";
 import customerSlice, { customerApi } from "./features/customerSlice";
 import dashboardSlice, { dashboardApi } from "./features/dashboardSlice";
@@ -18,6 +19,8 @@ const store = configureStore({
     [transactionApi.reducerPath]: transactionApi.reducer,
     dashboard: dashboardSlice,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    auth: authSlice,
+    [authApi.reducerPath]: authApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -25,7 +28,8 @@ const store = configureStore({
       .concat(customerApi.middleware)
       .concat(supplierApi.middleware)
       .concat(transactionApi.middleware)
-      .concat(dashboardApi.middleware),
+      .concat(dashboardApi.middleware)
+      .concat(authApi.middleware),
 });
 
 export default store;

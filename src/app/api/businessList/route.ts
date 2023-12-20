@@ -5,10 +5,15 @@ import { connectDB, startSession } from "../lib/dbconnection";
 export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business
-    const { name, primaryKey } = await req.json();
+    const { name, primaryKey, userId } = await req.json();
     const db = await connectDB();
     console.log(!name, !primaryKey, typeof primaryKey, typeof name);
-    if (!name || typeof primaryKey !== "boolean" || typeof name !== "string") {
+    if (
+      !name ||
+      typeof primaryKey !== "boolean" ||
+      typeof name !== "string" ||
+      !userId
+    ) {
       return NextResponse.json(
         { message: "Invalid data format" },
         { status: 400 }
@@ -16,29 +21,39 @@ export async function POST(req, res) {
     }
 
     try {
+      const user = await db
+        .collection("users")
+        .findOne({ _id: new ObjectId(userId) });
+      if (!user) {
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
+      }
+
       if (primaryKey) {
         // Check if there's an existing primary business
         const existingPrimary = await db
           .collection("businesses")
-          .findOne({ primaryKey: true });
+          .findOne({ primaryKey: true, userId });
 
         if (existingPrimary) {
           // If an existing primary business is found, update its primaryKey to false
           await db
             .collection("businesses")
             .updateOne(
-              { _id: new ObjectId(existingPrimary._id) },
+              { _id: new ObjectId(existingPrimary._id), userId },
               { $set: { primaryKey: false } }
             );
         }
       }
       const result = await db
         .collection("businesses")
-        .insertOne({ name, primaryKey });
+        .insertOne({ name, primaryKey, userId });
       return NextResponse.json(
         {
           message: "Business created successfully",
-          data: { _id: result?.insertedId, name, primaryKey },
+          data: { _id: result?.insertedId, name, primaryKey, userId },
         },
         { status: 201 }
       );
@@ -58,11 +73,23 @@ export async function POST(req, res) {
 
 export async function GET(req, res) {
   if (req.method === "GET") {
+    const userId = new URL(req.url)?.searchParams?.get("userId");
+    if (!userId) {
+      return NextResponse.json(
+        { message: "Invalid data format" },
+        { status: 400 }
+      );
+    }
     // Retrieve all businesses
     const db = await connectDB();
 
     try {
-      const businesses = await db.collection("businesses").find({}).toArray();
+      const businesses = await db
+        .collection("businesses")
+        .find({
+          userId,
+        })
+        .toArray();
 
       return NextResponse.json({ data: businesses }, { status: 200 });
     } catch (error) {
@@ -82,10 +109,10 @@ export async function GET(req, res) {
 export async function PUT(req, res) {
   if (req.method === "PUT") {
     // Update a business
-    const { id, name, primaryKey } = await req.json();
+    const { id, name, primaryKey, userId } = await req.json();
     const db = await connectDB();
 
-    if (!id || !name || primaryKey === undefined) {
+    if (!id || !name || primaryKey === undefined || !userId) {
       return NextResponse.json(
         { message: "Invalid data format" },
         { status: 400 }
@@ -97,25 +124,28 @@ export async function PUT(req, res) {
         // Check if there's an existing primary business
         const existingPrimary = await db
           .collection("businesses")
-          .findOne({ primaryKey: true });
+          .findOne({ primaryKey: true, userId });
 
         if (existingPrimary) {
           // If an existing primary business is found, update its primaryKey to false
           await db
             .collection("businesses")
             .updateOne(
-              { _id: new ObjectId(existingPrimary._id) },
+              { _id: new ObjectId(existingPrimary._id), userId },
               { $set: { primaryKey: false } }
             );
         }
       }
       const result = await db
         .collection("businesses")
-        .updateOne({ _id: new ObjectId(id) }, { $set: { name, primaryKey } });
+        .updateOne(
+          { _id: new ObjectId(id), userId },
+          { $set: { name, primaryKey } }
+        );
       return NextResponse.json(
         {
           message: "Business updated successfully",
-          data: { name, primaryKey, _id: id },
+          data: { name, primaryKey, _id: id, userId },
         },
         { status: 200 }
       );
@@ -135,10 +165,10 @@ export async function PUT(req, res) {
 
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
-    const { id } = await req.json();
+    const { id, userId } = await req.json();
     const db = await connectDB();
 
-    if (!id) {
+    if (!id || !userId) {
       return NextResponse.json(
         { message: "Invalid data format" },
         { status: 400 }
@@ -148,7 +178,7 @@ export async function DELETE(req, res) {
     try {
       const businessToDelete = await db
         .collection("businesses")
-        .findOne({ _id: new ObjectId(id) });
+        .findOne({ _id: new ObjectId(id), userId });
 
       if (!businessToDelete) {
         return NextResponse.json(
@@ -162,7 +192,9 @@ export async function DELETE(req, res) {
 
       try {
         // Delete the business and its associated data in a transaction
-        await db.collection("businesses").deleteOne({ _id: new ObjectId(id) });
+        await db
+          .collection("businesses")
+          .deleteOne({ _id: new ObjectId(id), userId });
         await db.collection("customers").deleteMany({ businessId: id });
         await db.collection("suppliers").deleteMany({ businessId: id });
         await db.collection("transactions").deleteMany({ businessId: id });
@@ -175,7 +207,7 @@ export async function DELETE(req, res) {
           const updatedBusiness = await db
             .collection("businesses")
             .findOneAndUpdate(
-              { _id: { $ne: new ObjectId(id) } }, // Exclude the deleted business
+              { _id: { $ne: new ObjectId(id) }, userId }, // Exclude the deleted business
               { $set: { primaryKey: true } },
               { returnDocument: "after" } // Sort to select the first business
             );
@@ -191,7 +223,7 @@ export async function DELETE(req, res) {
         return NextResponse.json(
           {
             message: "Business and its associated data deleted successfully",
-            data: { _id: id },
+            data: { _id: id, userId },
           },
           { status: 200 }
         );

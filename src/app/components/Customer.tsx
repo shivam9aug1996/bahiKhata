@@ -13,6 +13,7 @@ import {
   useGetCustomerListQuery,
 } from "../redux/features/customerSlice";
 import { dashboardApi } from "../redux/features/dashboardSlice";
+import { motion } from "framer-motion";
 
 import Loader from "./Loader";
 
@@ -36,9 +37,7 @@ const Customer = () => {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
-  const customerList = useSelector(
-    (state) => state?.customer?.customerList || []
-  );
+  const userId = useSelector((state) => state?.auth?.userData?.userId || null);
 
   const containerRef = useRef(null);
 
@@ -65,7 +64,7 @@ const Customer = () => {
       searchQuery: debouncedInputValue,
       page: page,
     },
-    { skip: !businessIdSelected }
+    { skip: !businessIdSelected || !userId }
   );
   const {
     isSuccess: isGetBusinessSuccess,
@@ -73,7 +72,7 @@ const Customer = () => {
     isError: isGetBusinessError,
     error: getBusinessError,
     data: getBusinessData,
-  } = useGetBusinessListQuery();
+  } = useGetBusinessListQuery({ userId: userId }, { skip: !userId });
   const [
     deleteCustomer,
     {

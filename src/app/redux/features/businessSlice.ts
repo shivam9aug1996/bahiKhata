@@ -24,10 +24,13 @@ export const businessApi = createApi({
       }),
       invalidatesTags: ["business"],
     }),
-    getBusinessList: builder.query<any, void>({
-      query: () => ({
+    getBusinessList: builder.query({
+      query: (data) => ({
         url: "/businessList",
         method: "GET",
+        params: {
+          userId: data?.userId,
+        },
       }),
       providesTags: ["business"],
     }),

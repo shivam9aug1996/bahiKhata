@@ -35,6 +35,8 @@ const DeleteModal = dynamic(() => import("./DeleteModal"), {
   loading: () => <Loader />,
 });
 import Loader from "./Loader";
+import Logo from "./Logo";
+import Logout from "./Logout";
 const BusinessModal = dynamic(() => import("./BusinessModal"), {
   loading: () => <Loader />,
 });
@@ -46,6 +48,10 @@ const DropDown = ({
   handleAdd,
   selectedBusinessName,
 }) => {
+  const userId = useSelector((state) => state?.auth?.userData?.userId || null);
+  const mobileNumber = useSelector(
+    (state) => state?.auth?.userData?.mobileNumber || null
+  );
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState({
@@ -59,17 +65,7 @@ const DropDown = ({
   const router = useRouter();
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
-  const {
-    isSuccess: isGetCustomerSuccess,
-    isLoading: isGetCustomerLoading,
-    isError: isGetCustomerError,
-    error: getCustomerError,
-    data: getCustomerData,
-    isFetching,
-  } = useGetCustomerListQuery(
-    { businessId: businessIdSelected, searchQuery: "", page: -1 },
-    { skip: true }
-  );
+
   const {
     isSuccess: isGetDashboardSuccess,
     isLoading: isGetDashboardLoading,
@@ -80,16 +76,7 @@ const DropDown = ({
     { businessId: businessIdSelected },
     { skip: !businessIdSelected }
   );
-  const {
-    isSuccess: isGetSupplierSuccess,
-    isLoading: isGetSupplierLoading,
-    isError: isGetSupplierError,
-    error: getSupplierError,
-    data: getSupplierData,
-  } = useGetSupplierListQuery(
-    { businessId: businessIdSelected, searchQuery: "" },
-    { skip: true }
-  );
+
   const [
     deleteBusiness,
     {
@@ -212,45 +199,7 @@ const DropDown = ({
   customerPositiveBalance = businessIdSelected ? customerPositiveBalance : 0;
   supplierNegativeBalance = businessIdSelected ? supplierNegativeBalance : 0;
   supplierPositiveBalance = businessIdSelected ? supplierPositiveBalance : 0;
-  // const customerSum = (getCustomerData?.data || []).reduce(
-  //   (accumulator, currentValue) => {
-  //     return accumulator + (currentValue?.balance || 0);
-  //   },
-  //   0
-  // );
 
-  // const supplierSum = (getSupplierData?.data || []).reduce(
-  //   (accumulator, currentValue) => {
-  //     return accumulator + (currentValue?.balance || 0);
-  //   },
-  //   0
-  // );
-
-  // const supplierSum = useMemo(
-  //   (getSupplierData?.data || []).reduce((accumulator, currentValue) => {
-  //     return accumulator + (currentValue?.balance || 0);
-  //   }, 0),
-  //   [getSupplierData?.data, isGetSupplierSuccess]
-  // );
-
-  // useEffect(() => {
-  //   if (isGetCustomerSuccess) {
-  //     let customerSum = (getCustomerData?.data || []).reduce(
-  //       (accumulator, currentValue) => {
-  //         return accumulator + (currentValue?.balance || 0);
-  //       },
-  //       0
-  //     );
-  //     setBalance({ ...balance, customer: customerSum });
-  //   }
-  // }, [isGetCustomerSuccess]);
-
-  // useEffect(() => {
-  //   if (selectedItem) {
-
-  //     if (getName()) setSelectedOption(getName());
-  //   }
-  // }, [selectedItem]);
   const getName = () => {
     let data = getBusinessData?.data?.find((item, index) => {
       console.log(item);
@@ -263,6 +212,7 @@ const DropDown = ({
     deleteBusiness(
       JSON.stringify({
         id: businessIdSelected,
+        userId: userId,
       })
     );
   };
@@ -284,18 +234,13 @@ const DropDown = ({
         />
       )}
       <div>
-        <div className="bg-white rounded-lg shadow-md p-2 flex flex-col justify-center items-start">
+        <div className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-center items-start">
           <div className="flex flex-row items-center justify-between w-full">
             <Link
               className="text-3xl md:text-4xl lg:text-5xl font-bold text-center cursor-pointer"
               href={"/dashboard/customers"}
             >
-              <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-red-500 md:text-black">
-                Bahi
-              </span>
-              <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-black md:text-red-500">
-                Khata
-              </span>
+              <Logo />
             </Link>
 
             <div className="flex flex-col">
@@ -357,41 +302,44 @@ const DropDown = ({
                     </div>
                   )}
                 </div>
-                {getBusinessData?.data?.length > 0 ? (
-                  <div className="flex flex-row p-2">
-                    <PencilSquareIcon
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setIsModalOpen({
-                          ...isOpen,
-                          status: true,
-                          type: "edit",
-                          value: { name: selectedBusinessName },
-                        });
-                      }}
-                      className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
-                    ></PencilSquareIcon>
+                <div className="flex flex-row justify-between mt-2 items-center">
+                  {getBusinessData?.data?.length > 0 ? (
+                    <div className="flex flex-row p-2">
+                      <PencilSquareIcon
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setIsModalOpen({
+                            ...isOpen,
+                            status: true,
+                            type: "edit",
+                            value: { name: selectedBusinessName },
+                          });
+                        }}
+                        className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+                      ></PencilSquareIcon>
 
-                    <TrashIcon
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setIsDeleteOpen({
-                          ...isDeleteOpen,
-                          status: true,
-                          value: businessIdSelected,
-                        });
-                      }}
-                      className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex flex-row p-2">
-                    <div className="w-5 h-5"></div>
-                    <div className="w-5 h-5"></div>
-                  </div>
-                )}
+                      <TrashIcon
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setIsDeleteOpen({
+                            ...isDeleteOpen,
+                            status: true,
+                            value: businessIdSelected,
+                          });
+                        }}
+                        className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex flex-row p-2">
+                      <div className="w-5 h-5"></div>
+                      <div className="w-5 h-5"></div>
+                    </div>
+                  )}
+                  <Logout />
+                </div>
               </div>
             </div>
           </div>

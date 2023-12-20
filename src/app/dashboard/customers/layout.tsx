@@ -1,6 +1,8 @@
 // import Customer from "@/app/components/Customer";
-//import Customer from "@/app/components/Customer";
-const Customer = dynamic(() => import("@/app/components/Customer"));
+import Customer from "@/app/components/Customer";
+// const Customer = dynamic(() => import("@/app/components/Customer"), {
+//   ssr: false,
+// });
 
 //import TransNoItem from "@/app/components/TransNoItem";
 const TransNoItem = dynamic(() => import("@/app/components/TransNoItem"));

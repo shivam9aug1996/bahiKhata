@@ -1,3 +1,4 @@
+"use client";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
 import Link from "next/link";

@@ -6,6 +6,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextTopLoader from "nextjs-toploader";
 import "react-loading-skeleton/dist/skeleton.css";
+import Header from "./components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 const Providers = dynamic(() => import("./components/Providers"));
@@ -24,7 +25,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextTopLoader height={5} color="#df5b49" />
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
         <SpeedInsights />
       </body>
     </html>
