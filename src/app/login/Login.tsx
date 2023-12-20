@@ -32,11 +32,11 @@ export default function Login() {
     },
   ] = useLoginMutation();
   useErrorNotification(loginError, isLoginError);
-  useSuccessNotification(
-    "Hello, and warm welcome to our website!",
-    null,
-    isLoginSuccess
-  );
+  // useSuccessNotification(
+  //   "Hello, and warm welcome to our website!",
+  //   null,
+  //   isLoginSuccess
+  // );
 
   useEffect(() => {
     if (isLoginSuccess) {
