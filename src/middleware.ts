@@ -2,13 +2,20 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
+  console.log("hiiiii", request);
   const userToken = request.cookies.get("bahi_khata_user_token")?.value;
   const currentPath = request.nextUrl.pathname;
-  console.log("lkjhgr456789", currentPath);
+  console.log("lkjhgr456789", currentPath, request.url);
   if (!userToken) {
     if (currentPath.startsWith("/dashboard")) {
       // User is not authenticated and trying to access a dashboard route, redirect to login
       return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (currentPath.startsWith("/api") && !currentPath.includes("/api/auth")) {
+      return new NextResponse(
+        JSON.stringify({ success: false, message: "Authentication failed" }),
+        { status: 401 }
+      );
     } else {
       // User is not authenticated, allow access to other pages
       return NextResponse.next();
@@ -28,5 +35,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/", "/signup"],
+  matcher: ["/dashboard/:path*", "/login", "/", "/signup", "/api/:path*"],
 };

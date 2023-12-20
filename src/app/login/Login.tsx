@@ -3,16 +3,23 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import Loader from "../components/Loader";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
-import { useLoginMutation } from "../redux/features/authSlice";
+import { authApi, useLoginMutation } from "../redux/features/authSlice";
+import { businessApi } from "../redux/features/businessSlice";
+import { customerApi } from "../redux/features/customerSlice";
+import { dashboardApi } from "../redux/features/dashboardSlice";
+import { supplierApi } from "../redux/features/supplierSlice";
+import { transactionApi } from "../redux/features/transactionSlice";
 
 export default function Login() {
   const [formData, setFormData] = useState({
     mobileNumber: "",
     password: "",
   });
+  const dispatch = useDispatch();
   const router = useRouter();
   const [
     login,
@@ -33,6 +40,12 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoginSuccess) {
+      dispatch(businessApi.util.resetApiState());
+      dispatch(customerApi.util.resetApiState());
+      dispatch(authApi.util.resetApiState());
+      dispatch(supplierApi.util.resetApiState());
+      dispatch(transactionApi.util.resetApiState());
+      dispatch(dashboardApi.util.resetApiState());
       router.replace("/dashboard/customers");
     }
   }, [isLoginSuccess]);
