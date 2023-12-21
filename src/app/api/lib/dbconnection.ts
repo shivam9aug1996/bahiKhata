@@ -1,10 +1,10 @@
 import { MongoClient, ObjectId } from "mongodb";
+import { dbUrl } from "./keys";
 
 let cachedClient;
 let db;
 let cachedSession;
-const uri =
-  "mongodb+srv://shivam9aug1996:1SxbXxQuhwx1qTKI@bahikhatacluster.mcviyfo.mongodb.net/";
+const uri = dbUrl;
 
 export const connectDB = async () => {
   try {
