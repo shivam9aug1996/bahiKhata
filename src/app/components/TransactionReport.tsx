@@ -122,7 +122,7 @@ const TransactionReport = ({
             <p>
               Total Balance:
               {balance < 0
-                ? `Customer will pay - ₹${formatNumberOrStringWithFallback(
+                ? `Customer will pay ₹${formatNumberOrStringWithFallback(
                     Math.abs(balance)
                   )}`
                 : `Customer will receive ${formatNumberOrStringWithFallback(
