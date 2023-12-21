@@ -45,15 +45,16 @@ const authSlice = createSlice({
     userData: null,
   },
   reducers: {
-    setAuth: (state) => {
-      if (Cookies.get("bahi_khata_user_token")) {
-        state.token = Cookies.get("bahi_khata_user_token");
-      } else if (!Cookies.get("bahi_khata_user_token")) {
-        state.token = null;
-      }
-      if (Cookies.get("bahi_khata_user_data")) {
-        state.userData = JSON.parse(Cookies.get("bahi_khata_user_data"));
-      } else if (!Cookies.get("bahi_khata_user_data")) {
+    setAuth: (state, action) => {
+      // console.log("kuytrerfghjk", action);
+      // if (action?.payload?.token) {
+      //   //state.token = action.payload.token;
+      // } else {
+      //   state.token = null;
+      // }
+      if (action?.payload?.userData) {
+        state.userData = JSON.parse(action?.payload?.userData);
+      } else {
         state.userData = null;
       }
     },

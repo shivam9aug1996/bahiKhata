@@ -8,6 +8,7 @@ import NextTopLoader from "nextjs-toploader";
 import "react-loading-skeleton/dist/skeleton.css";
 import Header from "./components/Header";
 import "@dotlottie/react-player/dist/index.css";
+import getCookies from "./actions";
 const inter = Open_Sans({ subsets: ["latin"], weight: "500" });
 const Providers = dynamic(() => import("./components/Providers"));
 
@@ -25,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextTopLoader height={5} color="#df5b49" />
-        <Providers>
+        <Providers getCookies={getCookies}>
           <Header />
           {children}
         </Providers>

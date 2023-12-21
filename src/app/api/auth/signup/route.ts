@@ -48,15 +48,19 @@ export async function POST(req, res) {
     let now = new Date();
     let expirationDate = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 
-    cookies().set("bahi_khata_user_token", token, { expires: expirationDate });
+    cookies().set("bahi_khata_user_token", token, {
+      expires: expirationDate,
+      httpOnly: true,
+      secure: true,
+    });
     cookies().set(
       "bahi_khata_user_data",
       JSON.stringify({ mobileNumber, userId: results.insertedId }),
-      { expires: expirationDate }
+      { expires: expirationDate, httpOnly: true, secure: true }
     );
     return NextResponse.json(
       {
-        token,
+        // token,
         userData: {
           mobileNumber,
           userId: results.insertedId,

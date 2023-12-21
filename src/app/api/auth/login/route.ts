@@ -51,18 +51,22 @@ export async function POST(req, res) {
 
     cookies().set("bahi_khata_user_token", token, {
       expires: expirationDate,
+      httpOnly: true,
+      secure: true,
     });
     cookies().set(
       "bahi_khata_user_data",
       JSON.stringify({ mobileNumber, userId: user?._id }),
       {
         expires: expirationDate,
+        httpOnly: true,
+        secure: true,
       }
     );
 
     return NextResponse.json(
       {
-        token,
+        // token,
         userData: {
           mobileNumber,
           userId: user?._id,

@@ -16,7 +16,6 @@ import Lottie from "../components/Lottie";
 import AuthForm from "../components/AuthForm";
 
 export default function Login() {
-  const token = useSelector((state) => state?.auth?.token || null);
   const [formData, setFormData] = useState({
     mobileNumber: "",
     password: "",
