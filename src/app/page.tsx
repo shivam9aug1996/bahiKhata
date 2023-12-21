@@ -16,10 +16,10 @@ const Home = () => {
           <div className="mb-8">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 text-center">
               How{" "}
-              <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-red-500 md:text-black">
+              <span className="logo text-3xl md:text-4xl lg:text-5xl text-red-500 md:text-black">
                 Bahi
               </span>
-              <span className="logo text-3xl sm:text-4xl md:text-5xl lg:text-5xl text-black md:text-red-500">
+              <span className="logo text-3xl md:text-4xl lg:text-5xl text-black md:text-red-500">
                 Khata
               </span>{" "}
               works
