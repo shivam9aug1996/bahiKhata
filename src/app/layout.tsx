@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { Inter } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 // import Providers from "./components/Providers";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -8,7 +8,7 @@ import NextTopLoader from "nextjs-toploader";
 import "react-loading-skeleton/dist/skeleton.css";
 import Header from "./components/Header";
 import "@dotlottie/react-player/dist/index.css";
-const inter = Inter({ subsets: ["latin"] });
+const inter = Open_Sans({ subsets: ["latin"], weight: "500" });
 const Providers = dynamic(() => import("./components/Providers"));
 
 export const metadata: Metadata = {
