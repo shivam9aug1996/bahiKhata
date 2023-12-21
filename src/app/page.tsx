@@ -3,13 +3,15 @@ import { CurrencyRupeeIcon } from "@heroicons/react/24/outline";
 import React from "react";
 
 import Hero from "./components/Hero";
+import HeroLottie from "./components/HeroLottie";
 
 const Home = () => {
   return (
     <div className="bg-gray-100">
       <Hero />
 
-      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-16 px-4 sm:px-6 lg:px-8 pt-0">
+        <HeroLottie />
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 text-center">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import HeroLottie from "./HeroLottie";
 
 const Hero = () => {
   return (
@@ -16,6 +17,7 @@ const Hero = () => {
       <p className="text-lg text-gray-600">
         Keep track of your trusted customers' credit and debit transactions.
       </p>
+
       <div className="mt-8">
         <Link
           className="mt-8 mx-auto   font-bold text-white bg-red-500 hover:bg-red-600 rounded-full shadow-md transition-all duration-300 px-8 py-3 w-fit"
