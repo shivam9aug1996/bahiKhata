@@ -2,10 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { useSelector } from "react-redux";
 import HeaderNavLink from "./HeaderNavLink";
 import Logo from "./Logo";
-import Logout from "./Logout";
 
 const Header = () => {
   const pathname = usePathname();

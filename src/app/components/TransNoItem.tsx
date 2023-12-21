@@ -14,12 +14,10 @@ const TransNoItem = ({ title }) => {
       <div
         style={{
           backgroundColor: "#f5f5f5",
-          // height: "100vh",
           width: "47%",
           color: "black",
           display: "flex",
           justifyContent: "center",
-          // alignItems: "center",
           padding: 50,
           height: "fit-content",
         }}

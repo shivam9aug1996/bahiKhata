@@ -7,7 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextTopLoader from "nextjs-toploader";
 import "react-loading-skeleton/dist/skeleton.css";
 import Header from "./components/Header";
-
+import "@dotlottie/react-player/dist/index.css";
 const inter = Inter({ subsets: ["latin"] });
 const Providers = dynamic(() => import("./components/Providers"));
 

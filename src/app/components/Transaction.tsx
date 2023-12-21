@@ -7,8 +7,6 @@ import {
   useDeleteTransactionMutation,
   useGetTransactionListQuery,
 } from "../redux/features/transactionSlice";
-
-//import Sidebar from "./Sidebar";
 import dynamic from "next/dynamic";
 const Sidebar = dynamic(() => import("./Sidebar"), {
   loading: () => (
@@ -30,10 +28,6 @@ import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 
 import { dashboardApi } from "../redux/features/dashboardSlice";
-import {
-  getSelectedCustomer,
-  setSelectedCustomer,
-} from "../redux/features/businessSlice";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
 const DeleteModal = dynamic(() => import("./DeleteModal"), {
