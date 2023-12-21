@@ -267,6 +267,11 @@ const Sidebar = ({
                 />
 
                 {isFetching && <Loader />}
+                {getTransactionData?.data?.length == 0 &&
+                countNonEmptyKeys(isFilterOpen?.value) > 0 &&
+                businessIdSelected ? (
+                  <p>No entries found matching your filters.</p>
+                ) : null}
                 {getTransactionData?.data?.map((transaction, index) => (
                   <div
                     key={transaction?._id}
@@ -326,7 +331,10 @@ const Sidebar = ({
                   </div>
                 ))}
 
-                {getTransactionData?.data?.length == 0 && <NoTransaction />}
+                {getTransactionData?.data?.length == 0 &&
+                countNonEmptyKeys(isFilterOpen?.value) == 0 ? (
+                  <NoTransaction />
+                ) : null}
               </div>
             )}
           </div>
