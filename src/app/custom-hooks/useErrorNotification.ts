@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 const useErrorNotification = (errorObject, isError) => {
-  let error = errorObject?.error || errorObject?.data?.message;
+  let error =
+    errorObject?.error ||
+    errorObject?.data?.message ||
+    errorObject?.data?.error;
   error = error?.substring(0, 100);
   useEffect(() => {
     if (isError) {
