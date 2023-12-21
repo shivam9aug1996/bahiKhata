@@ -1,26 +1,28 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
-import useSuccessNotification from "../custom-hooks/useSuccessNotification";
-import { authApi, useLoginMutation } from "../redux/features/authSlice";
-import { businessApi } from "../redux/features/businessSlice";
-import { customerApi } from "../redux/features/customerSlice";
-import { dashboardApi } from "../redux/features/dashboardSlice";
-import { supplierApi } from "../redux/features/supplierSlice";
-import { transactionApi } from "../redux/features/transactionSlice";
+
+import { useLoginMutation } from "../redux/features/authSlice";
+
+import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
 
 export default function Login() {
+  const token = useSelector((state) => state?.auth?.token || null);
   const [formData, setFormData] = useState({
     mobileNumber: "",
     password: "",
   });
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [
     login,
     {
@@ -32,20 +34,20 @@ export default function Login() {
     },
   ] = useLoginMutation();
   useErrorNotification(loginError, isLoginError);
-  // useSuccessNotification(
-  //   "Hello, and warm welcome to our website!",
-  //   null,
-  //   isLoginSuccess
-  // );
+
+  useEffect(() => {
+    const search = searchParams.get("message");
+
+    console.log("kjhtr567890-hghjk", search);
+    if (search == "token not exists") {
+      router.refresh();
+    }
+    Cookies.remove("bahi_khata_user_token");
+    Cookies.remove("bahi_khata_user_data");
+  }, [router, searchParams, pathname]);
 
   useEffect(() => {
     if (isLoginSuccess) {
-      dispatch(businessApi.util.resetApiState());
-      dispatch(customerApi.util.resetApiState());
-      dispatch(authApi.util.resetApiState());
-      dispatch(supplierApi.util.resetApiState());
-      dispatch(transactionApi.util.resetApiState());
-      dispatch(dashboardApi.util.resetApiState());
       router.replace("/dashboard/customers");
     }
   }, [isLoginSuccess]);

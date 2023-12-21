@@ -8,8 +8,12 @@ export function middleware(request: NextRequest) {
   console.log("lkjhgr456789", currentPath, request.url);
   if (!userToken) {
     if (currentPath.startsWith("/dashboard")) {
+      let message = "token not exists";
+      console.log("oiuytrdfghjkl");
       // User is not authenticated and trying to access a dashboard route, redirect to login
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(
+        new URL(`/login?message=${encodeURIComponent(message)}`, request.url)
+      );
     }
     if (currentPath.startsWith("/api") && !currentPath.includes("/api/auth")) {
       return new NextResponse(

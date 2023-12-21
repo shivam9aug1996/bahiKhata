@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 
 const page = () => {
   return <div>dashboard</div>;

@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useLogoutMutation } from "../redux/features/authSlice";
+
 import Loader from "./Loader";
 
 const Logout = () => {
@@ -19,7 +20,9 @@ const Logout = () => {
 
   useEffect(() => {
     if (isLogoutSuccess) {
-      router.replace("/login");
+      window.location.href =
+        window.location.hostname +
+        `/login?message=${encodeURIComponent("token not exists")}`;
     }
   }, [isLogoutSuccess]);
 

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import {
+  businessApi,
   setBusinessIdSelected,
   useDeleteBusinessMutation,
 } from "../redux/features/businessSlice";
@@ -88,6 +89,7 @@ const DropDown = ({
     },
   ] = useDeleteBusinessMutation();
   useErrorNotification(deleteBusinessError, isDeleteBusinessError);
+  useErrorNotification(getDashboardError, isGetDashboardError);
   useSuccessNotification(
     "Business deleted successfully",
     null,
@@ -117,22 +119,25 @@ const DropDown = ({
     if (isDeleteBusinessSuccess) {
       setIsDeleteOpen({ ...isDeleteOpen, status: false, value: null });
       if (pathname.includes("customers")) {
+        router.push("/dashboard/customers");
+        // dispatch(businessApi.util.resetApiState());
         // router.push("/dashboard/customers");
         // setTimeout(() => {
         dispatch(customerApi.util.invalidateTags(["customer"]));
         dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
-        setTimeout(() => {
-          dispatch(setBusinessIdSelected(""));
-        }, 500);
+        // setTimeout(() => {
+        //   dispatch(setBusinessIdSelected(""));
+        // }, 500);
         //}, 500);
       } else {
         router.push("/dashboard/suppliers");
+        // dispatch(businessApi.util.resetApiState());
         //setTimeout(() => {
         dispatch(supplierApi.util.invalidateTags(["supplier"]));
         dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
-        setTimeout(() => {
-          dispatch(setBusinessIdSelected(""));
-        }, 500);
+        // setTimeout(() => {
+        //   dispatch(setBusinessIdSelected(""));
+        // }, 500);
         //}, 500);
       }
     }

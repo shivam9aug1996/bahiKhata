@@ -91,6 +91,7 @@ const Customer = () => {
   });
   useErrorNotification(getCustomerError, isGetCustomerError);
   useErrorNotification(deleteCustomerError, isDeleteCustomerError);
+  useErrorNotification(getBusinessError, isGetBusinessError);
   useSuccessNotification(
     "Customer deleted successfully",
     null,

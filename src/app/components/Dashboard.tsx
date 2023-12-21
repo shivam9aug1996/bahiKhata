@@ -12,6 +12,7 @@ import {
   useUpdateBusinessMutation,
 } from "../redux/features/businessSlice";
 import { customerApi } from "../redux/features/customerSlice";
+import { dashboardApi } from "../redux/features/dashboardSlice";
 import DropDown from "./DropDown";
 
 import Loader from "./Loader";
@@ -27,6 +28,7 @@ const Dashboard = () => {
     isError: isGetBusinessError,
     error: getBusinessError,
     data: getBusinessData,
+    isFetching,
   } = useGetBusinessListQuery({ userId: userId }, { skip: !userId });
   const [
     updateBusiness,
@@ -45,6 +47,17 @@ const Dashboard = () => {
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedBusinessName, setSelectedBusinessName] = useState("");
   console.log("jhgfddfghj", isUpdateBusinessSuccess);
+
+  useEffect(() => {
+    if (isGetBusinessSuccess) {
+      if (getBusinessData?.data?.length == 0) {
+        dispatch(setBusinessIdSelected(""));
+      } else {
+        // dispatch(customerApi.util.invalidateTags(["customer"]));
+        // dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
+      }
+    }
+  }, [isGetBusinessSuccess]);
 
   useEffect(() => {
     if (isUpdateBusinessSuccess) {

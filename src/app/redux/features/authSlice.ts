@@ -78,6 +78,8 @@ const authSlice = createSlice({
     builder.addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
       state.token = null;
       state.userData = null;
+      Cookies.remove("bahi_khata_user_token");
+      Cookies.remove("bahi_khata_user_data");
     });
     // builder.addMatcher(
     //   authApi.endpoints.verifyNumber.matchFulfilled,

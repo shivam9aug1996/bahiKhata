@@ -8,6 +8,13 @@ const useErrorNotification = (errorObject, isError) => {
   useEffect(() => {
     if (isError) {
       toast.error(error);
+      if (error == "Authentication failed") {
+        setTimeout(() => {
+          window.location.href =
+            window.location.hostname +
+            `/login?message=${encodeURIComponent("token not exists")}`;
+        }, 500);
+      }
     }
   }, [isError, error]);
 };
