@@ -118,22 +118,17 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+    <>
       {isLoginLoading && <Loader />}
       {authLoader ? <Loader /> : null}
       {!pageLoaded ? <Loader /> : null}
-      <div
-        className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden"
-        // style={{ marginBottom: 80 }}
-      >
-        <AuthForm
-          handleSubmit={handleSubmit}
-          formData={formData}
-          handleInputChange={handleInputChange}
-          type={"login"}
-        />
-        <Lottie />
-      </div>
-    </div>
+      <AuthForm
+        handleSubmit={handleSubmit}
+        formData={formData}
+        handleInputChange={handleInputChange}
+        type={"login"}
+      />
+      <Lottie />
+    </>
   );
 }

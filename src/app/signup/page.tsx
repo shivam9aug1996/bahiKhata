@@ -1,8 +1,13 @@
 import React from "react";
+import AuthServer from "../components/AuthServer";
 import Signup from "./Signup";
 
 const page = () => {
-  return <Signup />;
+  return (
+    <AuthServer>
+      <Signup />
+    </AuthServer>
+  );
 };
 
 export default page;

@@ -103,18 +103,16 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+    <>
       {isSignupLoading && <Loader />}
       {authLoader && <Loader />}
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden">
-        <AuthForm
-          handleSubmit={handleSubmit}
-          formData={formData}
-          handleInputChange={handleInputChange}
-          type={"signup"}
-        />
-        <Lottie />
-      </div>
-    </div>
+      <AuthForm
+        handleSubmit={handleSubmit}
+        formData={formData}
+        handleInputChange={handleInputChange}
+        type={"signup"}
+      />
+      <Lottie />
+    </>
   );
 }
