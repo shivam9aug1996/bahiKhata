@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import AuthForm from "../components/AuthForm";
 import Loader from "../components/Loader";
 import Lottie from "../components/Lottie";
@@ -11,11 +12,14 @@ import useErrorNotification from "../custom-hooks/useErrorNotification";
 
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 import {
+  setAuthLoader,
   useLoginMutation,
   useSignupMutation,
 } from "../redux/features/authSlice";
 
 export default function Signup() {
+  const dispatch = useDispatch();
+  const authLoader = useSelector((state) => state?.auth?.authLoader || "");
   const [formData, setFormData] = useState({
     mobileNumber: "",
     password: "",
@@ -32,14 +36,15 @@ export default function Signup() {
     },
   ] = useSignupMutation();
   useErrorNotification(signupError, isSignupError);
-  useSuccessNotification(
-    "Congratulations! You have successfully signed up.",
-    null,
-    isSignupSuccess
-  );
+  // useSuccessNotification(
+  //   "Congratulations! You have successfully signed up.",
+  //   null,
+  //   isSignupSuccess
+  // );
 
   useEffect(() => {
     if (isSignupSuccess) {
+      dispatch(setAuthLoader(true));
       router.replace("/dashboard/customers");
     }
   }, [isSignupSuccess]);
@@ -100,6 +105,7 @@ export default function Signup() {
   return (
     <div className="flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
       {isSignupLoading && <Loader />}
+      {authLoader && <Loader />}
       <div className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden">
         <AuthForm
           handleSubmit={handleSubmit}

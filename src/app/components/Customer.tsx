@@ -18,6 +18,8 @@ import { motion } from "framer-motion";
 import Loader from "./Loader";
 
 import PartySkeleton from "./PartySkeleton";
+import { setAuthLoader, useLoginMutation } from "../redux/features/authSlice";
+// const PartySkeleton = dynamic(() => import("./PartySkeleton"), { ssr: false });
 
 const CustomerData = dynamic(() => import("./CustomerData"), {
   loading: () => <PartySkeleton />,
@@ -37,6 +39,7 @@ const Customer = () => {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
+  const authLoader = useSelector((state) => state?.auth?.authLoader || "");
   const userId = useSelector((state) => state?.auth?.userData?.userId || null);
 
   const containerRef = useRef(null);
@@ -66,6 +69,16 @@ const Customer = () => {
     },
     { skip: !businessIdSelected || !userId }
   );
+  const [
+    login,
+    {
+      isSuccess: isLoginSuccess,
+      isLoading: isLoginLoading,
+      isError: isLoginError,
+      error: loginError,
+      data: loginData,
+    },
+  ] = useLoginMutation();
   const {
     isSuccess: isGetBusinessSuccess,
     isLoading: isGetBusinessLoading,
@@ -113,6 +126,10 @@ const Customer = () => {
   }, [businessIdSelected]);
 
   useEffect(() => {
+    dispatch(setAuthLoader(false));
+  }, []);
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedInputValue(searchQuery);
     }, 500);
@@ -136,7 +153,7 @@ const Customer = () => {
       ref={containerRef}
     >
       {isDeleteCustomerLoading ? <Loader /> : null}
-
+      {authLoader ? <Loader /> : null}
       <div className="space-y-4">
         {businessIdSelected && (
           <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">

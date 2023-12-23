@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
@@ -14,12 +14,13 @@ import {
 import { customerApi } from "../redux/features/customerSlice";
 import { dashboardApi } from "../redux/features/dashboardSlice";
 import DropDown from "./DropDown";
+// const DropDown = dynamic(() => import("./DropDown"));
 
 import Loader from "./Loader";
 
 const Dashboard = () => {
   const userId = useSelector((state) => state?.auth?.userData?.userId || null);
-  const states = useSelector((state) => state);
+  // const states = useSelector((state) => state);
   const router = useRouter();
   const dispatch = useDispatch();
   const {
@@ -57,7 +58,7 @@ const Dashboard = () => {
         // dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       }
     }
-  }, [isGetBusinessSuccess]);
+  }, [isGetBusinessSuccess, isFetching]);
 
   useEffect(() => {
     if (isUpdateBusinessSuccess) {
@@ -130,14 +131,14 @@ const Dashboard = () => {
 
     // console.log("mjhgtr56789", e.target);
   };
-  console.log(states, getBusinessData);
+  // console.log(states, getBusinessData);
   const handleAdd = () => {};
   return (
     <>
       {!userId || isUpdateBusinessLoading || isGetBusinessLoading ? (
         <Loader />
       ) : null}
-
+      {/* <Suspense fallback={<Loader />}> */}
       <DropDown
         selectedItem={selectedItem}
         selectedBusinessName={selectedBusinessName}
@@ -145,6 +146,7 @@ const Dashboard = () => {
         handleDropdownChange={handleDropdownChange}
         handleAdd={handleAdd}
       />
+      {/* </Suspense> */}
     </>
   );
 };

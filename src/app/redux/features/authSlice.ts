@@ -43,6 +43,7 @@ const authSlice = createSlice({
   initialState: {
     token: null,
     userData: null,
+    authLoader: false,
   },
   reducers: {
     setAuth: (state, action) => {
@@ -57,6 +58,9 @@ const authSlice = createSlice({
       } else {
         state.userData = null;
       }
+    },
+    setAuthLoader: (state, action) => {
+      state.authLoader = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -99,6 +103,6 @@ export const {
   //useVerifyNumberMutation,
 } = authApi;
 
-export const { setAuth } = authSlice.actions;
+export const { setAuth, setAuthLoader } = authSlice.actions;
 
 export default authSlice.reducer;

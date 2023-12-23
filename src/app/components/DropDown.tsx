@@ -31,13 +31,15 @@ import {
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
-
+import Loader from "./Loader";
 const DeleteModal = dynamic(() => import("./DeleteModal"), {
   loading: () => <Loader />,
 });
-import Loader from "./Loader";
-import Logo from "./Logo";
-import Logout from "./Logout";
+
+// import Logo from "./Logo";
+const Logo = dynamic(() => import("./Logo"));
+// import Logout from "./Logout";
+const Logout = dynamic(() => import("./Logout"));
 const BusinessModal = dynamic(() => import("./BusinessModal"), {
   loading: () => <Loader />,
 });
@@ -151,48 +153,6 @@ const DropDown = ({
     };
   }, []);
 
-  // const customerSum = useMemo(
-  //   (getCustomerData?.data || []).reduce((accumulator, currentValue) => {
-  //     return accumulator + (currentValue?.balance || 0);
-  //   }, 0),
-  //   [getCustomerData?.data, isGetCustomerSuccess]
-  // );
-
-  // const positiveCustomerSum = (getCustomerData?.data || []).reduce(
-  //   (accumulator, currentValue) => {
-  //     return (
-  //       accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
-  //     );
-  //   },
-  //   0
-  // );
-
-  // const negativeCustomerSum = (getCustomerData?.data || []).reduce(
-  //   (accumulator, currentValue) => {
-  //     return (
-  //       accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
-  //     );
-  //   },
-  //   0
-  // );
-
-  // const positiveSupplierSum = (getSupplierData?.data || []).reduce(
-  //   (accumulator, currentValue) => {
-  //     return (
-  //       accumulator + (currentValue?.balance > 0 ? currentValue?.balance : 0)
-  //     );
-  //   },
-  //   0
-  // );
-
-  // const negativeSupplierSum = (getSupplierData?.data || []).reduce(
-  //   (accumulator, currentValue) => {
-  //     return (
-  //       accumulator + (currentValue?.balance < 0 ? currentValue?.balance : 0)
-  //     );
-  //   },
-  //   0
-  // );
   let {
     customerNegativeBalance = 0,
     customerPositiveBalance = 0,

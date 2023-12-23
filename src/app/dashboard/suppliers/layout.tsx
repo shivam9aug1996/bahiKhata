@@ -1,6 +1,10 @@
-import Supplier from "@/app/components/Supplier";
+// import Supplier from "@/app/components/Supplier";
 // import TransNoItem from "@/app/components/TransNoItem";
-
+const Supplier = dynamic(() => import("@/app/components/Supplier"), {
+  loading: () => <LoadingCustomer />,
+  ssr: false,
+});
+import LoadingCustomer from "@/app/components/LoadingCustomer";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";

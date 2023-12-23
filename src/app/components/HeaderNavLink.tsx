@@ -10,8 +10,8 @@ const HeaderNavLink = ({ path, title }) => {
 
   return (
     <Link
-      className={`text-base md:text-lg lg:text-xl text-gray-700 hover:text-gray-900 ${
-        isActive ? "font-bold text-red-500" : "font-normal hover:text-red-500"
+      className={`text-base md:text-lg lg:text-xl text-gray-700  ${
+        isActive ? "font-bold text-red-500" : "font-normal"
       }`}
       href={path}
     >

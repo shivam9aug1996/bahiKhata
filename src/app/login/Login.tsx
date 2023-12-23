@@ -7,23 +7,27 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 
-import { useLoginMutation } from "../redux/features/authSlice";
+import { setAuthLoader, useLoginMutation } from "../redux/features/authSlice";
 
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 
 import Lottie from "../components/Lottie";
 import AuthForm from "../components/AuthForm";
+import usePageLoader from "../custom-hooks/usePageLoader";
 
 export default function Login() {
+  const authLoader = useSelector((state) => state?.auth?.authLoader || "");
   const [formData, setFormData] = useState({
     mobileNumber: "",
     password: "",
   });
+
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const pageLoaded = usePageLoader();
 
   const [
     login,
@@ -50,9 +54,15 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoginSuccess) {
+      console.log("hiiiiiiiuytfghjkl");
+      dispatch(setAuthLoader(true));
       router.replace("/dashboard/customers");
     }
   }, [isLoginSuccess]);
+
+  useEffect(() => {
+    console.log("loaded");
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -110,6 +120,8 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
       {isLoginLoading && <Loader />}
+      {authLoader ? <Loader /> : null}
+      {!pageLoaded ? <Loader /> : null}
       <div
         className="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden"
         // style={{ marginBottom: 80 }}
