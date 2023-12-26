@@ -1,5 +1,6 @@
 // import Customer from "@/app/components/Customer";
-// import Customer from "@/app/components/Customer";
+//import Customer from "@/app/components/Customer";
+import LoadingCustomer from "@/app/components/LoadingCustomer";
 const Customer = dynamic(() => import("@/app/components/Customer"), {
   loading: () => <LoadingCustomer />,
   ssr: false,
@@ -7,7 +8,7 @@ const Customer = dynamic(() => import("@/app/components/Customer"), {
 
 //import TransNoItem from "@/app/components/TransNoItem";
 const TransNoItem = dynamic(() => import("@/app/components/TransNoItem"));
-import LoadingCustomer from "@/app/components/LoadingCustomer";
+
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
