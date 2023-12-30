@@ -3,35 +3,41 @@ class Cache {
     this.cachedData = [];
   }
 
-  findIndexById(businessId) {
-    return this.cachedData.findIndex(
-      (entry) => entry.businessId === businessId
-    );
+  async findIndexById(businessId) {
+    return new Promise((resolve, reject) => {
+      const index = this.cachedData.findIndex(
+        (entry) => entry.businessId === businessId
+      );
+      resolve(index);
+    });
   }
 
-  hasCache(businessId) {
-    return this.findIndexById(businessId) !== -1;
+  async hasCache(businessId) {
+    const index = await this.findIndexById(businessId);
+    return index !== -1;
   }
 
-  getFromCache(businessId) {
-    const index = this.findIndexById(businessId);
+  async getFromCache(businessId) {
+    const index = await this.findIndexById(businessId);
     return index !== -1 ? this.cachedData[index].data : {};
   }
 
-  setToCache(businessId, data) {
-    const index = this.findIndexById(businessId);
+  async setToCache(businessId, data) {
+    const index = await this.findIndexById(businessId);
     if (index !== -1) {
       this.cachedData[index].data = data;
     } else {
       this.cachedData.push({ businessId, data });
     }
+    return Promise.resolve();
   }
 
-  invalidateCache(businessId) {
-    const index = this.findIndexById(businessId);
+  async invalidateCache(businessId) {
+    const index = await this.findIndexById(businessId);
     if (index !== -1) {
       this.cachedData.splice(index, 1);
     }
+    return Promise.resolve();
   }
 }
 

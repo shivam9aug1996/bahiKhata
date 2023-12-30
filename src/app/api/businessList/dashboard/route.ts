@@ -12,11 +12,13 @@ export async function GET(req, res) {
         { status: 400 }
       );
     }
-    if (cache.hasCache(businessId)) {
+    let hasCache = await cache.hasCache(businessId);
+    let cachedData = await cache.getFromCache(businessId);
+    if (hasCache) {
       return NextResponse.json(
         {
-          ...cache.getFromCache(businessId),
-          cache: cache.hasCache(businessId),
+          ...cachedData,
+          cache: hasCache,
         },
         { status: 200 }
       );
