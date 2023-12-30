@@ -1,5 +1,6 @@
 import cache, { invalidateCache } from "@/cache";
 import { ObjectId } from "mongodb";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { connectDB } from "../lib/dbconnection";
@@ -19,7 +20,7 @@ export async function POST(req, res) {
     let balance = 0;
     const createdAt = new Date();
     try {
-      await cache.invalidateCache(businessId);
+      cookies().delete(businessId);
       const result = await db
         .collection("customers")
         .insertOne({ businessId, name, mobileNumber, balance, createdAt });

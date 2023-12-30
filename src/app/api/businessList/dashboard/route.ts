@@ -1,5 +1,6 @@
 import cache from "@/cache";
 import { ObjectId } from "mongodb";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
 
@@ -12,17 +13,20 @@ export async function GET(req, res) {
         { status: 400 }
       );
     }
-    let hasCache = await cache.hasCache(businessId);
-    let cachedData = await cache.getFromCache(businessId);
-    if (hasCache) {
+    if (cookies().has(businessId)) {
+      console.log("kjhgfdfghj", cookies().get(businessId));
       return NextResponse.json(
         {
-          ...cachedData,
-          cache: hasCache,
+          ...JSON.parse(cookies().get(businessId)?.value),
+          cache: cookies().has(businessId),
         },
         { status: 200 }
       );
     }
+    // let hasCache = await cache.hasCache(businessId);
+    // let cachedData = await cache.getFromCache(businessId);
+    // if (hasCache) {
+
     try {
       const db = await connectDB();
       const business = await db
@@ -82,7 +86,8 @@ export async function GET(req, res) {
         supplierPositiveBalance,
         supplierNegativeBalance,
       };
-      cache.setToCache(businessId, aggregatedData);
+      cookies().set(businessId, JSON.stringify(aggregatedData));
+      // await cache.setToCache(businessId, aggregatedData);
 
       return NextResponse.json(aggregatedData, { status: 200 });
       //}
