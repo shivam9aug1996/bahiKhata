@@ -264,12 +264,7 @@ const Sidebar = ({
             <p>Error: {getTransactionError?.message}</p>
           ) : (
             <div className="grid gap-4">
-              <Pagination
-                totalPages={getTransactionData?.totalPages}
-                currentPage={page}
-                setPage={setPage}
-              />
-
+              <div className="mt-4"></div>
               {isFetching && <Loader />}
               {getTransactionData?.data?.length == 0 &&
               countNonEmptyKeys(isFilterOpen?.value) > 0 &&
@@ -334,6 +329,11 @@ const Sidebar = ({
                   </p>
                 </div>
               ))}
+              <Pagination
+                totalPages={getTransactionData?.totalPages}
+                currentPage={page}
+                setPage={setPage}
+              />
 
               {getTransactionData?.data?.length == 0 &&
               countNonEmptyKeys(isFilterOpen?.value) == 0 ? (

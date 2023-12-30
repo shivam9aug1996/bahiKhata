@@ -45,7 +45,7 @@ const CustomerData = ({
   );
   const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
   return (
-    <>
+    <div style={{ marginTop: 25 }}>
       {isTransactionsOpen ? (
         <TransactionListModal
           isTransactionsOpen={isTransactionsOpen}
@@ -54,18 +54,14 @@ const CustomerData = ({
         />
       ) : null}
 
-      <Pagination
-        totalPages={getCustomerData?.totalPages}
-        currentPage={page}
-        setPage={setPage}
-      />
       {isFetching ? (
         <div className="relative">
           <Loader wrapperStyle={{ position: "absolute", top: 20 }} />
         </div>
       ) : null}
+
       {getCustomerData?.data?.map((item, index) => (
-        <div className="relative">
+        <div className="relative mb-4">
           <button
             key={index}
             className={`w-full block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
@@ -136,6 +132,11 @@ const CustomerData = ({
           </div>
         </div>
       ))}
+      <Pagination
+        totalPages={getCustomerData?.totalPages}
+        currentPage={page}
+        setPage={setPage}
+      />
 
       {getCustomerData?.data.length == 0 &&
         isGetCustomerSuccess == true &&
@@ -144,7 +145,7 @@ const CustomerData = ({
           <NoParty title={"Customer"} />
           // </Suspense>
         )}
-    </>
+    </div>
   );
 };
 

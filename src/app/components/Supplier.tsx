@@ -198,7 +198,7 @@ const Supplier = () => {
             (getSupplierData?.data?.length == 0 &&
               debouncedInputValue !== "")) &&
           businessIdSelected ? (
-            <div className="relative">
+            <div className="relative" style={{ maxWidth: 250 }}>
               <input
                 type="text"
                 placeholder="Search.."
@@ -240,97 +240,100 @@ const Supplier = () => {
                 />
               </div>
             ) : null} */}
-              <Pagination
-                totalPages={getSupplierData?.totalPages}
-                currentPage={page}
-                setPage={setPage}
-              />
+
               {isFetching ? (
                 <div className="relative">
                   <Loader wrapperStyle={{ position: "absolute", top: 20 }} />
                 </div>
               ) : null}
-              {getSupplierData?.data?.map((item, index) => (
-                <div className="relative">
-                  <button
-                    onClick={() => {
-                      dispatch(setSelectedCustomer(item));
-                      setIsTransactionsOpen(true);
-                    }}
-                    key={index}
-                    className={`w-full block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
-                      pathname.includes(item._id)
-                        ? "text-blue-500 bg-blue-100 font-semibold"
-                        : "text-black hover:text-blue-500 font-normal"
-                    }`}
-                    // href={`/dashboard/suppliers/${item?._id}`}
-                    // scroll={false}
-                  >
-                    <div className="flex justify-between">
-                      <span>{item?.name}</span>
-                      <div className="flex flex-col items-end">
-                        <div>
-                          {item.balance > 0
-                            ? "You will give"
-                            : item.balance < 0
-                            ? "You will get"
-                            : ""}{" "}
-                        </div>
-                        {item.balance == 0 ? (
-                          <div style={{ height: 24 }}></div>
-                        ) : null}
-                        {/* {item.balance == 0 && <div className="h-6"></div>} */}
-                        <div
-                          className={`ml-2 ${
-                            item.balance > 0
-                              ? "text-green-500"
+              <div style={{ marginTop: 25 }}>
+                {getSupplierData?.data?.map((item, index) => (
+                  <div className="relative mb-4">
+                    <button
+                      onClick={() => {
+                        dispatch(setSelectedCustomer(item));
+                        setIsTransactionsOpen(true);
+                      }}
+                      key={index}
+                      className={`w-full block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
+                        pathname.includes(item._id)
+                          ? "text-blue-500 bg-blue-100 font-semibold"
+                          : "text-black hover:text-blue-500 font-normal"
+                      }`}
+                      // href={`/dashboard/suppliers/${item?._id}`}
+                      // scroll={false}
+                    >
+                      <div className="flex justify-between">
+                        <span>{item?.name}</span>
+                        <div className="flex flex-col items-end">
+                          <div>
+                            {item.balance > 0
+                              ? "You will give"
                               : item.balance < 0
-                              ? "text-red-500"
-                              : ""
-                          }`}
-                        >
-                          ₹
-                          {formatNumberOrStringWithFallback(
-                            Math.abs(item.balance)
-                          )}
+                              ? "You will get"
+                              : ""}{" "}
+                          </div>
+                          {item.balance == 0 ? (
+                            <div style={{ height: 24 }}></div>
+                          ) : null}
+                          {/* {item.balance == 0 && <div className="h-6"></div>} */}
+                          <div
+                            className={`ml-2 ${
+                              item.balance > 0
+                                ? "text-green-500"
+                                : item.balance < 0
+                                ? "text-red-500"
+                                : ""
+                            }`}
+                          >
+                            ₹
+                            {formatNumberOrStringWithFallback(
+                              Math.abs(item.balance)
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="h-5"></div>
-                  </button>
-                  <div className="flex flex-row absolute bottom-0 p-4">
-                    <PencilSquareIcon
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setIsOpen({
-                          ...isOpen,
-                          status: true,
-                          type: "edit",
-                          value: item,
-                        });
-                      }}
-                      className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
-                    ></PencilSquareIcon>
+                      <div className="h-5"></div>
+                    </button>
+                    <div className="flex flex-row absolute bottom-0 p-4">
+                      <PencilSquareIcon
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setIsOpen({
+                            ...isOpen,
+                            status: true,
+                            type: "edit",
+                            value: item,
+                          });
+                        }}
+                        className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+                      ></PencilSquareIcon>
 
-                    <TrashIcon
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setIsDeleteOpen({
-                          ...isDeleteOpen,
-                          status: true,
-                          value: {
-                            businessId: businessIdSelected,
-                            supplierId: item?._id,
-                          },
-                        });
-                      }}
-                      className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-                    />
+                      <TrashIcon
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setIsDeleteOpen({
+                            ...isDeleteOpen,
+                            status: true,
+                            value: {
+                              businessId: businessIdSelected,
+                              supplierId: item?._id,
+                            },
+                          });
+                        }}
+                        className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <Pagination
+                totalPages={getSupplierData?.totalPages}
+                currentPage={page}
+                setPage={setPage}
+              />
 
               {getSupplierData?.data.length == 0 &&
                 isGetSupplierSuccess == true &&

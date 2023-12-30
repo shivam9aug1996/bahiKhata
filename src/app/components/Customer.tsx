@@ -187,7 +187,7 @@ const Customer = () => {
             (getCustomerData?.data?.length == 0 &&
               debouncedInputValue !== "")) &&
           businessIdSelected ? (
-            <div className="relative">
+            <div className="relative" style={{ maxWidth: 250 }}>
               <input
                 type="text"
                 placeholder="Search.."
