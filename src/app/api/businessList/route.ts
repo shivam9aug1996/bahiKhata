@@ -1,4 +1,5 @@
 import { deleteCache, getCache, setCache } from "@/cache";
+import { isTokenVerified } from "@/json";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB, startSession } from "../lib/dbconnection";
@@ -7,6 +8,7 @@ export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business
     const { name, primaryKey, userId } = await req.json();
+
     const db = await connectDB();
     console.log(!name, !primaryKey, typeof primaryKey, typeof name);
     if (
@@ -83,6 +85,7 @@ export async function GET(req, res) {
       );
     }
     // Retrieve all businesses
+
     const db = await connectDB();
     let cacheData = await getCache(userId);
     if (cacheData) {

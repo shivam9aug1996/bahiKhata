@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
+import { secretKey } from "../../lib/keys";
 
 export async function POST(req, res) {
   try {
@@ -45,7 +46,7 @@ export async function POST(req, res) {
       );
     }
 
-    const token = jwt.sign({ id: user._id }, "secretkey");
+    const token = jwt.sign({ id: user._id }, secretKey);
     let now = new Date();
     let expirationDate = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 

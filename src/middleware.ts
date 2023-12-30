@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   console.log("hiiiii", request);
   const userToken = request.cookies.get("bahi_khata_user_token")?.value;
   const currentPath = request.nextUrl.pathname;
-  console.log("lkjhgr456789", currentPath, request.url);
+  console.log("lkjhgr456789", currentPath, request.url, request.nextUrl);
   if (!userToken) {
     if (currentPath.startsWith("/dashboard")) {
       let message = "token not exists";
@@ -30,10 +30,27 @@ export function middleware(request: NextRequest) {
     currentPath === "/" ||
     currentPath === "/dashboard"
   ) {
-    // User is authenticated and trying to access the login page, redirect to dashboard
     return NextResponse.redirect(new URL("/dashboard/customers", request.url));
   } else {
-    // User is authenticated, allow access to all dashboard routes
+    //write a fetch api call
+    // let urlToFetch = request?.url?.split(currentPath)[0];
+    // const response = await fetch(`${urlToFetch}/api/verifyToken`, {
+    //   method: "GET",
+    //   headers: {
+    //     Authorization: `Bearer ${userToken}`, // Pass the user token in the Authorization header if needed
+    //     // Add other headers if necessary
+    //   },
+    //   // Add other fetch options like body, etc.
+    // });
+
+    // if (response.ok) {
+    //   const data = await response.json();
+    //   // Process the fetched data as needed
+    //   console.log("Fetched data:", data);
+    // } else {
+    //   console.error("Fetch request failed:", response.status);
+    //   // Handle failed fetch request
+    // }
     return NextResponse.next();
   }
 }

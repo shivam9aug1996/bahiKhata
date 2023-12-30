@@ -1,4 +1,6 @@
+import { isTokenVerified } from "@/json";
 import { MongoClient, ObjectId } from "mongodb";
+
 import { dbUrl } from "./keys";
 
 let cachedClient;
@@ -8,11 +10,17 @@ const uri = dbUrl;
 
 export const connectDB = async () => {
   try {
+    let isToken = await isTokenVerified();
+    if (!isToken) {
+      return;
+    }
+    console.log("hiiiiii9876545678");
     await connectCluster();
     let res = await connectDatabase();
     return res;
   } catch (error) {
     console.log(error);
+
     throw error;
   }
 };

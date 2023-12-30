@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
+import { secretKey } from "../../lib/keys";
 
 const saltRounds = 10;
 
@@ -42,7 +43,7 @@ export async function POST(req, res) {
       password: hashedPassword,
     });
 
-    const token = jwt.sign({ id: results.insertedId }, "secretkey");
+    const token = jwt.sign({ id: results.insertedId }, secretKey);
     // cookies().set("token", token);
 
     let now = new Date();
