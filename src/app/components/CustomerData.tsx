@@ -3,17 +3,22 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { setSelectedCustomer } from "../redux/features/businessSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
 import Loader from "./Loader";
 import Skeleton from "react-loading-skeleton";
-const Pagination = dynamic(() => import("./Pagination"), {
-  loading: () => (
-    <Skeleton duration={0.6} height={42} style={{ marginTop: 16 }} />
-  ),
-});
+import Transaction from "./Transaction";
+import { Transition } from "@headlessui/react";
+import TransactionListModal from "./TransactionListModal";
+import Pagination from "./Pagination";
+
+// const Pagination = dynamic(() => import("./Pagination"), {
+//   loading: () => (
+//     <Skeleton duration={0.6} height={42} style={{ marginTop: 16 }} />
+//   ),
+// });
 
 const NoParty = dynamic(() => import("./NoParty"));
 // import NoParty from "./NoParty";
@@ -35,8 +40,20 @@ const CustomerData = ({
   console.log("customerdata4567890", getCustomerData);
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const customerSelected = useSelector(
+    (state) => state?.business?.customerSelected || null
+  );
+  const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
   return (
     <>
+      {isTransactionsOpen ? (
+        <TransactionListModal
+          isTransactionsOpen={isTransactionsOpen}
+          setIsTransactionsOpen={setIsTransactionsOpen}
+          partyId={customerSelected?._id}
+        />
+      ) : null}
+
       <Pagination
         totalPages={getCustomerData?.totalPages}
         currentPage={page}
@@ -49,18 +66,21 @@ const CustomerData = ({
       ) : null}
       {getCustomerData?.data?.map((item, index) => (
         <div className="relative">
-          <Link
+          <button
             key={index}
-            className={`block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
+            className={`w-full block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
               pathname.includes(item._id)
                 ? "text-blue-500 bg-blue-100 font-semibold"
                 : "text-black hover:text-blue-500 font-normal"
             }`}
-            onClick={() => dispatch(setSelectedCustomer(item))}
-            href={`/dashboard/customers/${item?._id}`}
-            scroll={false}
+            onClick={() => {
+              dispatch(setSelectedCustomer(item));
+              setIsTransactionsOpen(true);
+            }}
+            //  href={`/dashboard/customers/${item?._id}`}
+            //scroll={false}
           >
-            <div className="flex flex-col sm:flex-row justify-between ">
+            <div className="flex justify-between ">
               <span>{item?.name}</span>
               <div className="flex flex-col items-end">
                 <div>
@@ -71,6 +91,7 @@ const CustomerData = ({
                     : ""}
                 </div>
                 {item.balance == 0 ? <div style={{ height: 24 }}></div> : null}
+                {/* {item.balance == 0 && <div className="h-6"></div>} */}
                 <div
                   className={`ml-2 ${
                     item.balance > 0
@@ -85,7 +106,7 @@ const CustomerData = ({
               </div>
             </div>
             <div className="h-5"></div>
-          </Link>
+          </button>
           <div className="flex flex-row absolute bottom-0 p-4">
             <PencilSquareIcon
               onClick={(e) => {

@@ -19,11 +19,13 @@ import Loader from "./Loader";
 
 import PartySkeleton from "./PartySkeleton";
 import { setAuthLoader, useLoginMutation } from "../redux/features/authSlice";
+import Transaction from "./Transaction";
+import CustomerData from "./CustomerData";
 // const PartySkeleton = dynamic(() => import("./PartySkeleton"), { ssr: false });
 
-const CustomerData = dynamic(() => import("./CustomerData"), {
-  loading: () => <PartySkeleton />,
-});
+// const CustomerData = dynamic(() => import("./CustomerData"), {
+//   loading: () => <PartySkeleton />,
+// });
 const PartyModal = dynamic(() => import("./PartyModal"), {
   loading: () => <Loader />,
 });
@@ -147,108 +149,115 @@ const Customer = () => {
     deleteCustomer(JSON.stringify(isDeleteOpen?.value));
   };
   return (
-    <div
-      className="shadow-lg  container m-3 rounded-lg p-4 border overflow-auto hover:overflow-scroll mt-8"
-      style={{ height: 600 }}
-      ref={containerRef}
-    >
-      {isDeleteCustomerLoading ? <Loader /> : null}
-      {authLoader ? <Loader /> : null}
-      <div className="space-y-4">
-        {businessIdSelected && (
-          <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-            <div className="text-2xl font-bold mb-4 md:mb-0">Customer List</div>
+    <>
+      <div
+        className="shadow-lg  container m-3 rounded-lg p-4 border overflow-auto hover:overflow-scroll mt-8"
+        style={{ height: 600 }}
+        ref={containerRef}
+      >
+        {isDeleteCustomerLoading ? <Loader /> : null}
+        {authLoader ? <Loader /> : null}
+        <div className="space-y-4">
+          {businessIdSelected && (
+            <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+              <div className="text-2xl font-bold mb-4 md:mb-0">
+                Customer List
+              </div>
 
-            <button
-              onClick={() => {
-                if (businessIdSelected) {
-                  setIsOpen({
-                    ...isOpen,
-                    status: true,
-                    type: "add",
-                  });
-                } else {
-                  toast.error("Create business first");
-                }
-              }}
-              className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
-            >
-              <PlusCircleIcon className="w-6 h-6 mr-1" />
-              <span>Add Customer</span>
-            </button>
-          </div>
-        )}
-        {(getCustomerData?.data?.length > 0 ||
-          (getCustomerData?.data?.length == 0 && debouncedInputValue !== "")) &&
-        businessIdSelected ? (
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search.."
-              onChange={(e) => setSearchQuery(e.target.value)}
-              value={searchQuery}
-              className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
-            />
-            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-              <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
-            </span>
-          </div>
-        ) : null}
-        {!businessIdSelected && isGetBusinessSuccess ? (
-          <NoBusinessExists />
-        ) : null}
-        {!businessIdSelected && isGetBusinessLoading ? <PartySkeleton /> : null}
-        {getCustomerData?.data?.length == 0 &&
-        debouncedInputValue !== "" &&
-        businessIdSelected ? (
-          <p>No customers found matching your search.</p>
-        ) : null}
-        {isGetCustomerLoading ? (
-          <PartySkeleton />
-        ) : isGetCustomerError ? (
-          <p>
-            Error fetching customers:{" "}
-            {getCustomerError?.error?.substring(0, 50)}
-          </p>
-        ) : !businessIdSelected || getBusinessData?.length == 0 ? null : (
-          <CustomerData
-            getCustomerData={getCustomerData}
-            page={page}
-            setPage={setPage}
-            deleteCustomer={deleteCustomer}
-            isGetCustomerSuccess={isGetCustomerSuccess}
-            debouncedInputValue={debouncedInputValue}
-            businessIdSelected={businessIdSelected}
-            setIsOpen={setIsOpen}
-            isOpen={isOpen}
-            isFetching={isFetching}
-            handleDelete={handleDelete}
-          />
-        )}
-      </div>
-      {businessIdSelected ? (
-        <>
-          {isOpen?.status && (
-            <PartyModal
-              isOpen={isOpen}
+              <button
+                onClick={() => {
+                  if (businessIdSelected) {
+                    setIsOpen({
+                      ...isOpen,
+                      status: true,
+                      type: "add",
+                    });
+                  } else {
+                    toast.error("Create business first");
+                  }
+                }}
+                className="ml-4 flex items-center text-blue-500 hover:text-blue-700 max-w-max"
+              >
+                <PlusCircleIcon className="w-6 h-6 mr-1" />
+                <span>Add Customer</span>
+              </button>
+            </div>
+          )}
+          {(getCustomerData?.data?.length > 0 ||
+            (getCustomerData?.data?.length == 0 &&
+              debouncedInputValue !== "")) &&
+          businessIdSelected ? (
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search.."
+                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}
+                className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
+              />
+              <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
+              </span>
+            </div>
+          ) : null}
+          {!businessIdSelected && isGetBusinessSuccess ? (
+            <NoBusinessExists />
+          ) : null}
+          {!businessIdSelected && isGetBusinessLoading ? (
+            <PartySkeleton />
+          ) : null}
+          {getCustomerData?.data?.length == 0 &&
+          debouncedInputValue !== "" &&
+          businessIdSelected ? (
+            <p>No customers found matching your search.</p>
+          ) : null}
+          {isGetCustomerLoading ? (
+            <PartySkeleton />
+          ) : isGetCustomerError ? (
+            <p>
+              Error fetching customers:{" "}
+              {getCustomerError?.error?.substring(0, 50)}
+            </p>
+          ) : !businessIdSelected || getBusinessData?.length == 0 ? null : (
+            <CustomerData
+              getCustomerData={getCustomerData}
+              page={page}
+              setPage={setPage}
+              deleteCustomer={deleteCustomer}
+              isGetCustomerSuccess={isGetCustomerSuccess}
+              debouncedInputValue={debouncedInputValue}
+              businessIdSelected={businessIdSelected}
               setIsOpen={setIsOpen}
-              setSearchQuery={setSearchQuery}
+              isOpen={isOpen}
+              isFetching={isFetching}
+              handleDelete={handleDelete}
             />
           )}
-          {isDeleteOpen.status && (
-            <DeleteModal
-              setIsOpen={setIsDeleteOpen}
-              isOpen={isDeleteOpen}
-              title={"Delete Customer"}
-              subtitle={
-                "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
-              }
-              handleSubmit={handleSubmitDelete}
-            />
-          )}
-        </>
-      ) : null}
-    </div>
+        </div>
+        {businessIdSelected ? (
+          <>
+            {isOpen?.status && (
+              <PartyModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                setSearchQuery={setSearchQuery}
+              />
+            )}
+            {isDeleteOpen.status && (
+              <DeleteModal
+                setIsOpen={setIsDeleteOpen}
+                isOpen={isDeleteOpen}
+                title={"Delete Customer"}
+                subtitle={
+                  "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
+                }
+                handleSubmit={handleSubmitDelete}
+              />
+            )}
+          </>
+        ) : null}
+      </div>
+    </>
   );
 };
 

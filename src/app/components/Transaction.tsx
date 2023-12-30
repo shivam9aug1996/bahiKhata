@@ -8,18 +8,7 @@ import {
   useGetTransactionListQuery,
 } from "../redux/features/transactionSlice";
 import dynamic from "next/dynamic";
-const Sidebar = dynamic(() => import("./Sidebar"), {
-  loading: () => (
-    <div>
-      <div
-        style={{ width: "100%" }}
-        className={`shadow-md border bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full pb-10`}
-      >
-        <div className="flex justify-center items-center h-1/2">Loading...</div>
-      </div>
-    </div>
-  ),
-});
+
 import { usePathname } from "next/navigation";
 import { supplierApi } from "../redux/features/supplierSlice";
 
@@ -28,12 +17,13 @@ import useSuccessNotification from "../custom-hooks/useSuccessNotification";
 
 import { dashboardApi } from "../redux/features/dashboardSlice";
 import Loader from "./Loader";
-import TransactionSkeleton from "./TransactionSkeleton";
+
+import Sidebar from "./Sidebar";
 const DeleteModal = dynamic(() => import("./DeleteModal"), {
   loading: () => <Loader />,
 });
 
-const Transaction = ({ partyId }) => {
+const Transaction = ({ partyId, setIsTransactionsOpen }) => {
   let [isOpen, setIsOpen] = useState({ status: false, type: "", value: null });
   let [isFilterOpen, setIsFilterOpen] = useState({
     status: false,
@@ -47,6 +37,7 @@ const Transaction = ({ partyId }) => {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
+
   const pathname = usePathname();
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
@@ -119,6 +110,7 @@ const Transaction = ({ partyId }) => {
           handleSubmit={handleSubmitDelete}
         />
       )}
+
       <Sidebar
         isDeleteTransactionLoading={isDeleteTransactionLoading}
         partyId={partyId}
@@ -140,6 +132,7 @@ const Transaction = ({ partyId }) => {
         setIsDeleteOpen={setIsDeleteOpen}
         isDeleteOpen={isDeleteOpen}
         partyType={pathname.includes("customer") ? "customer" : "supplier"}
+        setIsTransactionsOpen={setIsTransactionsOpen}
       />
     </>
   );
