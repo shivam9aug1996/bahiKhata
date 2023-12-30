@@ -1,22 +1,37 @@
 class Cache {
   constructor() {
-    this.cachedData = {};
+    this.cachedData = [];
+  }
+
+  findIndexById(businessId) {
+    return this.cachedData.findIndex(
+      (entry) => entry.businessId === businessId
+    );
   }
 
   hasCache(businessId) {
-    return this.cachedData[businessId] ? true : false;
+    return this.findIndexById(businessId) !== -1;
   }
 
   getFromCache(businessId) {
-    return this.cachedData[businessId] || {};
+    const index = this.findIndexById(businessId);
+    return index !== -1 ? this.cachedData[index].data : {};
   }
 
   setToCache(businessId, data) {
-    this.cachedData[businessId] = data;
+    const index = this.findIndexById(businessId);
+    if (index !== -1) {
+      this.cachedData[index].data = data;
+    } else {
+      this.cachedData.push({ businessId, data });
+    }
   }
 
   invalidateCache(businessId) {
-    delete this.cachedData[businessId];
+    const index = this.findIndexById(businessId);
+    if (index !== -1) {
+      this.cachedData.splice(index, 1);
+    }
   }
 }
 
