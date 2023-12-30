@@ -9,6 +9,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Header from "./components/Header";
 import "@dotlottie/react-player/dist/index.css";
 import { getCookies } from "./actions";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Open_Sans({ subsets: ["latin"], weight: "500" });
 const Providers = dynamic(() => import("./components/Providers"));
@@ -32,6 +33,7 @@ export default function RootLayout({
           {children}
         </Providers>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
