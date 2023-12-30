@@ -1,3 +1,4 @@
+import cache, { invalidateCache } from "@/cache";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
@@ -18,6 +19,7 @@ export async function POST(req, res) {
     let balance = 0;
     const createdAt = new Date();
     try {
+      cache.invalidateCache(businessId);
       const result = await db
         .collection("customers")
         .insertOne({ businessId, name, mobileNumber, balance, createdAt });

@@ -1,3 +1,4 @@
+import cache from "@/cache";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
@@ -9,6 +10,15 @@ export async function GET(req, res) {
       return NextResponse.json(
         { message: "Invalid data format" },
         { status: 400 }
+      );
+    }
+    if (cache.hasCache(businessId)) {
+      return NextResponse.json(
+        {
+          ...cache.getFromCache(businessId),
+          cache: cache.hasCache(businessId),
+        },
+        { status: 200 }
       );
     }
     try {
@@ -70,6 +80,7 @@ export async function GET(req, res) {
         supplierPositiveBalance,
         supplierNegativeBalance,
       };
+      cache.setToCache(businessId, aggregatedData);
 
       return NextResponse.json(aggregatedData, { status: 200 });
       //}
