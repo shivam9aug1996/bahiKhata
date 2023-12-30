@@ -109,7 +109,7 @@ const Sidebar = ({
   console.log("customerSelected567890", getAllTransactionData);
 
   return (
-    <div className="flex h-screen">
+    <div>
       {/* Sidebar */}
       <div
         style={{ width: "100%" }}
