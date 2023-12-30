@@ -1,4 +1,4 @@
-import cache, { invalidateCache } from "@/cache";
+import cache, { deleteCache, invalidateCache } from "@/cache";
 import { ObjectId } from "mongodb";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -20,7 +20,7 @@ export async function POST(req, res) {
     let balance = 0;
     const createdAt = new Date();
     try {
-      cookies().delete(businessId);
+      await deleteCache(businessId);
       const result = await db
         .collection("customers")
         .insertOne({ businessId, name, mobileNumber, balance, createdAt });
@@ -250,6 +250,7 @@ export async function DELETE(req, res) {
           { status: 404 }
         );
       }
+      await deleteCache(businessId);
       // Delete customer and their corresponding transactions
       const deleteCustomerResult = await db
         .collection("customers")

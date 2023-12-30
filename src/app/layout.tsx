@@ -8,7 +8,8 @@ import NextTopLoader from "nextjs-toploader";
 import "react-loading-skeleton/dist/skeleton.css";
 import Header from "./components/Header";
 import "@dotlottie/react-player/dist/index.css";
-import getCookies from "./actions";
+import { getCookies } from "./actions";
+
 const inter = Open_Sans({ subsets: ["latin"], weight: "500" });
 const Providers = dynamic(() => import("./components/Providers"));
 

@@ -3,18 +3,22 @@
 import React, { useLayoutEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
-import getCookies from "../actions";
+
 import { setAuth } from "../redux/features/authSlice";
+import { setBusinessIdSelected } from "../redux/features/businessSlice";
 
 import store from "../redux/store";
 
-const Providers = ({ children, getCookies }: any) => {
+const Providers = ({ children, getCookies, getBusinessIdSelected }: any) => {
   useLayoutEffect(() => {
     getCookie();
   }, []);
   const getCookie = async () => {
     let data = await getCookies();
     store.dispatch(setAuth(data));
+    let businessIdSelected = data?.businessIdSelected;
+    if (businessIdSelected)
+      store.dispatch(setBusinessIdSelected(businessIdSelected));
   };
   return (
     <Provider store={store}>

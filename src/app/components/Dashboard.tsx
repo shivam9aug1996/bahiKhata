@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+
 import { useRouter } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -17,6 +18,7 @@ import DropDown from "./DropDown";
 // const DropDown = dynamic(() => import("./DropDown"));
 
 import Loader from "./Loader";
+import Cookies from "js-cookie";
 
 const Dashboard = () => {
   const userId = useSelector((state) => state?.auth?.userData?.userId || null);
@@ -53,6 +55,8 @@ const Dashboard = () => {
     if (isGetBusinessSuccess) {
       if (getBusinessData?.data?.length == 0) {
         dispatch(setBusinessIdSelected(""));
+        //cookies().set("businessIdSelected", "");
+        Cookies.set("businessIdSelected", "");
       } else {
         // dispatch(customerApi.util.invalidateTags(["customer"]));
         // dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
@@ -80,6 +84,8 @@ const Dashboard = () => {
       setSelectedItem(data?._id);
       setSelectedBusinessName(data?.name);
       dispatch(setBusinessIdSelected(data?._id));
+      //cookies().set("businessIdSelected", data?._id);
+      Cookies.set("businessIdSelected", data?._id);
     }
   }, [getBusinessData?.data]);
 

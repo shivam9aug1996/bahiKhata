@@ -1,3 +1,4 @@
+import { deleteCache, getCache, setCache } from "@/cache";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB, startSession } from "../lib/dbconnection";
@@ -21,6 +22,7 @@ export async function POST(req, res) {
     }
 
     try {
+      await deleteCache(userId);
       const user = await db
         .collection("users")
         .findOne({ _id: new ObjectId(userId) });
@@ -82,7 +84,16 @@ export async function GET(req, res) {
     }
     // Retrieve all businesses
     const db = await connectDB();
-
+    let cacheData = await getCache(userId);
+    if (cacheData) {
+      return NextResponse.json(
+        {
+          data: cacheData?.data?.data,
+          cache: true,
+        },
+        { status: 200 }
+      );
+    }
     try {
       const businesses = await db
         .collection("businesses")
@@ -90,7 +101,7 @@ export async function GET(req, res) {
           userId,
         })
         .toArray();
-
+      await setCache(userId, businesses);
       return NextResponse.json({ data: businesses }, { status: 200 });
     } catch (error) {
       return NextResponse.json(
@@ -120,6 +131,7 @@ export async function PUT(req, res) {
     }
 
     try {
+      await deleteCache(userId);
       if (primaryKey) {
         // Check if there's an existing primary business
         const existingPrimary = await db
@@ -176,6 +188,7 @@ export async function DELETE(req, res) {
     }
 
     try {
+      await deleteCache(userId);
       const businessToDelete = await db
         .collection("businesses")
         .findOne({ _id: new ObjectId(id), userId });

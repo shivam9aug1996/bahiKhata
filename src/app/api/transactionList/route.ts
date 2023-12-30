@@ -1,3 +1,4 @@
+import { deleteCache } from "@/cache";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB } from "../lib/dbconnection";
@@ -17,6 +18,7 @@ export async function POST(req, res) {
     }
     const createdAt = new Date();
     try {
+      await deleteCache(businessId);
       const result = await db.collection("transactions").insertOne({
         partyId,
         businessId,
@@ -228,6 +230,7 @@ export async function PUT(req, res) {
           { status: 404 }
         );
       }
+      await deleteCache(businessId);
 
       // Update fields based on the provided updatedFields object
       const updatedValues = {};
@@ -350,7 +353,7 @@ export async function DELETE(req, res) {
           { status: 404 }
         );
       }
-
+      await deleteCache(businessId);
       // Calculate the balance after deleting the transaction
       const allTransactions = await db
         .collection("transactions")

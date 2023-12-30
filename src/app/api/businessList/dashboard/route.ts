@@ -1,4 +1,4 @@
-import cache from "@/cache";
+import cache, { getCache, setCache } from "@/cache";
 import { ObjectId } from "mongodb";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -13,16 +13,16 @@ export async function GET(req, res) {
         { status: 400 }
       );
     }
-    if (cookies().has(businessId)) {
-      console.log("kjhgfdfghj", cookies().get(businessId));
-      return NextResponse.json(
-        {
-          ...JSON.parse(cookies().get(businessId)?.value),
-          cache: cookies().has(businessId),
-        },
-        { status: 200 }
-      );
-    }
+    // if (cookies().has(businessId)) {
+    //   console.log("kjhgfdfghj", cookies().get(businessId));
+    //   return NextResponse.json(
+    //     {
+    //       ...JSON.parse(cookies().get(businessId)?.value),
+    //       cache: cookies().has(businessId),
+    //     },
+    //     { status: 200 }
+    //   );
+    // }
     // let hasCache = await cache.hasCache(businessId);
     // let cachedData = await cache.getFromCache(businessId);
     // if (hasCache) {
@@ -49,6 +49,29 @@ export async function GET(req, res) {
           { status: 200 }
         );
       }
+      let cacheData = await getCache(businessId);
+      if (cacheData) {
+        return NextResponse.json(
+          {
+            ...cacheData?.data?.data,
+            cache: true,
+          },
+          { status: 200 }
+        );
+      }
+      // const cacheData = await db.collection("cache").findOne({
+      //   cacheId: businessId,
+      // });
+      // console.log("jhgfdfghjkl", cacheData);
+      // if (cacheData) {
+      //   return NextResponse.json(
+      //     {
+      //       ...cacheData?.data,
+      //       cache: true,
+      //     },
+      //     { status: 200 }
+      //   );
+      // }
 
       const totalCustomers = await db
         .collection("customers")
@@ -86,8 +109,11 @@ export async function GET(req, res) {
         supplierPositiveBalance,
         supplierNegativeBalance,
       };
-      cookies().set(businessId, JSON.stringify(aggregatedData));
-      // await cache.setToCache(businessId, aggregatedData);
+      // const result = await db
+      //   .collection("cache")
+      //   .insertOne({ cacheId: businessId, data: aggregatedData });
+
+      await setCache(businessId, aggregatedData);
 
       return NextResponse.json(aggregatedData, { status: 200 });
       //}
