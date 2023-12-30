@@ -130,7 +130,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
       dispatch(setSelectedCustomer(createCustomerData?.data));
       console.log("jhgfdsdfghj", createCustomerData?.data?._id);
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
-      router.push(`/dashboard/customers/${createCustomerData?.data?._id}`);
+      //router.push(`/dashboard/customers/${createCustomerData?.data?._id}`);
       setSearchQuery("");
     }
   }, [isCreateCustomerSuccess]);
@@ -283,6 +283,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
                         Mobile Number
                       </label>
                       <input
+                        maxLength={10}
                         type="text"
                         id="mobileNumber"
                         name="mobileNumber"

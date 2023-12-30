@@ -22,9 +22,9 @@ export default function SupplierLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row justify-center">
       <Supplier />
-      <TransNoItem title={"No supplier selected"} />
+      {/* <TransNoItem title={"No supplier selected"} /> */}
       {children}
     </div>
   );

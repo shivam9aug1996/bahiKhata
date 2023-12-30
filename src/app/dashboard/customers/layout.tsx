@@ -26,9 +26,9 @@ export default function CustomerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row justify-center">
       <Customer />
-      <TransNoItem title={"No customer selected"} />
+      {/* <TransNoItem title={"No customer selected"} /> */}
       {children}
     </div>
   );
