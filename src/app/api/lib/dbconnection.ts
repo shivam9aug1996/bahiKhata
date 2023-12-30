@@ -10,6 +10,7 @@ const uri = dbUrl;
 
 export const connectDB = async () => {
   try {
+    console.log("jhgtr457ytfghjklkjhghjkl", { cachedClient, db });
     let isToken = await isTokenVerified();
     if (!isToken) {
       return;
