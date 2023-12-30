@@ -140,6 +140,7 @@ const Transaction = ({ partyId }) => {
         setIsFilterOpen={setIsFilterOpen}
         setIsDeleteOpen={setIsDeleteOpen}
         isDeleteOpen={isDeleteOpen}
+        partyType={pathname.includes("customer") ? "customer" : "supplier"}
       />
     </>
   );

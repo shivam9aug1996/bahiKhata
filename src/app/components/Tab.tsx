@@ -39,6 +39,7 @@ const MainTab = () => {
               "customers"
             )}`}
             href="/dashboard/customers"
+            scroll={false}
           >
             {`Customer ${
               getDashboardData?.totalCustomers >= 0 && businessIdSelected
@@ -50,6 +51,7 @@ const MainTab = () => {
             className={`w-full text-center py-2 rounded-lg ${isActive(
               "suppliers"
             )}`}
+            scroll={false}
             href="/dashboard/suppliers"
           >
             {`Supplier ${

@@ -11,7 +11,7 @@ import Loader from "./Loader";
 import Skeleton from "react-loading-skeleton";
 const Pagination = dynamic(() => import("./Pagination"), {
   loading: () => (
-    <Skeleton duration={0.3} height={42} style={{ marginTop: 16 }} />
+    <Skeleton duration={0.6} height={42} style={{ marginTop: 16 }} />
   ),
 });
 

@@ -27,9 +27,9 @@ export default function CustomerLayout({
 }) {
   return (
     <div className="flex flex-row justify-center">
-      <Customer />
-      {/* <TransNoItem title={"No customer selected"} /> */}
       {children}
+      {/* <Customer /> */}
+      {/* <TransNoItem title={"No customer selected"} /> */}
     </div>
   );
 }

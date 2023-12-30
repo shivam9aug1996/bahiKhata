@@ -1,9 +1,6 @@
 // import Supplier from "@/app/components/Supplier";
 // import TransNoItem from "@/app/components/TransNoItem";
-const Supplier = dynamic(() => import("@/app/components/Supplier"), {
-  loading: () => <LoadingCustomer />,
-  ssr: false,
-});
+
 import LoadingCustomer from "@/app/components/LoadingCustomer";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
@@ -23,7 +20,7 @@ export default function SupplierLayout({
 }) {
   return (
     <div className="flex flex-row justify-center">
-      <Supplier />
+      {/* <Supplier /> */}
       {/* <TransNoItem title={"No supplier selected"} /> */}
       {children}
     </div>

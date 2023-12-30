@@ -8,6 +8,7 @@ const TransactionReport = ({
   customerSelected,
   filterData,
   isPdfDownloading,
+  partyType,
 }) => {
   let creditAmount = 0;
   let debitAmount = 0;
@@ -32,7 +33,9 @@ const TransactionReport = ({
       }
     >
       <div className="mb-3 p-2 rounded-md shadow-md text-sm">
-        {customerSelected?.name}
+        {`${partyType == "customer" ? "Customer" : "Supplier"} : ${
+          customerSelected?.name
+        }`}
       </div>
 
       <div className="mb-3 p-2 rounded-md shadow-md">

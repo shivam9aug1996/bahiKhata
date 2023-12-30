@@ -34,7 +34,7 @@ import toast from "react-hot-toast";
 
 const Pagination = dynamic(() => import("./Pagination"), {
   loading: () => (
-    <Skeleton duration={0.3} height={42} style={{ marginTop: 16 }} />
+    <Skeleton duration={0.6} height={42} style={{ marginTop: 16 }} />
   ),
 });
 const TransactionModal = dynamic(() => import("./TransactionModal"), {
@@ -70,6 +70,7 @@ const Sidebar = ({
   setIsFilterOpen,
   setIsDeleteOpen,
   isDeleteOpen,
+  partyType,
 }) => {
   const customerSelected = useSelector(
     (state) => state?.business?.customerSelected || null
@@ -124,11 +125,12 @@ const Sidebar = ({
             targetRef={targetRef}
             getAllTransactionData={getAllTransactionData}
             customerSelected={customerSelected}
+            partyType={partyType}
           />
         )}
 
         {/* <div>{JSON.stringify(isFilterOpen)}</div> */}
-        <div>
+        <div className="mb-10">
           {isDeleteTransactionLoading ? <Loader /> : null}
           {isOpen?.status && (
             <TransactionModal
@@ -144,25 +146,28 @@ const Sidebar = ({
             />
           )}
 
-          <Link
+          <button
             className="inline-block"
-            href={
-              pathname.includes("/dashboard/customers")
-                ? "/dashboard/customers"
-                : "/dashboard/suppliers"
-            }
+            // href={
+            //   pathname.includes("/dashboard/customers")
+            //     ? "/dashboard/customers"
+            //     : "/dashboard/suppliers"
+            // }
             onClick={() => {
               dispatch(setSelectedCustomer(""));
+              router.back();
             }}
             scroll={false}
           >
             <XMarkIcon className="w-7 h-7 text-gray-500 hover:text-red-500 cursor-pointer ml-4 mt-2" />
-          </Link>
+          </button>
 
           <div className="flex-1 p-6 pb-2 pt-2">
             {customerSelected?.name ? (
               <div className="mb-3  p-2 rounded-md shadow-md text-sm">
-                {customerSelected?.name}
+                {`${partyType == "customer" ? "Customer" : "Supplier"} : ${
+                  customerSelected?.name
+                }`}
               </div>
             ) : (
               <Skeleton duration={0.3} height={38} />
