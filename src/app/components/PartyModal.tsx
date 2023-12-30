@@ -139,7 +139,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
       dispatch(setSelectedCustomer(createSupplierData?.data));
       console.log("jhgfdsdfghj", createSupplierData?.data?._id);
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
-      router.push(`/dashboard/suppliers/${createSupplierData?.data?._id}`);
+      //srouter.push(`/dashboard/suppliers/${createSupplierData?.data?._id}`);
       setSearchQuery("");
     }
   }, [isCreateSupplierSuccess]);
