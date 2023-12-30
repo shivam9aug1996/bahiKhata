@@ -9,3 +9,11 @@ export const getCookies = () => {
   let businessIdSelected = cookies().get("businessIdSelected")?.value;
   return { token, userData, businessIdSelected };
 };
+
+export const deleteCookies = () => {
+  cookies()
+    .getAll()
+    .map((item) => {
+      cookies().delete(item?.name);
+    });
+};

@@ -15,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 import Lottie from "../components/Lottie";
 import AuthForm from "../components/AuthForm";
 import usePageLoader from "../custom-hooks/usePageLoader";
+import { deleteCookies } from "../actions";
 
 export default function Login() {
   const authLoader = useSelector((state) => state?.auth?.authLoader || "");
@@ -43,13 +44,11 @@ export default function Login() {
 
   useEffect(() => {
     const search = searchParams.get("message");
-
+    deleteCookies();
     console.log("kjhtr567890-hghjk", search);
     if (search == "token not exists") {
       router.refresh();
     }
-    Cookies.remove("bahi_khata_user_token");
-    Cookies.remove("bahi_khata_user_data");
   }, [router, searchParams, pathname]);
 
   useEffect(() => {

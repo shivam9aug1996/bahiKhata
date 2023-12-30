@@ -1,3 +1,4 @@
+import { deleteCookies } from "@/app/actions";
 import { createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
@@ -83,8 +84,10 @@ const authSlice = createSlice({
     builder.addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
       state.token = null;
       state.userData = null;
-      Cookies.remove("bahi_khata_user_token");
-      Cookies.remove("bahi_khata_user_data");
+      deleteCookies();
+      // Cookies.remove("bahi_khata_user_token");
+      // Cookies.remove("bahi_khata_user_data");
+      // Cookies.remove("businessIdSelected");
     });
     // builder.addMatcher(
     //   authApi.endpoints.verifyNumber.matchFulfilled,
