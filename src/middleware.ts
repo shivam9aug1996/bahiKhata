@@ -21,9 +21,13 @@ export async function middleware(request: NextRequest) {
       );
     } else if (currentPath.includes("api/auth/signup")) {
       console.log("kjhgfr5678");
-
+      if (!fp) {
+        return new NextResponse(
+          JSON.stringify({ error: "Fingerprint header is needed" }),
+          { status: 400 }
+        );
+      }
       if (checkRateLimitForAPI(fp, 2)) {
-        console.log("hiiiiiuytfghji876");
         return new NextResponse(
           JSON.stringify({ error: "Rate limit exceeded, wait for 60 seconds" }),
           { status: 429 }

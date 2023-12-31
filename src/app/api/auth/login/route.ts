@@ -46,10 +46,7 @@ export async function POST(req, res) {
       );
     }
 
-    const token = jwt.sign(
-      { id: user._id, userAgentHeader, userFingerprint },
-      secretKey
-    );
+    const token = jwt.sign({ id: user._id, userFingerprint }, secretKey);
     let now = new Date();
     let expirationDate = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 
@@ -57,7 +54,6 @@ export async function POST(req, res) {
       expires: expirationDate,
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
     });
     cookies().set(
       "bahi_khata_user_data",
@@ -66,7 +62,6 @@ export async function POST(req, res) {
         expires: expirationDate,
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
       }
     );
 

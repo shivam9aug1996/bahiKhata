@@ -43,7 +43,7 @@ export async function POST(req, res) {
     });
 
     const token = jwt.sign(
-      { id: results.insertedId, userAgentHeader, userFingerprint },
+      { id: results.insertedId, userFingerprint },
       secretKey
     );
     // cookies().set("token", token);
@@ -55,7 +55,7 @@ export async function POST(req, res) {
       expires: expirationDate,
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      //sameSite: "strict",
     });
     cookies().set(
       "bahi_khata_user_data",
@@ -64,7 +64,7 @@ export async function POST(req, res) {
         expires: expirationDate,
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        // sameSite: "strict",
       }
     );
     return NextResponse.json(
