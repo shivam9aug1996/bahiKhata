@@ -55,11 +55,17 @@ export async function POST(req, res) {
       expires: expirationDate,
       httpOnly: true,
       secure: true,
+      sameSite: "strict",
     });
     cookies().set(
       "bahi_khata_user_data",
       JSON.stringify({ mobileNumber, userId: results.insertedId }),
-      { expires: expirationDate, httpOnly: true, secure: true }
+      {
+        expires: expirationDate,
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      }
     );
     return NextResponse.json(
       {

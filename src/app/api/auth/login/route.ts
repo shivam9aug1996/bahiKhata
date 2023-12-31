@@ -57,6 +57,7 @@ export async function POST(req, res) {
       expires: expirationDate,
       httpOnly: true,
       secure: true,
+      sameSite: "strict",
     });
     cookies().set(
       "bahi_khata_user_data",
@@ -65,6 +66,7 @@ export async function POST(req, res) {
         expires: expirationDate,
         httpOnly: true,
         secure: true,
+        sameSite: "strict",
       }
     );
 
