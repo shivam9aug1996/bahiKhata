@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-const Pagination = ({ totalPages, currentPage, setPage }) => {
+const Pagination = ({ totalPages, currentPage, setPage, containerRef }) => {
   const showPages = 3; // Number of pages to display
   const pageNumbers = Array.from(
     { length: totalPages },
@@ -31,7 +31,13 @@ const Pagination = ({ totalPages, currentPage, setPage }) => {
         <>
           <button
             className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200 focus:outline-none m-1"
-            onClick={() => setPage(1)}
+            onClick={() => {
+              setPage(1);
+              containerRef?.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }}
           >
             1
           </button>
@@ -49,7 +55,13 @@ const Pagination = ({ totalPages, currentPage, setPage }) => {
               ? "bg-gray-400 text-white"
               : "bg-white text-gray-700"
           }`}
-          onClick={() => setPage(page)}
+          onClick={() => {
+            setPage(page);
+            containerRef?.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }}
         >
           {page}
         </button>
@@ -63,7 +75,13 @@ const Pagination = ({ totalPages, currentPage, setPage }) => {
             </span>
             <button
               className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200 focus:outline-none m-1"
-              onClick={() => setPage(totalPages)}
+              onClick={() => {
+                setPage(totalPages);
+                containerRef?.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }}
             >
               {totalPages}
             </button>

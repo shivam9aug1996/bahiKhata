@@ -124,6 +124,7 @@ const Customer = () => {
   useEffect(() => {
     if (businessIdSelected) {
       setSearchQuery("");
+      setPage(1);
     }
   }, [businessIdSelected]);
 
@@ -151,8 +152,8 @@ const Customer = () => {
   return (
     <>
       <div
-        className="shadow-lg  container m-3 rounded-lg p-4 border overflow-auto hover:overflow-scroll mt-8"
-        style={{ height: 600 }}
+        className="shadow-lg  container m-3 rounded-lg p-4 border  mt-8 mb-20"
+        style={{ minHeight: 600 }}
         ref={containerRef}
       >
         {isDeleteCustomerLoading ? <Loader /> : null}
@@ -191,7 +192,10 @@ const Customer = () => {
               <input
                 type="text"
                 placeholder="Search.."
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
                 value={searchQuery}
                 className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
               />
@@ -220,6 +224,7 @@ const Customer = () => {
             </p>
           ) : !businessIdSelected || getBusinessData?.length == 0 ? null : (
             <CustomerData
+              containerRef={containerRef}
               getCustomerData={getCustomerData}
               page={page}
               setPage={setPage}

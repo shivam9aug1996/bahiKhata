@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import React, { Fragment, useEffect, useState } from "react";
 
-const TransactionFilterModal = ({ isOpen, setIsOpen }) => {
+const TransactionFilterModal = ({ isOpen, setIsOpen, setPage }) => {
   const [formData, setFormData] = useState({
     type: "",
     startDate: "",
@@ -32,6 +32,7 @@ const TransactionFilterModal = ({ isOpen, setIsOpen }) => {
     // Handle form submission logic here
 
     setIsOpen({ ...isOpen, status: false, value: formData });
+    setPage(1);
     // Close modal after form submission
   }
 
@@ -41,6 +42,7 @@ const TransactionFilterModal = ({ isOpen, setIsOpen }) => {
       startDate: "",
       endDate: "",
     });
+    setPage(1);
   };
 
   return (

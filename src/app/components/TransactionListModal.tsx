@@ -33,7 +33,7 @@ const TransactionListModal = ({
 
           <div className="fixed inset-0 overflow-y-auto">
             <div
-              className="flex min-h-full items-center justify-center p-4 text-center"
+              className="flex min-h-full items-center justify-end p-4 text-center"
               style={{
                 padding: 0,
               }}
@@ -50,8 +50,9 @@ const TransactionListModal = ({
                 <Dialog.Panel
                   className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
                   style={{
-                    minWidth: "100vw",
+                    minWidth: "70vw",
                     minHeight: "100vh",
+                    marginLeft: 40,
                   }}
                 >
                   <div className="flex flex-row justify-between">

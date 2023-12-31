@@ -8,7 +8,7 @@ import {
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
@@ -70,6 +70,7 @@ const Supplier = () => {
     status: false,
     value: null,
   });
+  const containerRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const {
     isSuccess: isGetSupplierSuccess,
@@ -131,6 +132,13 @@ const Supplier = () => {
     return () => clearTimeout(timeoutId);
   }, [searchQuery, 500]);
 
+  useEffect(() => {
+    if (businessIdSelected) {
+      setSearchQuery("");
+      setPage(1);
+    }
+  }, [businessIdSelected]);
+
   const handleSubmitDelete = () => {
     deleteSupplier(JSON.stringify(isDeleteOpen?.value));
   };
@@ -145,8 +153,9 @@ const Supplier = () => {
       ) : null}
 
       <div
-        className="shadow-lg  container m-3 rounded-lg p-4 border overflow-auto hover:overflow-scroll mt-8"
-        style={{ height: 600 }}
+        className="shadow-lg  container m-3 rounded-lg p-4 border mt-8 mb-20"
+        style={{ minHeight: 600 }}
+        ref={containerRef}
       >
         {isDeleteSupplierLoading ? <Loader /> : null}
         {isOpen?.status && (
@@ -201,7 +210,10 @@ const Supplier = () => {
               <input
                 type="text"
                 placeholder="Search.."
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
                 value={searchQuery}
                 className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
               />
@@ -329,6 +341,7 @@ const Supplier = () => {
                 ))}
               </div>
               <Pagination
+                containerRef={containerRef}
                 totalPages={getSupplierData?.totalPages}
                 currentPage={page}
                 setPage={setPage}

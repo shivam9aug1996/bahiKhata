@@ -36,6 +36,7 @@ const CustomerData = ({
   isOpen,
   isFetching,
   handleDelete,
+  containerRef,
 }) => {
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -44,7 +45,10 @@ const CustomerData = ({
   );
   const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
   return (
-    <div style={{ marginTop: 25 }}>
+    <div
+      style={{ marginTop: 25 }}
+      //className={"overflow-auto hover:overflow-scroll"}
+    >
       {isTransactionsOpen ? (
         <TransactionListModal
           isTransactionsOpen={isTransactionsOpen}
@@ -135,6 +139,7 @@ const CustomerData = ({
         totalPages={getCustomerData?.totalPages}
         currentPage={page}
         setPage={setPage}
+        containerRef={containerRef}
       />
 
       {getCustomerData?.data.length == 0 &&
