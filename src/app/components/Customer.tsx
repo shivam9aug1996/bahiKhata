@@ -205,7 +205,7 @@ const Customer = () => {
             </div>
           ) : null}
           {!businessIdSelected && isGetBusinessSuccess ? (
-            <NoBusinessExists />
+            <NoBusinessExists type={"customer"} />
           ) : null}
           {!businessIdSelected && isGetBusinessLoading ? (
             <PartySkeleton />

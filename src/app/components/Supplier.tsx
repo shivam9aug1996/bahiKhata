@@ -223,7 +223,7 @@ const Supplier = () => {
             </div>
           ) : null}
           {!businessIdSelected && isGetBusinessSuccess ? (
-            <NoBusinessExists />
+            <NoBusinessExists type={"supplier"} />
           ) : null}
           {!businessIdSelected && isGetBusinessLoading ? (
             <PartySkeleton />

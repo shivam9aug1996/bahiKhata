@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import getBrowserFingerprint from "get-browser-fingerprint";
 
 export function formatNumberOrStringWithFallback(input = 0) {
   // Convert the input to a number if it's a string representation of a number
@@ -102,8 +103,12 @@ export const deviceData = (window, navigator) => {
 };
 
 export const getFp = async () => {
-  const fp = await FingerprintJS.load();
-  const { visitorId } = await fp.get();
+  // const fp = await FingerprintJS.load();
+  // const { visitorId } = await fp.get();
 
-  return visitorId;
+  // return visitorId;
+
+  const fingerprint = getBrowserFingerprint();
+  console.log(fingerprint);
+  return fingerprint;
 };

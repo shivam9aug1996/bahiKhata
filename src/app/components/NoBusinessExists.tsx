@@ -8,7 +8,7 @@ const BusinessModal = dynamic(() => import("./BusinessModal"), {
   loading: () => <Loader />,
 });
 
-const NoBusinessExists = () => {
+const NoBusinessExists = ({ type }) => {
   let [isModalOpen, setIsModalOpen] = useState({
     status: false,
     type: "",
@@ -25,8 +25,10 @@ const NoBusinessExists = () => {
         Welcome! Let's get started with your business.
       </h2>
       <p className="text-sm text-gray-500 mt-2 text-center">
-        Before adding customers/suppliers and their transactions, you need to
-        create a business.
+        {`Before adding ${
+          type == "customer" ? "customers" : "suppliers"
+        } and their transactions, you need to
+        create a business.`}
       </p>
       <button
         onClick={() => {
