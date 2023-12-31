@@ -112,7 +112,7 @@ const Customer = () => {
     null,
     isDeleteCustomerSuccess
   );
-  console.log("kjhgfghjkgfghjkl", getCustomerData);
+
   useEffect(() => {
     if (isDeleteCustomerSuccess) {
       setIsDeleteOpen({ status: false, value: null });
@@ -137,7 +137,7 @@ const Customer = () => {
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [searchQuery, 500]);
-  console.log("kjhgfdsfghjhgfghj", getCustomerData);
+
   const handleDelete = (data) => {
     setIsDeleteOpen({
       ...isDeleteOpen,

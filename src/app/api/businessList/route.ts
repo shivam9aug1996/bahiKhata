@@ -9,8 +9,7 @@ export async function POST(req, res) {
     // Create a new business
     const { name, primaryKey, userId } = await req.json();
 
-    const db = await connectDB();
-    console.log(!name, !primaryKey, typeof primaryKey, typeof name);
+    const db = await connectDB(req);
     if (
       !name ||
       typeof primaryKey !== "boolean" ||
@@ -86,18 +85,18 @@ export async function GET(req, res) {
     }
     // Retrieve all businesses
 
-    const db = await connectDB();
-    let cacheData = await getCache(userId);
-    if (cacheData) {
-      return NextResponse.json(
-        {
-          data: cacheData?.data?.data,
-          cache: true,
-        },
-        { status: 200 }
-      );
-    }
     try {
+      const db = await connectDB(req);
+      let cacheData = await getCache(userId);
+      if (cacheData) {
+        return NextResponse.json(
+          {
+            data: cacheData?.data?.data,
+            cache: true,
+          },
+          { status: 200 }
+        );
+      }
       const businesses = await db
         .collection("businesses")
         .find({
@@ -124,7 +123,7 @@ export async function PUT(req, res) {
   if (req.method === "PUT") {
     // Update a business
     const { id, name, primaryKey, userId } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!id || !name || primaryKey === undefined || !userId) {
       return NextResponse.json(
@@ -181,7 +180,7 @@ export async function PUT(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { id, userId } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!id || !userId) {
       return NextResponse.json(

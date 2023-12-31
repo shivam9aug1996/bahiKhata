@@ -53,8 +53,8 @@ export async function GET(req, res) {
     }
 
     // const { businessId } = await req.json();
-    const db = await connectDB();
-    console.log("mjhgf", businessId);
+    const db = await connectDB(req);
+
     //const skip = (page - 1) * limit;
     try {
       let totalTransactions = await db

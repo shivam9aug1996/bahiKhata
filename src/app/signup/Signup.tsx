@@ -65,7 +65,7 @@ export default function Signup() {
 
     if (mobileNumber.trim() === "" || password.trim() === "") {
       toast.error("Please fill in all fields");
-      console.log("Validation error: Please fill in all fields");
+
       return;
     }
 
@@ -73,30 +73,25 @@ export default function Signup() {
     const mobileNumberRegex = /^[6-9]\d{9}$/;
     if (!mobileNumber.match(mobileNumberRegex)) {
       toast.error("Please enter a valid Indian mobile number");
-      console.log(
-        "Validation error: Please enter a valid Indian mobile number"
-      );
+
       return;
     }
 
     // Check if mobile number has a length of 10 digits
     if (mobileNumber.length !== 10) {
       toast.error("Mobile number should be 10 digits long");
-      console.log("Validation error: Mobile number should be 10 digits long");
+
       return;
     }
 
     // Check if password has a minimum length of 8 characters
     if (password.length < 8) {
       toast.error("Password should be at least 8 characters long");
-      console.log(
-        "Validation error: Password should be at least 8 characters long"
-      );
+
       return;
     }
 
     // Here, you can handle form submission logic, such as API requests for login
-    console.log("Form submitted with:", formData);
 
     signup(JSON.stringify(formData));
     // For demonstration purposes, just logging the form data

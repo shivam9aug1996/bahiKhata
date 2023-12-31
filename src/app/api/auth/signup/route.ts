@@ -15,10 +15,9 @@ export async function POST(req, res) {
         { status: 405 }
       );
     }
-
+    let userAgentHeader = req.headers.get("user-agent");
+    let userFingerprint = req.headers.get("user-fingerprint");
     let { mobileNumber, password } = await req.json();
-
-    console.log(mobileNumber, password);
     if (!mobileNumber || !password) {
       return NextResponse.json(
         { message: "Missing mobile number or password" },
@@ -30,7 +29,7 @@ export async function POST(req, res) {
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const db = await connectDB();
+    const db = await connectDB(req);
     const existingUser = await db.collection("users").findOne({ mobileNumber });
     if (existingUser) {
       return NextResponse.json(
@@ -43,7 +42,10 @@ export async function POST(req, res) {
       password: hashedPassword,
     });
 
-    const token = jwt.sign({ id: results.insertedId }, secretKey);
+    const token = jwt.sign(
+      { id: results.insertedId, userAgentHeader, userFingerprint },
+      secretKey
+    );
     // cookies().set("token", token);
 
     let now = new Date();

@@ -8,8 +8,8 @@ export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business
     const { businessId, name, mobileNumber } = await req.json();
-    const db = await connectDB();
-    // console.log(!name, !primaryKey, typeof primaryKey, typeof name);
+    const db = await connectDB(req);
+
     if (!businessId || !name || !mobileNumber) {
       return NextResponse.json(
         { message: "Invalid data format" },
@@ -64,8 +64,8 @@ export async function GET(req, res) {
     const skip = (page - 1) * limit;
 
     // const { businessId } = await req.json();
-    const db = await connectDB();
-    console.log("mjhgf", businessId);
+    const db = await connectDB(req);
+
     try {
       let result;
       let totalSuppliers;
@@ -109,7 +109,6 @@ export async function GET(req, res) {
           .count();
       }
 
-      console.log(result);
       const totalPages = Math.ceil(totalSuppliers / limit);
       return NextResponse.json(
         { data: result, totalPages, currentPage: page },
@@ -132,7 +131,7 @@ export async function GET(req, res) {
 export async function PUT(req, res) {
   if (req.method === "PUT") {
     const { supplierId, businessId, updatedFields } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!supplierId || !businessId || !updatedFields) {
       return NextResponse.json(
@@ -146,7 +145,7 @@ export async function PUT(req, res) {
         _id: new ObjectId(supplierId),
         businessId,
       });
-      console.log(result);
+
       if (!result) {
         return NextResponse.json(
           { message: "Supplier not found" },
@@ -175,7 +174,7 @@ export async function PUT(req, res) {
           { _id: new ObjectId(supplierId), businessId },
           { $set: updatedValues }
         );
-      console.log(updatedResult);
+
       if (updatedResult.modifiedCount === 1) {
         return NextResponse.json(
           {
@@ -211,7 +210,7 @@ export async function PUT(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { supplierId, businessId } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!supplierId || !businessId) {
       return NextResponse.json(

@@ -9,8 +9,8 @@ export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business
     const { businessId, name, mobileNumber } = await req.json();
-    const db = await connectDB();
-    // console.log(!name, !primaryKey, typeof primaryKey, typeof name);
+    const db = await connectDB(req);
+
     if (!businessId || !name || !mobileNumber) {
       return NextResponse.json(
         { message: "Invalid data format" },
@@ -71,8 +71,8 @@ export async function GET(req, res) {
       );
     }
     // const { businessId } = await req.json();
-    const db = await connectDB();
-    console.log("mjhgf", businessId);
+    const db = await connectDB(req);
+
     try {
       let customers;
       let totalCustomers;
@@ -125,7 +125,7 @@ export async function GET(req, res) {
           .find({ businessId })
           .count();
       }
-      console.log("mjhgtr456y7uio", totalCustomers, limit, page);
+
       const totalPages = Math.ceil(totalCustomers / limit); // Calculate total pages
 
       return NextResponse.json(
@@ -149,7 +149,7 @@ export async function GET(req, res) {
 export async function PUT(req, res) {
   if (req.method === "PUT") {
     const { customerId, businessId, updatedFields } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!customerId || !businessId || !updatedFields) {
       return NextResponse.json(
@@ -163,7 +163,7 @@ export async function PUT(req, res) {
         _id: new ObjectId(customerId),
         businessId,
       });
-      console.log(customer);
+
       if (!customer) {
         return NextResponse.json(
           { message: "Customer not found" },
@@ -192,7 +192,7 @@ export async function PUT(req, res) {
           { _id: new ObjectId(customerId), businessId },
           { $set: updatedValues }
         );
-      console.log(updatedResult);
+
       if (updatedResult.modifiedCount === 1) {
         return NextResponse.json(
           {
@@ -228,7 +228,7 @@ export async function PUT(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { customerId, businessId } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!customerId || !businessId) {
       return NextResponse.json(

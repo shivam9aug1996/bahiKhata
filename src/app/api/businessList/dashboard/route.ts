@@ -13,22 +13,9 @@ export async function GET(req, res) {
         { status: 400 }
       );
     }
-    // if (cookies().has(businessId)) {
-    //   console.log("kjhgfdfghj", cookies().get(businessId));
-    //   return NextResponse.json(
-    //     {
-    //       ...JSON.parse(cookies().get(businessId)?.value),
-    //       cache: cookies().has(businessId),
-    //     },
-    //     { status: 200 }
-    //   );
-    // }
-    // let hasCache = await cache.hasCache(businessId);
-    // let cachedData = await cache.getFromCache(businessId);
-    // if (hasCache) {
 
     try {
-      const db = await connectDB();
+      const db = await connectDB(req);
       const business = await db
         .collection("businesses")
         .findOne({ _id: new ObjectId(businessId) });
@@ -59,19 +46,6 @@ export async function GET(req, res) {
           { status: 200 }
         );
       }
-      // const cacheData = await db.collection("cache").findOne({
-      //   cacheId: businessId,
-      // });
-      // console.log("jhgfdfghjkl", cacheData);
-      // if (cacheData) {
-      //   return NextResponse.json(
-      //     {
-      //       ...cacheData?.data,
-      //       cache: true,
-      //     },
-      //     { status: 200 }
-      //   );
-      // }
 
       const totalCustomers = await db
         .collection("customers")

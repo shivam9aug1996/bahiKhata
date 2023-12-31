@@ -49,7 +49,6 @@ const Dashboard = () => {
   //usePromiseNotification(updateBusiness())
   const [selectedItem, setSelectedItem] = useState("");
   const [selectedBusinessName, setSelectedBusinessName] = useState("");
-  console.log("jhgfddfghj", isUpdateBusinessSuccess);
 
   useEffect(() => {
     if (isGetBusinessSuccess) {
@@ -76,11 +75,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     let data = getBusinessData?.data?.find((item, index) => {
-      console.log(item);
       return item?.primaryKey == true;
     });
     if (data?._id) {
-      console.log("mjhgfghj", data);
       setSelectedItem(data?._id);
       setSelectedBusinessName(data?.name);
       dispatch(setBusinessIdSelected(data?._id));
@@ -89,31 +86,6 @@ const Dashboard = () => {
     }
   }, [getBusinessData?.data]);
 
-  // const handleDropdownChange = (e) => {
-  //   setSelectedItem(e.target.value);
-  //   router.push("/dashboard/customers");
-  //   dispatch(setBusinessIdSelected(e.target.value));
-  //   const selectedBusiness = getBusinessData?.data?.find(
-  //     (item) => item._id === e.target.value
-  //   );
-  //   // setSelectedBusinessId(e.target.value);
-  //   //router.push("/dashboard/customers");
-  //   updateBusiness(
-  //     JSON.stringify({
-  //       id: e.target.value,
-  //       primaryKey: true,
-  //       name: selectedBusiness.name,
-  //     })
-  //   );
-  //   console.log(
-  //     JSON.stringify({
-  //       id: e.target.value,
-  //       primaryKey: true,
-  //       name: selectedBusiness.name,
-  //     })
-  //   );
-  //   console.log("mjhgtr56789", e.target);
-  // };
   const handleDropdownChange = (el) => {
     const selectedBusiness = getBusinessData?.data?.find(
       (item) => item._id === el?._id
@@ -127,17 +99,8 @@ const Dashboard = () => {
         userId: userId,
       })
     );
-    // updateBusiness(
-    //   JSON.stringify({
-    //     id: el?._id,
-    //     primaryKey: true,
-    //     name: selectedBusiness.name,
-    //   })
-    // );
-
-    // console.log("mjhgtr56789", e.target);
   };
-  // console.log(states, getBusinessData);
+
   const handleAdd = () => {};
   return (
     <>

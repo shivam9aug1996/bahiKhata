@@ -14,6 +14,9 @@ export async function POST(req, res) {
       );
     }
 
+    let userAgentHeader = req.headers.get("user-agent");
+    let userFingerprint = req.headers.get("user-fingerprint");
+
     let { mobileNumber, password } = await req.json();
 
     if (!mobileNumber || !password) {
@@ -23,13 +26,10 @@ export async function POST(req, res) {
       );
     }
     mobileNumber = parseInt(mobileNumber);
-    console.log(mobileNumber);
     password = password?.toString();
 
-    const db = await connectDB();
-    console.log("gfdfghj", mobileNumber, password);
+    const db = await connectDB(req);
     const user = await db.collection("users").findOne({ mobileNumber });
-    console.log("kjhgfghj", user);
     if (!user) {
       return NextResponse.json(
         { message: "Mobile number not exists" },
@@ -46,7 +46,10 @@ export async function POST(req, res) {
       );
     }
 
-    const token = jwt.sign({ id: user._id }, secretKey);
+    const token = jwt.sign(
+      { id: user._id, userAgentHeader, userFingerprint },
+      secretKey
+    );
     let now = new Date();
     let expirationDate = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 

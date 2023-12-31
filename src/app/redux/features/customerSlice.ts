@@ -1,3 +1,4 @@
+import { getFp } from "@/app/utils/function";
 import { createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -5,6 +6,9 @@ export const customerApi = createApi({
   reducerPath: "customerApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "/api",
+    prepareHeaders: async (headers) => {
+      headers.set("user-fingerprint", await getFp());
+    },
   }),
 
   tagTypes: ["customer"],
@@ -27,7 +31,6 @@ export const customerApi = createApi({
     }),
     getCustomerList: builder.query({
       query: (data) => {
-        console.log("kjhgfghj", data);
         return {
           url: "/customerList",
           method: "GET",
@@ -67,65 +70,18 @@ const customerSlice = createSlice({
     // },
   },
   extraReducers: (builder) => {
-    // builder.addMatcher(
-    //   businessApi.endpoints.createBusiness.matchFulfilled,
-    //   (state, action) => {
-    //     console.log(action.payload.data);
-    //     const newBusiness = action.payload.data;
-
-    //     // If the newly created business has primaryKey set to true
-    //     //if (newBusiness.primaryKey) {
-    //     // Set primaryKey to false for all other businesses in the list
-    //     let g = state.businessList.map((business) => {
-    //       if (business?._id !== newBusiness._id) {
-    //         return { ...business, primaryKey: false };
-    //       }
-    //     });
-    //     g.push(newBusiness);
-    //     // }
-
-    //     // Push the new business to the businessList
-    //     state.businessList = g;
-    //     // state.businessList.push(action.payload.data);
-    //   }
-    // );
     builder.addMatcher(
       customerApi.endpoints.getCustomerList.matchFulfilled,
       (state, action) => {
         // If it's the first page, replace the data; otherwise, append it
-        console.log("kjuhytrdfghjkl;", action);
+
         if (action?.meta?.arg?.originalArgs?.page === 1) {
-          console.log("iuytrfghjkjhgfghjkl");
           state.customerList = action.payload.data; // Replace data for page 1
         } else {
           state.customerList = [...state.customerList, ...action.payload.data]; // Append new data
         }
       }
     );
-    // builder.addMatcher(
-    //   businessApi.endpoints.deleteBusiness.matchFulfilled,
-    //   (state, action) => {
-    //     console.log(action.payload.data?._id);
-    //     let businessToDelete = state.businessList.filter((item) => {
-    //       return item?._id === action?.payload?.data?._id;
-    //     });
-    //     let modifiedData = state.businessList.filter((item) => {
-    //       return item?._id !== action?.payload?.data?._id;
-    //     });
-    //     console.log(businessToDelete[0]);
-    //     if (businessToDelete[0]?.primaryKey && modifiedData?.length > 0) {
-    //       modifiedData[0].primaryKey = true;
-    //     }
-    //     console.log("hiiiiiii", modifiedData);
-    //     state.businessList = modifiedData;
-    //   }
-    // );
-    // builder.addMatcher(
-    //   customerApi.endpoints.updateBusiness.matchFulfilled,
-    //   (state, action) => {
-    //     state.triggerUpdateBusinessApi = true;
-    //   }
-    // );
   },
 });
 

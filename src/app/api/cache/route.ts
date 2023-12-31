@@ -8,8 +8,7 @@ export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business
     const { cacheId, data } = await req.json();
-    const db = await connectDB();
-    // console.log(!name, !primaryKey, typeof primaryKey, typeof name);
+    const db = await connectDB(req);
     if (!cacheId || !data) {
       return NextResponse.json(
         { message: "Invalid data format" },
@@ -21,7 +20,7 @@ export async function POST(req, res) {
       const cacheData = await db.collection("cache").findOne({
         cacheId: cacheId,
       });
-      console.log("kjhgfdfghjk", cacheData);
+
       if (cacheData) {
         const updatedResult = await db
           .collection("cache")
@@ -76,7 +75,7 @@ export async function GET(req, res) {
       );
     }
     // const { businessId } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     try {
       const cacheData = await db.collection("cache").findOne({ cacheId });
@@ -106,7 +105,7 @@ export async function GET(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { cacheId } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!cacheId) {
       return NextResponse.json(
@@ -120,7 +119,6 @@ export async function DELETE(req, res) {
         cacheId: cacheId,
       });
       if (cacheData) {
-        console.log("jhgfghjk", cacheData);
         const deleteCustomerResult = await db
           .collection("cache")
           .deleteOne({ cacheId });

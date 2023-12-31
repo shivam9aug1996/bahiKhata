@@ -24,10 +24,8 @@ export async function POST(req, res) {
     }
     mobileNumber = parseInt(mobileNumber);
 
-    const db = await connectDB();
-    console.log("gfdfghj", mobileNumber);
+    const db = await connectDB(req);
     const user = await db.collection("users").findOne({ mobileNumber });
-    console.log("kjhgfghj", user);
     if (!user) {
       return NextResponse.json(
         { message: "Mobile number not exists", numberExists: false },

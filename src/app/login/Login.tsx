@@ -45,7 +45,7 @@ export default function Login() {
   useEffect(() => {
     const search = searchParams.get("message");
     deleteCookies();
-    console.log("kjhtr567890-hghjk", search);
+
     if (search == "token not exists") {
       router.refresh();
     }
@@ -53,15 +53,10 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoginSuccess) {
-      console.log("hiiiiiiiuytfghjkl");
       dispatch(setAuthLoader(true));
       router.replace("/dashboard/customers");
     }
   }, [isLoginSuccess]);
-
-  useEffect(() => {
-    console.log("loaded");
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +66,7 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Add validation logic here
@@ -79,7 +74,7 @@ export default function Login() {
 
     if (mobileNumber.trim() === "" || password.trim() === "") {
       toast.error("Please fill in all fields");
-      console.log("Validation error: Please fill in all fields");
+
       return;
     }
 
@@ -87,32 +82,27 @@ export default function Login() {
     const mobileNumberRegex = /^[6-9]\d{9}$/;
     if (!mobileNumber.match(mobileNumberRegex)) {
       toast.error("Please enter a valid Indian mobile number");
-      console.log(
-        "Validation error: Please enter a valid Indian mobile number"
-      );
+
       return;
     }
 
     // Check if mobile number has a length of 10 digits
     if (mobileNumber.length !== 10) {
       toast.error("Mobile number should be 10 digits long");
-      console.log("Validation error: Mobile number should be 10 digits long");
+
       return;
     }
 
     // Check if password has a minimum length of 8 characters
     if (password.length < 8) {
       toast.error("Password should be at least 8 characters long");
-      console.log(
-        "Validation error: Password should be at least 8 characters long"
-      );
+
       return;
     }
 
     // Here, you can handle form submission logic, such as API requests for login
-    console.log("Form submitted with:", formData);
 
-    login(JSON.stringify(formData));
+    login(JSON.stringify({ ...formData }));
     // For demonstration purposes, just logging the form data
   };
 

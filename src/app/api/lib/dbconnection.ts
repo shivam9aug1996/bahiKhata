@@ -8,20 +8,21 @@ let db;
 let cachedSession;
 const uri = dbUrl;
 
-export const connectDB = async () => {
+export const connectDB = async (req) => {
   try {
-    console.log("jhgtr457ytfghjklkjhghjkl", { cachedClient, db });
-    let isToken = await isTokenVerified();
-    if (!isToken) {
-      return;
+    let isToken;
+    if (req) {
+      isToken = await isTokenVerified(req);
+
+      if (!isToken) {
+        return;
+      }
     }
-    console.log("hiiiiii9876545678");
+
     await connectCluster();
     let res = await connectDatabase();
     return res;
   } catch (error) {
-    console.log(error);
-
     throw error;
   }
 };

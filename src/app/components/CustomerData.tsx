@@ -37,7 +37,6 @@ const CustomerData = ({
   isFetching,
   handleDelete,
 }) => {
-  console.log("customerdata4567890", getCustomerData);
   const pathname = usePathname();
   const dispatch = useDispatch();
   const customerSelected = useSelector(
@@ -61,7 +60,7 @@ const CustomerData = ({
       ) : null}
 
       {getCustomerData?.data?.map((item, index) => (
-        <div className="relative mb-4">
+        <div className="relative mb-4" key={item?._id}>
           <button
             key={index}
             className={`w-full block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${

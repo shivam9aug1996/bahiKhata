@@ -67,10 +67,9 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     description: "", // Add description field
     date: todayDate(),
   });
-  console.log("iuytredfg", todayDate());
+
   useEffect(() => {
     if (isOpen?.value && isOpen?.type == "edit" && isOpen?.status == true) {
-      console.log("kjhgrt6789", isOpen?.value);
       setFormData({
         date: isOpen?.value?.date,
         amount: isOpen?.value?.amount,
@@ -112,7 +111,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
   function handleSubmit(e) {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted:", formData, isOpen);
+
     if (isOpen?.type == "edit") {
       updateTransaction(
         JSON.stringify({

@@ -10,6 +10,7 @@ import Header from "./components/Header";
 import "@dotlottie/react-player/dist/index.css";
 import { getCookies } from "./actions";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 
 const inter = Open_Sans({ subsets: ["latin"], weight: "500" });
 const Providers = dynamic(() => import("./components/Providers"));

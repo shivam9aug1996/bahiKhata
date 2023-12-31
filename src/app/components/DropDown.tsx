@@ -167,12 +167,11 @@ const DropDown = ({
 
   const getName = () => {
     let data = getBusinessData?.data?.find((item, index) => {
-      console.log(item);
       return item?.primaryKey == true;
     });
     return data?.name || "Select a business";
   };
-  console.log("hgfdsdfghjk", getDashboardData);
+
   const handleDelete = () => {
     deleteBusiness(
       JSON.stringify({

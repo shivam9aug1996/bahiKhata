@@ -30,7 +30,6 @@ const TransactionFilterModal = ({ isOpen, setIsOpen }) => {
   function handleSubmit(e) {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted:", formData, isOpen);
 
     setIsOpen({ ...isOpen, status: false, value: formData });
     // Close modal after form submission

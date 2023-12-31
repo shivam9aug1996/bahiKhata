@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const HeaderNavLink = ({ path, title }) => {
   const pathname = usePathname();
-  console.log(pathname, path);
+
   const isActive = pathname === path;
 
   return (

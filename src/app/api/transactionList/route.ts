@@ -8,8 +8,8 @@ export async function POST(req, res) {
     // Create a new business
     let { businessId, partyId, amount, type, description, date, partyType } =
       await req.json();
-    const db = await connectDB();
-    // console.log(!name, !primaryKey, typeof primaryKey, typeof name);
+    const db = await connectDB(req);
+
     if (!businessId || !partyId || !partyType || amount < 0 || !amount) {
       return NextResponse.json(
         { message: "Invalid data format" },
@@ -52,22 +52,6 @@ export async function POST(req, res) {
           { _id: new ObjectId(partyId), businessId },
           { $set: { balance } }
         );
-
-      // // Calculate credit and debit totals
-      // const creditTotal = type === "credit" ? amount : 0;
-      // const debitTotal = type === "debit" ? amount : 0;
-
-      // // Update customer's balance based on the transaction
-      // await db
-      //   .collection("customers")
-      //   .updateOne(
-      //     { _id: new ObjectId(partyId), businessId },
-      //     { $inc: { balance: creditTotal - debitTotal } }
-      //   );
-      // const updatedCustomer = await db
-      //   .collection("customers")
-      //   .findOne({ _id: new ObjectId(partyId), businessId });
-      // console.log("updatedCustomer", updatedCustomer);
 
       return NextResponse.json(
         {
@@ -156,8 +140,8 @@ export async function GET(req, res) {
     }
 
     // const { businessId } = await req.json();
-    const db = await connectDB();
-    console.log("mjhgf", businessId);
+    const db = await connectDB(req);
+
     const skip = (page - 1) * limit;
     try {
       let totalTransactions;
@@ -195,14 +179,8 @@ export async function PUT(req, res) {
   if (req.method === "PUT") {
     const { transactionId, businessId, partyId, updatedFields, partyType } =
       await req.json();
-    const db = await connectDB();
-    console.log({
-      transactionId,
-      businessId,
-      partyId,
-      updatedFields,
-      partyType,
-    });
+    const db = await connectDB(req);
+
     if (
       !transactionId ||
       !businessId ||
@@ -312,7 +290,7 @@ export async function PUT(req, res) {
         );
       }
     } catch (error) {
-      console.log(",jhtr567890", error);
+      console.log("error", error);
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }
@@ -329,7 +307,7 @@ export async function PUT(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { transactionId, businessId, partyId, partyType } = await req.json();
-    const db = await connectDB();
+    const db = await connectDB(req);
 
     if (!transactionId || !businessId || !partyId || !partyType) {
       return NextResponse.json(
@@ -346,7 +324,7 @@ export async function DELETE(req, res) {
           businessId,
           partyId,
         });
-      console.log("jhgfghjkjhghjk", deletedTransaction);
+
       if (!deletedTransaction?._id) {
         return NextResponse.json(
           { message: "Transaction not found" },

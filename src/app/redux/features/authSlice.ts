@@ -1,4 +1,5 @@
 import { deleteCookies } from "@/app/actions";
+import { getFp } from "@/app/utils/function";
 import { createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
@@ -7,6 +8,9 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "/api/auth",
+    prepareHeaders: async (headers) => {
+      headers.set("user-fingerprint", await getFp());
+    },
   }),
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -48,12 +52,6 @@ const authSlice = createSlice({
   },
   reducers: {
     setAuth: (state, action) => {
-      // console.log("kuytrerfghjk", action);
-      // if (action?.payload?.token) {
-      //   //state.token = action.payload.token;
-      // } else {
-      //   state.token = null;
-      // }
       if (action?.payload?.userData) {
         state.userData = JSON.parse(action?.payload?.userData);
       } else {
@@ -68,7 +66,6 @@ const authSlice = createSlice({
     builder.addMatcher(
       authApi.endpoints.login.matchFulfilled,
       (state, action) => {
-        console.log("kjhgffgh", action?.payload, action.payload?.token);
         state.token = action.payload?.token || null;
         state.userData = action.payload?.userData || null;
       }
@@ -89,13 +86,6 @@ const authSlice = createSlice({
       // Cookies.remove("bahi_khata_user_data");
       // Cookies.remove("businessIdSelected");
     });
-    // builder.addMatcher(
-    //   authApi.endpoints.verifyNumber.matchFulfilled,
-    //   (state, action) => {
-    //     console.log("kjhgffgh", action?.payload, action.payload?.token);
-    //     // state.token = action.payload?.token || "";
-    //   }
-    // );
   },
 });
 

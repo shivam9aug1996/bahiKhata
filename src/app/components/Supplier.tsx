@@ -131,7 +131,6 @@ const Supplier = () => {
     return () => clearTimeout(timeoutId);
   }, [searchQuery, 500]);
 
-  console.log("kjhgtr5678iugvhjk", businessIdSelected, getSupplierData);
   const handleSubmitDelete = () => {
     deleteSupplier(JSON.stringify(isDeleteOpen?.value));
   };
@@ -248,7 +247,7 @@ const Supplier = () => {
               ) : null}
               <div style={{ marginTop: 25 }}>
                 {getSupplierData?.data?.map((item, index) => (
-                  <div className="relative mb-4">
+                  <div className="relative mb-4" key={item?._id}>
                     <button
                       onClick={() => {
                         dispatch(setSelectedCustomer(item));

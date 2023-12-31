@@ -1,3 +1,4 @@
+import { getFp } from "@/app/utils/function";
 import { createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -5,6 +6,9 @@ export const businessApi = createApi({
   reducerPath: "businessApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "/api",
+    prepareHeaders: async (headers) => {
+      headers.set("user-fingerprint", await getFp());
+    },
   }),
   tagTypes: ["business"],
   endpoints: (builder) => ({
@@ -90,7 +94,6 @@ const businessSlice = createSlice({
     builder.addMatcher(
       businessApi.endpoints.getBusinessList.matchFulfilled,
       (state, action) => {
-        console.log(action.payload.data);
         state.businessList = action.payload.data;
         state.triggerGetBusinessApi = true;
       }

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@dotlottie/react-player": "^1.6.9",
+    "@fingerprintjs/fingerprintjs": "^4.2.1",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^2.0.1",

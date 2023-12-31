@@ -91,7 +91,7 @@ const Sidebar = ({
 
   const router = useRouter();
   const pathname = usePathname();
-  console.log("jhgfdxchjkhgfdfghj", isFilterOpen);
+
   const dispatch = useDispatch();
   const targetRef = useRef();
   const [isPdfDownloading, setIsPdfDownloading] = useState(false);
@@ -108,8 +108,6 @@ const Sidebar = ({
       document.removeEventListener("mousedown", closeSidebar);
     };
   }, [showSidebar, toggleSidebar]);
-
-  console.log("customerSelected567890", getAllTransactionData);
 
   return (
     <div

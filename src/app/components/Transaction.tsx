@@ -33,7 +33,7 @@ const Transaction = ({ partyId, setIsTransactionsOpen }) => {
     status: false,
     value: null,
   });
-  console.log("jhgfdsdfghjk", isFilterOpen);
+
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -78,7 +78,7 @@ const Transaction = ({ partyId, setIsTransactionsOpen }) => {
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
-  console.log("kjhghjk3333", getTransactionData);
+
   useEffect(() => {
     if (isDeleteTransactionSuccess) {
       setIsDeleteOpen({ status: false, value: null });

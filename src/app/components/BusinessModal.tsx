@@ -70,7 +70,6 @@ export default function BusinessModal({ isOpen, setIsOpen }) {
     name: "",
   });
 
-  console.log("iuytredfg", isOpen);
   useEffect(() => {
     if (isCreateBusinessSuccess) {
       if (pathname.includes("customers")) {
@@ -109,7 +108,7 @@ export default function BusinessModal({ isOpen, setIsOpen }) {
   function handleSubmit(e) {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted:", formData, isOpen);
+
     if (isOpen?.type == "edit") {
       updateBusiness(
         JSON.stringify({

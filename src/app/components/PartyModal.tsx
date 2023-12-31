@@ -99,7 +99,6 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
     mobileNumber: "",
   });
 
-  console.log("iuytredfg", isOpen);
   useEffect(() => {
     if (isOpen?.value && isOpen?.type === "edit" && isOpen?.status === true) {
       setFormData({
@@ -128,7 +127,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
   useEffect(() => {
     if (isCreateCustomerSuccess) {
       dispatch(setSelectedCustomer(createCustomerData?.data));
-      console.log("jhgfdsdfghj", createCustomerData?.data?._id);
+
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       //router.push(`/dashboard/customers/${createCustomerData?.data?._id}`);
       setSearchQuery("");
@@ -137,7 +136,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
   useEffect(() => {
     if (isCreateSupplierSuccess) {
       dispatch(setSelectedCustomer(createSupplierData?.data));
-      console.log("jhgfdsdfghj", createSupplierData?.data?._id);
+
       dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
       //srouter.push(`/dashboard/suppliers/${createSupplierData?.data?._id}`);
       setSearchQuery("");
@@ -160,7 +159,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
   function handleSubmit(e) {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted:", formData, isOpen);
+
     if (isOpen?.type == "edit" && isOpen?.part === "customer") {
       updateCustomer(
         JSON.stringify({
