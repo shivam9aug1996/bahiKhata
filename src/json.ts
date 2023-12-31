@@ -11,9 +11,10 @@ export async function verifyToken(token, req) {
     let userFingerprint = req.headers.get("user-fingerprint");
     if (
       decoded?.userAgentHeader === userAgentHeader &&
-      userAgentHeader &&
-      userFingerprint &&
-      decoded?.userFingerprint === userFingerprint
+      userAgentHeader
+      //&&
+      // userFingerprint &&
+      // decoded?.userFingerprint === userFingerprint
     ) {
       return true;
     } else {

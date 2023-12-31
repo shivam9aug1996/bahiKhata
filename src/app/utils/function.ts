@@ -102,8 +102,9 @@ export const deviceData = (window, navigator) => {
 };
 
 export const getFp = async () => {
-  const fp = await FingerprintJS.load();
-  const { visitorId } = await fp.get();
+  // const fp = await FingerprintJS.load();
+  // const { visitorId } = await fp.get();
 
-  return visitorId;
+  // return visitorId;
+  return "";
 };
