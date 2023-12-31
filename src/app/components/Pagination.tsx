@@ -32,11 +32,13 @@ const Pagination = ({ totalPages, currentPage, setPage, containerRef }) => {
           <button
             className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200 focus:outline-none m-1"
             onClick={() => {
-              setPage(1);
               containerRef?.current?.scrollIntoView({
-                behavior: "smooth",
+                behavior: "instant",
                 block: "start",
               });
+              setTimeout(() => {
+                setPage(1);
+              }, 100);
             }}
           >
             1
@@ -56,11 +58,13 @@ const Pagination = ({ totalPages, currentPage, setPage, containerRef }) => {
               : "bg-white text-gray-700"
           }`}
           onClick={() => {
-            setPage(page);
             containerRef?.current?.scrollIntoView({
-              behavior: "smooth",
+              behavior: "instant",
               block: "start",
             });
+            setTimeout(() => {
+              setPage(page);
+            }, 100);
           }}
         >
           {page}
@@ -76,11 +80,13 @@ const Pagination = ({ totalPages, currentPage, setPage, containerRef }) => {
             <button
               className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200 focus:outline-none m-1"
               onClick={() => {
-                setPage(totalPages);
                 containerRef?.current?.scrollIntoView({
-                  behavior: "smooth",
+                  behavior: "instant",
                   block: "start",
                 });
+                setTimeout(() => {
+                  setPage(totalPages);
+                }, 100);
               }}
             >
               {totalPages}

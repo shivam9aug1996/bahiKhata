@@ -278,7 +278,7 @@ const Sidebar = ({
                 >
                   <div
                     key={index}
-                    className={`flex sm:flex-row flex-col justify-between ${
+                    className={`flex  flex-row justify-between ${
                       transaction.type === "debit"
                         ? "text-red-500"
                         : "text-green-500"
