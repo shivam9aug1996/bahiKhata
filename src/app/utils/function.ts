@@ -136,9 +136,9 @@ export const isValidData = (data) => {
     return false;
   }
 
-  if (typeof data === "object" && Object.keys(data).length === 0) {
-    return false;
-  }
+  // if (typeof data === "object" && Object.keys(data).length === 0) {
+  //   return false;
+  // }
 
   return true;
 };
