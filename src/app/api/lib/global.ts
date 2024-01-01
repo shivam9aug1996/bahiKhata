@@ -66,11 +66,7 @@ export const deleteImage = async (imageUrl) => {
   const url = new URL(imageUrl);
   const pathnameParts = url.pathname.split("/");
   const imageName = pathnameParts[pathnameParts.length - 1];
-  let publicName = `${imageName}`;
-  publicName = `uploaded-images/${publicName?.substring(
-    0,
-    publicName?.lastIndexOf(".")
-  )}`;
+  const publicName = imageName?.substring(0, imageName?.lastIndexOf("."));
 
   cloudinary.uploader.destroy(
     publicName,
