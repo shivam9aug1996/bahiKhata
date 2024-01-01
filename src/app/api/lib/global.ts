@@ -29,6 +29,7 @@ export const uploadImage = async (imageFile) => {
       const uploadResult = await cloudinary.uploader.upload(tmpFileName, {
         public_id: `uploaded-images/image_${Date.now()}`, // Adjust the public_id as needed
       });
+      console.log("kjhgfdfghjk", uploadResult);
       imageUrl = uploadResult?.secure_url;
       try {
         //  await fs.unlink(uploadDir);
