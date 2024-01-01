@@ -14,22 +14,30 @@ cloudinary.config({
 export const uploadImage = async (imageFile) => {
   try {
     let imageUrl = null;
-    const bytes = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const { name: tmpFileName, fd: tmpFileDescriptor } = tmp.fileSync();
+
+    const fileBuffer = await imageFile.arrayBuffer();
+
+    var mime = imageFile.type;
+    var encoding = "base64";
+    var base64Data = Buffer.from(fileBuffer).toString("base64");
+    var fileUri = "data:" + mime + ";" + encoding + "," + base64Data;
+
+    // const bytes = await imageFile.arrayBuffer();
+    // const buffer = Buffer.from(bytes);
+    // const { name: tmpFileName, fd: tmpFileDescriptor } = tmp.fileSync();
+
+    // try {
+    //   // await writeFile(uploadDir, buffer);
+    //   console.log("jhgfdcvhjk", tmpFileName, buffer);
+    //   let result = await writeFile(tmpFileName, buffer);
+    //   console.log("i8765redfghjki87", result);
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
     try {
-      // await writeFile(uploadDir, buffer);
-      console.log("jhgfdcvhjk", tmpFileName, buffer);
-      let result = await writeFile(tmpFileName, buffer);
-      console.log("i8765redfghjki87", result);
-    } catch (error) {
-      console.log(error);
-    }
-
-    try {
-      const uploadResult = await cloudinary.uploader.upload(tmpFileName, {
-        public_id: `uploaded-images/image_tmpFileName`, // Adjust the public_id as needed
+      const uploadResult = await cloudinary.uploader.upload(fileUri, {
+        //public_id: `uploaded-images/image_tmpFileName`, // Adjust the public_id as needed
       });
       console.log("kjhgfdfghjk", uploadResult);
       imageUrl = uploadResult?.secure_url;
