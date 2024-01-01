@@ -1,6 +1,7 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { PlusIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +23,9 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
   );
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const [images, setImages] = useState([]); // State to store uploaded images
+  const [previewImages, setPreviewImages] = useState([]);
+
   const [
     createTransaction,
     {
@@ -76,6 +80,13 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
         type: isOpen?.value?.type,
         description: isOpen?.value?.description,
       });
+      //setPreviewImages(isOpen?.value?.imageUrl);
+      let data = [];
+      let imageArr = isOpen?.value?.imageUrl;
+      for (let i = 0; i < imageArr?.length; i++) {
+        data.push({ type: "edit", image: imageArr[i], id: `image_${i}` });
+      }
+      setImages(data);
     }
   }, [isOpen]);
   //let [isOpen, setIsOpen] = useState(true);
@@ -113,36 +124,117 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     // Handle form submission logic here
 
     if (isOpen?.type == "edit") {
-      updateTransaction(
-        JSON.stringify({
-          partyId,
-          businessId: businessIdSelected,
-          partyType: pathname.includes("customer") ? "customer" : "supplier",
-          updatedFields: {
-            amount: parseFloat(formData.amount),
-            type: formData.type,
-            description: formData.description,
-            date: formData.date,
-          },
-          transactionId: isOpen?.value?._id,
-        })
+      const formRes = new FormData();
+      formRes.append("partyId", partyId);
+      formRes.append("businessId", businessIdSelected);
+      formRes.append(
+        "partyType",
+        pathname.includes("customer") ? "customer" : "supplier"
       );
-    } else {
-      createTransaction(
+      formRes.append("transactionId", isOpen?.value?._id);
+      formRes.append(
+        "updatedFields",
         JSON.stringify({
           amount: parseFloat(formData.amount),
           type: formData.type,
-          partyId,
-          businessId: businessIdSelected,
           description: formData.description,
           date: formData.date,
-          partyType: pathname.includes("customer") ? "customer" : "supplier",
         })
       );
+      formRes.append("imageCount", images?.length);
+      //  formRes.append("images[]", images);
+      images.forEach((obj, index) => {
+        // Append each object's file as a Blob/File to FormData
+        formRes.append(`images[id][${index}]`, obj?.id);
+        formRes.append(`images[type][${index}]`, obj?.type);
+        formRes.append(`images[image][${index}]`, obj?.image);
+      });
+      updateTransaction(formRes);
+    } else {
+      const formRes = new FormData();
+      formRes.append("amount", parseFloat(formData.amount));
+      formRes.append("type", formData.type);
+      formRes.append("partyId", partyId);
+      formRes.append("businessId", businessIdSelected);
+      formRes.append("description", formData.description);
+      formRes.append("date", formData.date);
+      formRes.append(
+        "partyType",
+        pathname.includes("customer") ? "customer" : "supplier"
+      );
+      for (let i = 0; i < images.length; i++) {
+        formRes.append("images[]", images[i]?.image);
+      }
+      createTransaction(formRes);
     }
 
     // Close modal after form submission
   }
+
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+
+    // Generate a unique ID for the new image
+    const uniqueId = `image_${Date.now()}`;
+
+    // Create an object containing ID, type, and the selected image
+    const newImage = { id: uniqueId, type: "add", image: selectedImage };
+
+    // Update the images state with the new image object at the beginning of the array
+    setImages([newImage, ...images]);
+  };
+
+  // Function to handle single image addition using the plus icon
+  const handleAddImage = (e) => {
+    const selectedImage = e.target.files[0];
+
+    // Update the state with the selected image
+    if (selectedImage) {
+      setImages([...images, selectedImage]);
+    }
+  };
+
+  // Function to handle image upload
+  const handleImageUpload = () => {
+    // Implement image upload logic here using appropriate API or service
+    // After successful upload, you can update the UI accordingly
+    // For example:
+    // dispatch(uploadImages(images)); // Dispatch an action to upload images
+
+    // Clear the image selection after upload
+    setImages([]);
+  };
+
+  const handleRemoveImage = (e, indexToRemove, imageItem) => {
+    if (
+      isOpen?.type === "add" ||
+      (isOpen?.type === "edit" && imageItem?.type == "add")
+    ) {
+      const updatedImages = images.filter(
+        (_, index) => index !== indexToRemove
+      );
+      setImages(updatedImages);
+      e.stopPropagation();
+      e.preventDefault();
+    } else {
+      let modifiedRes = images?.map((item, index) => {
+        if (index === indexToRemove) {
+          return { ...item, type: "delete" };
+        } else {
+          return item;
+        }
+      });
+      setImages(modifiedRes);
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+
+  const handleImageClick = (e, image) => {
+    window.open(image, "_blank");
+    e.stopPropagation();
+    e.preventDefault();
+  };
 
   return (
     <>
@@ -196,7 +288,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
                         htmlFor="amount"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Amount
+                        Amount <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -214,7 +306,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
                         htmlFor="type"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Type
+                        Type <span className="text-red-500">*</span>
                       </label>
                       <select
                         id="type"
@@ -227,13 +319,31 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
                         <option value="debit">You Gave</option>
                       </select>
                     </div>
+                    {/* Date input field */}
+                    <div className="flex flex-col space-y-1">
+                      <label
+                        htmlFor="date"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Date <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value={formData.date}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
                     {/* Description input field */}
                     <div className="flex flex-col space-y-1">
                       <label
                         htmlFor="description"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Description
+                        Description{" "}
+                        <span className="text-gray-500">(Optional)</span>
                       </label>
                       <textarea
                         id="description"
@@ -246,33 +356,93 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
                       />
                     </div>
 
-                    {/* Date input field */}
-                    <div className="flex flex-col space-y-1">
+                    {/* Image input field */}
+                    <div className="flex flex-col space-y-4">
                       <label
-                        htmlFor="date"
+                        htmlFor="images"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Date
+                        Select Images{" "}
+                        <span className="text-gray-500">(Optional)</span>
                       </label>
-                      <input
-                        type="date"
-                        id="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
+                      <div className="flex items-center space-x-4">
+                        <label
+                          htmlFor="images"
+                          className="flex items-center justify-center w-28 h-28 border border-dashed rounded-md cursor-pointer"
+                        >
+                          <PlusIcon className="h-10 w-10 text-blue-500 cursor-pointer" />
+                          <input
+                            type="file"
+                            id="images"
+                            name="images"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1 cursor-pointer">
+                        Click to view larger image
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {images?.map((image, index) => {
+                          return image?.type == "add" ||
+                            image?.type == "edit" ? (
+                            <div
+                              key={index}
+                              className="relative"
+                              onClick={(e) =>
+                                handleImageClick(
+                                  e,
+                                  image?.type == "edit"
+                                    ? image?.image
+                                    : image?.type == "add"
+                                    ? URL.createObjectURL(image?.image)
+                                    : null
+                                )
+                              }
+                            >
+                              <div className="w-20 h-20 cursor-pointer">
+                                <Image
+                                  loading="lazy"
+                                  fill
+                                  src={
+                                    image?.type == "edit"
+                                      ? image?.image
+                                      : image?.type == "add"
+                                      ? URL.createObjectURL(image?.image)
+                                      : null
+                                  }
+                                  alt={`Preview ${index}`}
+                                  className="w-20 h-20 object-cover rounded-md border"
+                                />
+                              </div>
+
+                              {/* <img
+                                src={
+                                  image?.type == "edit"
+                                    ? image?.image
+                                    : image?.type == "add"
+                                    ? URL.createObjectURL(image?.image)
+                                    : null
+                                }
+                                alt={`Preview ${index}`}
+                                className="w-20 h-20 object-cover rounded-md border"
+                              /> */}
+                              <button
+                                className="absolute top-0 right-0 -mt-1 -mr-1 bg-black p-0 rounded-full text-white hover:text-red-500"
+                                onClick={(e) => {
+                                  handleRemoveImage(e, index, image);
+                                }}
+                              >
+                                <XCircleIcon className="h-5 w-5" />
+                              </button>
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
                     </div>
 
-                    {/* <div className="flex justify-end">
-                      <button
-                        onClick={() => {}}
-                        type="submit"
-                        className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                      >
-                        Submit
-                      </button>
-                    </div> */}
                     <div className="flex justify-center space-x-4">
                       <button
                         type="button"

@@ -261,7 +261,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
                         htmlFor="name"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Name
+                        Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -279,7 +279,7 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
                         htmlFor="mobileNumber"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Mobile Number
+                        Mobile Number <span className="text-red-500">*</span>
                       </label>
                       <input
                         maxLength={10}

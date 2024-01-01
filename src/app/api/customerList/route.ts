@@ -1,9 +1,10 @@
-import cache, { deleteCache, invalidateCache } from "@/cache";
+import { deleteCache } from "@/cache";
 import { ObjectId } from "mongodb";
-import { cookies } from "next/headers";
+
 import { NextResponse } from "next/server";
 
 import { connectDB } from "../lib/dbconnection";
+import { deleteImage } from "../lib/global";
 
 export async function POST(req, res) {
   if (req.method === "POST") {
@@ -255,6 +256,38 @@ export async function DELETE(req, res) {
       const deleteCustomerResult = await db
         .collection("customers")
         .deleteOne({ _id: new ObjectId(customerId), businessId });
+      const transactions = await db
+        .collection("transactions")
+        .find({ partyId: customerId, businessId })
+        .toArray();
+
+      if (transactions && transactions.length > 0) {
+        try {
+          for (const transaction of transactions) {
+            const { imageUrl } = transaction;
+
+            for (let i = 0; i < imageUrl?.length; i++) {
+              try {
+                await deleteImage(imageUrl[i]);
+              } catch (error) {
+                console.error(`Error deleting image`);
+              }
+            }
+          }
+        } catch (error) {
+          // Handle image deletion errors (log the error, return a response, etc.)
+          console.error("Error deleting images:", error);
+          // Depending on your logic, you might want to throw an error or return a response here
+        }
+
+        // Now that the associated images are deleted, proceed to delete the transactions
+        const deleteTransactionsResult = await db
+          .collection("transactions")
+          .deleteMany({ partyId: customerId, businessId });
+
+        // Handle the response after deleting the transactions
+        // Return a success message, updated data, or any other required response
+      }
 
       const deleteTransactionsResult = await db
         .collection("transactions")

@@ -2,15 +2,36 @@ import { deleteCache } from "@/cache";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB } from "../lib/dbconnection";
+import { deleteImage, uploadImage } from "../lib/global";
 
 export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business
-    let { businessId, partyId, amount, type, description, date, partyType } =
-      await req.json();
+    // let { businessId, partyId, amount, type, description, date, partyType } =
+    //   await req.json();
+
+    const formData = await req?.formData(); // Parse the FormData object
+    const businessId = formData?.get("businessId");
+    const partyId = formData?.get("partyId");
+    let amount = formData?.get("amount");
+    amount = parseFloat(amount);
+    const type = formData?.get("type");
+
+    const description = formData?.get("description");
+    const date = formData?.get("date");
+    const partyType = formData?.get("partyType");
+    const imageFile = formData?.getAll("images[]"); // Get the uploaded image file
+
     const db = await connectDB(req);
 
-    if (!businessId || !partyId || !partyType || amount < 0 || !amount) {
+    if (
+      !businessId ||
+      !partyId ||
+      !partyType ||
+      amount < 0 ||
+      !amount ||
+      !date
+    ) {
       return NextResponse.json(
         { message: "Invalid data format" },
         { status: 400 }
@@ -18,6 +39,20 @@ export async function POST(req, res) {
     }
     const createdAt = new Date();
     try {
+      let imageUrl = [];
+      if (imageFile) {
+        for (let i = 0; i < imageFile.length; i++) {
+          try {
+            let data = await uploadImage(imageFile[i]);
+            imageUrl.push(data);
+          } catch (uploadError) {
+            // Log the error and continue processing other images or handle it as needed
+            console.error(`Error uploading image`);
+            // Optionally, you can decide to break the loop or perform any other action
+          }
+        }
+      }
+
       await deleteCache(businessId);
       const result = await db.collection("transactions").insertOne({
         partyId,
@@ -28,6 +63,7 @@ export async function POST(req, res) {
         date,
         partyType,
         createdAt,
+        imageUrl,
       });
 
       const allTransactions = await db
@@ -67,6 +103,7 @@ export async function POST(req, res) {
             description,
             partyType,
             createdAt,
+            imageUrl,
           },
         },
         { status: 201 }
@@ -177,8 +214,33 @@ export async function GET(req, res) {
 
 export async function PUT(req, res) {
   if (req.method === "PUT") {
-    const { transactionId, businessId, partyId, updatedFields, partyType } =
-      await req.json();
+    // const { transactionId, businessId, partyId, updatedFields, partyType } =
+    //   await req.json();
+    const formData = await req?.formData(); // Parse the FormData object
+    const businessId = formData?.get("businessId");
+    const transactionId = formData?.get("transactionId");
+    const partyId = formData?.get("partyId");
+    const updatedFields1 = formData?.get("updatedFields");
+
+    const partyType = formData?.get("partyType");
+    const updatedFields = JSON.parse(updatedFields1);
+
+    let imageArray = [];
+    for (let i = 0; i < formData.get("imageCount"); i++) {
+      const id = formData.get(`images[id][${i}]`);
+      const type = formData.get(`images[type][${i}]`);
+      const imageUrl = formData.get(`images[image][${i}]`);
+
+      // Create an object representing each image
+      const imageObject = {
+        id: id,
+        type: type,
+        imageUrl: imageUrl,
+      };
+
+      imageArray.push(imageObject);
+    }
+
     const db = await connectDB(req);
 
     if (
@@ -212,9 +274,27 @@ export async function PUT(req, res) {
 
       // Update fields based on the provided updatedFields object
       const updatedValues = {};
-
+      let imageUrl = [];
+      for (let i = 0; i < imageArray.length; i++) {
+        if (imageArray[i]?.type == "add") {
+          try {
+            const data = await uploadImage(imageArray[i]?.imageUrl);
+            imageUrl.push(data);
+          } catch (error) {
+            console.error(`Error uploading image`);
+          }
+        } else if (imageArray[i]?.type == "delete") {
+          try {
+            await deleteImage(imageArray[i]?.imageUrl);
+          } catch (error) {
+            console.error(`Error deleting image`);
+          }
+        } else if (imageArray[i]?.type == "edit") {
+          imageUrl.push(imageArray[i]?.imageUrl);
+        }
+      }
       if (updatedFields.hasOwnProperty("amount")) {
-        updatedValues.amount = updatedFields.amount;
+        updatedValues.amount = parseFloat(updatedFields.amount);
       }
 
       if (updatedFields.hasOwnProperty("type")) {
@@ -226,6 +306,8 @@ export async function PUT(req, res) {
       if (updatedFields.hasOwnProperty("date")) {
         updatedValues.date = updatedFields.date;
       }
+
+      updatedValues.imageUrl = imageUrl;
 
       // Update transaction fields
       const updatedResult = await db
@@ -263,20 +345,6 @@ export async function PUT(req, res) {
               { _id: new ObjectId(partyId), businessId },
               { $set: { balance } }
             );
-
-          // const creditTotal =
-          //   updatedTransaction.type === "credit"
-          //     ? updatedTransaction.amount
-          //     : 0;
-          // const debitTotal =
-          //   updatedTransaction.type === "debit" ? updatedTransaction.amount : 0;
-
-          // await db
-          //   .collection("customers")
-          //   .updateOne(
-          //     { _id: new ObjectId(updatedTransaction.partyId), businessId },
-          //     { $inc: { balance: creditTotal - debitTotal } }
-          //   );
         }
 
         return NextResponse.json(
@@ -307,7 +375,6 @@ export async function PUT(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { transactionId, businessId, partyId, partyType } = await req.json();
-    const db = await connectDB(req);
 
     if (!transactionId || !businessId || !partyId || !partyType) {
       return NextResponse.json(
@@ -317,6 +384,25 @@ export async function DELETE(req, res) {
     }
 
     try {
+      const db = await connectDB(req);
+      const transaction = await db
+        .collection("transactions")
+        .findOne({ _id: new ObjectId(transactionId), businessId, partyId });
+      if (!transaction) {
+        return NextResponse.json(
+          { message: "Transaction not found" },
+          { status: 400 }
+        );
+      }
+      const { imageUrl } = transaction;
+
+      for (let i = 0; i < imageUrl?.length; i++) {
+        try {
+          await deleteImage(imageUrl[i]);
+        } catch (error) {
+          console.error(`Error deleting image`);
+        }
+      }
       const deletedTransaction = await db
         .collection("transactions")
         .findOneAndDelete({
@@ -373,3 +459,9 @@ export async function DELETE(req, res) {
     );
   }
 }
+
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };

@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    domains: ["m.media-amazon.com", "res.cloudinary.com", "t4.ftcdn.net"],
+  },
   // swcMinify: false,
   eslint: {
     // Warning: This allows production builds to successfully complete even if

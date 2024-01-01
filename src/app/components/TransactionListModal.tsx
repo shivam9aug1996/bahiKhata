@@ -59,7 +59,7 @@ const TransactionListModal = ({
                   style={{
                     minWidth: "70vw",
                     minHeight: "100vh",
-                    marginLeft: 40,
+                    marginLeft: 100,
                   }}
                 >
                   <div className="flex flex-row justify-between">

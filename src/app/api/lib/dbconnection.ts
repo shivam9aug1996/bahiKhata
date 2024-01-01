@@ -33,8 +33,8 @@ const connectCluster = async () => {
   }
 
   const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: false,
+    // useUnifiedTopology: true,
   });
 
   try {

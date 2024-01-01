@@ -1,5 +1,4 @@
 import toast from "react-hot-toast";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import getBrowserFingerprint from "get-browser-fingerprint";
 
 export function formatNumberOrStringWithFallback(input = 0) {
@@ -11,16 +10,16 @@ export function formatNumberOrStringWithFallback(input = 0) {
   if (!isNaN(number)) {
     try {
       // Attempt to format using 'en-IN' locale
-      formattedNumber = number.toLocaleString("en-IN");
+      formattedNumber = number?.toLocaleString("en-IN");
     } catch (error) {
       console.error("Formatting with 'en-IN' locale failed:", error);
       try {
         // Fallback to 'en-US' or any other preferred default locale
-        formattedNumber = number.toLocaleString("en-US");
+        formattedNumber = number?.toLocaleString("en-US");
       } catch (fallbackError) {
         console.error("Fallback to default locale also failed:", fallbackError);
         // If all else fails, return a basic formatting using a fixed method
-        formattedNumber = number.toLocaleString(); // Uses browser's default locale
+        formattedNumber = number?.toLocaleString(); // Uses browser's default locale
       }
     }
   } else {
@@ -46,12 +45,26 @@ export const countNonEmptyKeys = (obj) => {
 };
 
 export const todayDate = () => {
-  return new Date()
-    .toLocaleDateString("en-IN")
-    ?.split("/")
-    ?.reverse()
-    ?.join("-");
+  // return new Date()
+  //   .toLocaleDateString("en-IN")
+  //   ?.split("/")
+  //   ?.reverse()
+  //   ?.join("-");
+  return formatDateToYYYYMMDD(new Date());
 };
+
+function formatDateToYYYYMMDD(date) {
+  const currentDate = new Date(date);
+
+  // Get the year, month, and day
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Month starts from 0
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  // Create the formatted date string in yyyy-mm-dd format
+  const formattedDate = `${year}-${month}-${day}`;
+  return formattedDate;
+}
 
 export const promiseToast = (
   myPromise,
@@ -109,6 +122,5 @@ export const getFp = async () => {
   // return visitorId;
 
   const fingerprint = getBrowserFingerprint();
-  console.log(fingerprint);
   return fingerprint;
 };

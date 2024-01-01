@@ -182,7 +182,7 @@ export default function BusinessModal({ isOpen, setIsOpen }) {
                         htmlFor="name"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Name
+                        Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"

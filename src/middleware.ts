@@ -20,7 +20,6 @@ export async function middleware(request: NextRequest) {
         { status: 401 }
       );
     } else if (currentPath.includes("api/auth/signup")) {
-      console.log("kjhgfr5678");
       if (!fp) {
         return new NextResponse(
           JSON.stringify({ error: "Fingerprint header is needed" }),
@@ -36,8 +35,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
       }
     } else {
-      console.log("jhgfdfghj", fp);
-
       // User is not authenticated, allow access to other pages
       return NextResponse.next();
     }

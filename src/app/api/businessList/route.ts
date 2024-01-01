@@ -3,6 +3,7 @@ import { isTokenVerified } from "@/json";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB, startSession } from "../lib/dbconnection";
+import { deleteImage } from "../lib/global";
 
 export async function POST(req, res) {
   if (req.method === "POST") {
@@ -206,7 +207,27 @@ export async function DELETE(req, res) {
       session.startTransaction();
 
       try {
+        const transactions = await db
+          .collection("transactions")
+          .find({ businessId: id })
+          .toArray();
+        const transactionImageUrls = transactions.flatMap(
+          (transaction) => transaction.imageUrl
+        );
+
+        for (let i = 0; i < transactionImageUrls?.length; i++) {
+          try {
+            await deleteImage(transactionImageUrls[i]);
+          } catch (error) {
+            console.error(`Error deleting image`);
+          }
+        }
+
         // Delete the business and its associated data in a transaction
+        // return NextResponse.json(
+        //   { message: "Business not found" },
+        //   { status: 404 }
+        // );
         await db
           .collection("businesses")
           .deleteOne({ _id: new ObjectId(id), userId });
