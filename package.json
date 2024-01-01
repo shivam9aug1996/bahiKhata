@@ -17,6 +17,7 @@
     "@vercel/analytics": "^1.1.1",
     "@vercel/speed-insights": "^1.0.2",
     "bcryptjs": "^2.4.3",
+    "browser-image-compression": "^2.0.2",
     "cloudinary": "^1.41.1",
     "get-browser-fingerprint": "^3.2.0",
     "i": "^0.3.7",

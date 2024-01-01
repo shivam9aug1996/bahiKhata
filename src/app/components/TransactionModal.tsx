@@ -16,6 +16,7 @@ import {
 } from "../redux/features/transactionSlice";
 import { isValidData, todayDate } from "../utils/function";
 import Loader from "./Loader";
+import imageCompression from "browser-image-compression";
 
 export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
   const businessIdSelected = useSelector(
@@ -171,17 +172,43 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     // Close modal after form submission
   }
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const selectedImage = e.target.files[0];
 
+    const options = {
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 500,
+      useWebWorker: true,
+    };
+    console.log(
+      "normal instanceof Blob",
+      selectedImage instanceof Blob,
+      selectedImage
+    );
+    try {
+      const compressedFile = await imageCompression(selectedImage, options);
+      console.log(
+        "compressedFile instanceof Blob",
+        compressedFile instanceof Blob
+      ); // true
+      console.log(
+        `compressedFile size ${compressedFile.size / 1024} KB`,
+        compressedFile
+      ); // smaller than maxSizeMB
+      const uniqueId = `image_${Date.now()}`;
+
+      // Create an object containing ID, type, and the selected image
+      const newImage = { id: uniqueId, type: "add", image: compressedFile };
+
+      // Update the images state with the new image object at the beginning of the array
+      setImages([newImage, ...images]);
+
+      //await uploadToServer(compressedFile); // write your own logic
+    } catch (error) {
+      console.log(error);
+    }
+
     // Generate a unique ID for the new image
-    const uniqueId = `image_${Date.now()}`;
-
-    // Create an object containing ID, type, and the selected image
-    const newImage = { id: uniqueId, type: "add", image: selectedImage };
-
-    // Update the images state with the new image object at the beginning of the array
-    setImages([newImage, ...images]);
   };
 
   // Function to handle single image addition using the plus icon
