@@ -20,7 +20,9 @@ export const uploadImage = async (imageFile) => {
 
     try {
       // await writeFile(uploadDir, buffer);
-      await writeFile(tmpFileName, buffer);
+      console.log("jhgfdcvhjk", tmpFileName, buffer);
+      let result = await writeFile(tmpFileName, buffer);
+      console.log("i8765redfghjki87", result);
     } catch (error) {
       console.log(error);
     }
