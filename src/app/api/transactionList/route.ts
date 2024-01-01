@@ -279,7 +279,9 @@ export async function PUT(req, res) {
         if (imageArray[i]?.type == "add") {
           try {
             const data = await uploadImage(imageArray[i]?.imageUrl);
-            imageUrl.push(data);
+            if (data) {
+              imageUrl.push(data);
+            }
           } catch (error) {
             console.error(`Error uploading image`);
           }

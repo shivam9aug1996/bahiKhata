@@ -6,7 +6,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -18,7 +18,6 @@ import {
   useGetBusinessListQuery,
 } from "../redux/features/businessSlice";
 import { dashboardApi } from "../redux/features/dashboardSlice";
-import Skeleton from "react-loading-skeleton";
 
 import {
   useDeleteSupplierMutation,
@@ -28,7 +27,7 @@ import {
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
 import { formatNumberOrStringWithFallback } from "../utils/function";
-import Transaction from "./Transaction";
+
 import Pagination from "./Pagination";
 import TransactionListModal from "./TransactionListModal";
 const NoBusinessExists = dynamic(() => import("./NoBusinessExists"), {
@@ -72,6 +71,7 @@ const Supplier = () => {
   });
   const containerRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTransaction, setSelectedTransaction] = useState(false);
   const {
     isSuccess: isGetSupplierSuccess,
     isLoading: isGetSupplierLoading,
@@ -264,12 +264,13 @@ const Supplier = () => {
                       onClick={() => {
                         dispatch(setSelectedCustomer(item));
                         setIsTransactionsOpen(true);
+                        setSelectedTransaction(item?._id);
                       }}
                       key={index}
-                      className={`w-full block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
-                        pathname.includes(item._id)
-                          ? "text-blue-500 bg-blue-100 font-semibold"
-                          : "text-black hover:text-blue-500 font-normal"
+                      className={`w-full block p-4 border rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 ${
+                        isTransactionsOpen && selectedTransaction == item?._id
+                          ? "scale-105"
+                          : ""
                       }`}
                       // href={`/dashboard/suppliers/${item?._id}`}
                       // scroll={false}

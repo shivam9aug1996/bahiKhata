@@ -1,28 +1,16 @@
 "use client";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedCustomer } from "../redux/features/businessSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
 import Loader from "./Loader";
-import Skeleton from "react-loading-skeleton";
-import Transaction from "./Transaction";
-import { Transition } from "@headlessui/react";
 import TransactionListModal from "./TransactionListModal";
 import Pagination from "./Pagination";
 
-// const Pagination = dynamic(() => import("./Pagination"), {
-//   loading: () => (
-//     <Skeleton duration={0.6} height={42} style={{ marginTop: 16 }} />
-//   ),
-// });
-
 const NoParty = dynamic(() => import("./NoParty"));
-// import NoParty from "./NoParty";
-// import Pagination from "./Pagination";
 
 const CustomerData = ({
   getCustomerData,
@@ -44,9 +32,12 @@ const CustomerData = ({
     (state) => state?.business?.customerSelected || null
   );
   const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(false);
   return (
     <div
-      style={{ marginTop: 25 }}
+      style={{
+        marginTop: 25,
+      }}
       //className={"overflow-auto hover:overflow-scroll"}
     >
       {isTransactionsOpen ? (
@@ -64,17 +55,18 @@ const CustomerData = ({
       ) : null}
 
       {getCustomerData?.data?.map((item, index) => (
-        <div className="relative mb-4" key={item?._id}>
+        <div className={`relative mb-4`} key={item?._id}>
           <button
             key={index}
-            className={`w-full block p-4 border rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out ${
-              pathname.includes(item._id)
-                ? "text-blue-500 bg-blue-100 font-semibold"
-                : "text-black hover:text-blue-500 font-normal"
+            className={`w-full block p-4 border rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 ${
+              isTransactionsOpen && selectedTransaction == item?._id
+                ? "scale-105"
+                : ""
             }`}
-            onClick={() => {
+            onClick={(e) => {
               dispatch(setSelectedCustomer(item));
               setIsTransactionsOpen(true);
+              setSelectedTransaction(item?._id);
             }}
             //  href={`/dashboard/customers/${item?._id}`}
             //scroll={false}

@@ -14,7 +14,7 @@ import {
   useCreateTransactionMutation,
   useUpdateTransactionMutation,
 } from "../redux/features/transactionSlice";
-import { todayDate } from "../utils/function";
+import { isValidData, todayDate } from "../utils/function";
 import Loader from "./Loader";
 
 export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
@@ -236,6 +236,8 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
     e.preventDefault();
   };
 
+  console.log(images);
+
   return (
     <>
       <Transition appear show={isOpen.status} as={Fragment}>
@@ -386,8 +388,9 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {images?.map((image, index) => {
-                          return image?.type == "add" ||
-                            image?.type == "edit" ? (
+                          return (image?.type == "add" ||
+                            image?.type == "edit") &&
+                            isValidData(image?.image) ? (
                             <div
                               key={index}
                               className="relative"

@@ -124,3 +124,21 @@ export const getFp = async () => {
   const fingerprint = getBrowserFingerprint();
   return fingerprint;
 };
+
+export const isValidData = (data) => {
+  if (
+    data === null ||
+    data === undefined ||
+    data === "" ||
+    data == "null" ||
+    data == "undefined"
+  ) {
+    return false;
+  }
+
+  if (typeof data === "object" && Object.keys(data).length === 0) {
+    return false;
+  }
+
+  return true;
+};
