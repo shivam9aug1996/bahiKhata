@@ -1,14 +1,15 @@
-import { promises as fs } from "fs";
 import { v2 as cloudinary } from "cloudinary";
-import { writeFile, writeFileAsync } from "fs/promises";
-import { ObjectId } from "mongodb";
-import path from "path";
 import tmp from "tmp";
+import {
+  cloudinary_api_key,
+  cloudinary_cloud_name,
+  cloudinary_secret_key,
+} from "./keys";
 
 cloudinary.config({
-  cloud_name: "dc2z2c3u8",
-  api_key: "828193955168214",
-  api_secret: "Ia_BQ8lpzOXbzzT71rLeJPB8z1U",
+  cloud_name: cloudinary_cloud_name,
+  api_key: cloudinary_api_key,
+  api_secret: cloudinary_secret_key,
 });
 
 export const uploadImage = async (imageFile) => {
