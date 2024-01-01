@@ -241,7 +241,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
   return (
     <>
       <Transition appear show={isOpen.status} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={closeModal}>
+        <Dialog as="div" className="relative z-50" onClose={() => {}}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -256,7 +256,15 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
           {isCreateTransactionLoading || isUpdateTransactionLoading ? (
             <Loader wrapperStyle={{ zIndex: 5500 }} />
           ) : null}
-          <div className="fixed inset-0 overflow-y-auto">
+          <div
+            className="fixed inset-0 overflow-y-auto"
+            style={{
+              pointerEvents:
+                isCreateTransactionLoading || isUpdateTransactionLoading
+                  ? "none"
+                  : "auto",
+            }}
+          >
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child
                 as={Fragment}
