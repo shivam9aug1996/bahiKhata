@@ -4,7 +4,6 @@ import { writeFile, writeFileAsync } from "fs/promises";
 import { ObjectId } from "mongodb";
 import path from "path";
 import tmp from "tmp";
-import { useId } from "react";
 
 cloudinary.config({
   cloud_name: "dc2z2c3u8",
@@ -13,7 +12,6 @@ cloudinary.config({
 });
 
 export const uploadImage = async (imageFile) => {
-  const imageId = useId();
   try {
     let imageUrl = null;
     const bytes = await imageFile.arrayBuffer();
@@ -29,7 +27,7 @@ export const uploadImage = async (imageFile) => {
 
     try {
       const uploadResult = await cloudinary.uploader.upload(tmpFileName, {
-        public_id: `uploaded-images/image_${imageId}`, // Adjust the public_id as needed
+        public_id: `uploaded-images/image_tmpFileName`, // Adjust the public_id as needed
       });
       console.log("kjhgfdfghjk", uploadResult);
       imageUrl = uploadResult?.secure_url;
@@ -46,8 +44,7 @@ export const uploadImage = async (imageFile) => {
         error,
         imageFile,
         tmpFileName,
-        `uploaded-images/image_${Date.now()}`,
-        imageId
+        `uploaded-images/image_${Date.now()}`
       );
     }
   } catch (error) {
