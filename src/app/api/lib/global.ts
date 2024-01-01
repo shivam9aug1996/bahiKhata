@@ -38,10 +38,10 @@ export const uploadImage = async (imageFile) => {
         console.log("Error deleting file:", error);
       }
     } catch (error) {
-      console.log("error", error);
+      console.log("error while uploading image", error);
     }
   } catch (error) {
-    console.log("error", error);
+    console.log("error in buffer", error, imageFile);
   }
 };
 

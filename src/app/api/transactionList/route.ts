@@ -275,6 +275,8 @@ export async function PUT(req, res) {
       // Update fields based on the provided updatedFields object
       const updatedValues = {};
       let imageUrl = [];
+      console.log("imageArray", imageArray);
+
       for (let i = 0; i < imageArray.length; i++) {
         if (imageArray[i]?.type == "add") {
           try {
