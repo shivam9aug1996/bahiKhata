@@ -94,11 +94,16 @@ const Transaction = ({ partyId, setIsTransactionsOpen }) => {
 
   const handleSubmitDelete = () => {
     deleteTransaction(JSON.stringify(isDeleteOpen?.value));
+    if (
+      getTransactionData?.currentPage > 1 &&
+      getTransactionData?.data?.length == 1
+    ) {
+      setPage(getTransactionData?.currentPage - 1);
+    }
   };
 
   return (
     <>
-      {isDeleteTransactionLoading && <Loader />}
       {isDeleteOpen?.status && (
         <DeleteModal
           setIsOpen={setIsDeleteOpen}
@@ -108,6 +113,7 @@ const Transaction = ({ partyId, setIsTransactionsOpen }) => {
             "Deleting this item will remove it permanently. Are you sure you want to continue?"
           }
           handleSubmit={handleSubmitDelete}
+          loading={isDeleteTransactionLoading}
         />
       )}
 

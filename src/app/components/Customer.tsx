@@ -21,6 +21,7 @@ import PartySkeleton from "./PartySkeleton";
 import { setAuthLoader, useLoginMutation } from "../redux/features/authSlice";
 import Transaction from "./Transaction";
 import CustomerData from "./CustomerData";
+import GenerateData from "./GenerateData";
 // const PartySkeleton = dynamic(() => import("./PartySkeleton"), { ssr: false });
 
 // const CustomerData = dynamic(() => import("./CustomerData"), {
@@ -148,9 +149,16 @@ const Customer = () => {
   };
   const handleSubmitDelete = () => {
     deleteCustomer(JSON.stringify(isDeleteOpen?.value));
+    if (
+      getCustomerData?.data?.length == 1 &&
+      getCustomerData?.currentPage != 1
+    ) {
+      setPage(getCustomerData?.currentPage - 1);
+    }
   };
   return (
     <>
+      {/* <GenerateData /> */}
       <div
         className="shadow-lg  container m-3 rounded-lg p-4 border  mt-8 mb-20"
         style={{ minHeight: 600 }}
@@ -246,6 +254,8 @@ const Customer = () => {
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
                 setSearchQuery={setSearchQuery}
+                partyData={getCustomerData}
+                setPage={setPage}
               />
             )}
             {isDeleteOpen.status && (
@@ -257,6 +267,7 @@ const Customer = () => {
                   "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
                 }
                 handleSubmit={handleSubmitDelete}
+                loading={isDeleteCustomerLoading}
               />
             )}
           </>

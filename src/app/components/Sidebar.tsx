@@ -136,6 +136,8 @@ const Sidebar = ({
             partyId={partyId}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            setPage={setPage}
+            getTransactionData={getTransactionData}
           />
         )}
         {isFilterOpen?.status && (

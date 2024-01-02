@@ -1,8 +1,16 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import React, { Fragment } from "react";
+import Loader from "./Loader";
 
-const DeleteModal = ({ setIsOpen, isOpen, title, handleSubmit, subtitle }) => {
+const DeleteModal = ({
+  setIsOpen,
+  isOpen,
+  title,
+  handleSubmit,
+  subtitle,
+  loading,
+}) => {
   function closeModal() {
     setIsOpen({ ...isOpen, status: false, value: null });
   }
@@ -21,7 +29,7 @@ const DeleteModal = ({ setIsOpen, isOpen, title, handleSubmit, subtitle }) => {
         >
           <div className="fixed inset-0 bg-black/25" />
         </Transition.Child>
-
+        {loading && <Loader />}
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4 text-center">
             <Transition.Child

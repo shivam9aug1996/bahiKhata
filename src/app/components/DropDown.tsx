@@ -195,6 +195,7 @@ const DropDown = ({
             "Deleting this item will remove it permanently, along with all associated customer/supplier records and their transactions. Are you sure you want to continue?"
           }
           handleSubmit={handleDelete}
+          loading={isDeleteBusinessLoading}
         />
       )}
       <div>

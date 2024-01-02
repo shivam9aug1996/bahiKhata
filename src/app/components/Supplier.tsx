@@ -141,7 +141,14 @@ const Supplier = () => {
 
   const handleSubmitDelete = () => {
     deleteSupplier(JSON.stringify(isDeleteOpen?.value));
+    if (
+      getSupplierData?.data?.length == 1 &&
+      getSupplierData?.currentPage !== 1
+    ) {
+      setPage(getSupplierData?.currentPage - 1);
+    }
   };
+  console.log("jhgfdfghj", getSupplierData);
   return (
     <>
       {isTransactionsOpen ? (
@@ -163,6 +170,8 @@ const Supplier = () => {
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             setSearchQuery={setSearchQuery}
+            partyData={getSupplierData}
+            setPage={setPage}
           />
         )}
         {isDeleteOpen?.status && (
@@ -174,6 +183,7 @@ const Supplier = () => {
               "Deleting this item will remove it permanently, along with all associated transactions. Are you sure you want to continue?"
             }
             handleSubmit={handleSubmitDelete}
+            loading={isDeleteSupplierLoading}
           />
         )}
 

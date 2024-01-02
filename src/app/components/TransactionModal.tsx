@@ -18,7 +18,13 @@ import { isValidData, todayDate } from "../utils/function";
 import Loader from "./Loader";
 import imageCompression from "browser-image-compression";
 
-export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
+export default function TransactionModal({
+  isOpen,
+  partyId,
+  setIsOpen,
+  setPage,
+  getTransactionData,
+}) {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -90,6 +96,7 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
       setImages(data);
     }
   }, [isOpen]);
+  console.log(formData, isOpen);
   //let [isOpen, setIsOpen] = useState(true);
   useEffect(() => {
     if (isCreateTransactionSuccess || isUpdateTransactionSuccess) {
@@ -167,6 +174,9 @@ export default function TransactionModal({ isOpen, partyId, setIsOpen }) {
         formRes.append("images[]", images[i]?.image);
       }
       createTransaction(formRes);
+      if (getTransactionData?.currentPage != 1) {
+        setPage(1);
+      }
     }
 
     // Close modal after form submission

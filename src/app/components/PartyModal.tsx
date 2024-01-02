@@ -22,7 +22,13 @@ import {
 
 import Loader from "./Loader";
 
-export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
+export default function PartyModal({
+  isOpen,
+  setIsOpen,
+  setSearchQuery,
+  partyData,
+  setPage,
+}) {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -179,6 +185,9 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
           mobileNumber: formData?.mobileNumber,
         })
       );
+      if (partyData?.currentPage != 1) {
+        setPage(1);
+      }
     } else if (isOpen?.type == "edit" && isOpen?.part === "supplier") {
       updateSupplier(
         JSON.stringify({
@@ -198,6 +207,9 @@ export default function PartyModal({ isOpen, setIsOpen, setSearchQuery }) {
           mobileNumber: formData?.mobileNumber,
         })
       );
+      if (partyData?.currentPage != 1) {
+        setPage(1);
+      }
     }
 
     // Close modal after form submission
