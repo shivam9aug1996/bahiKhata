@@ -18,17 +18,20 @@ export const connectDB = async (req) => {
         return;
       }
     }
-
+    console.log("123456789 connectDB starting");
     await connectCluster();
     let res = await connectDatabase();
+    console.log("123456789 connectDB started");
     return res;
   } catch (error) {
+    console.log("123456789 error in connectDB");
     throw error;
   }
 };
 
 const connectCluster = async () => {
   if (cachedClient) {
+    console.log("123456789 client already connected");
     return cachedClient;
   }
 
@@ -38,11 +41,13 @@ const connectCluster = async () => {
   });
 
   try {
+    console.log("123456789 client connecting");
     await client.connect();
+    console.log("123456789 client connected");
     cachedClient = client;
     return client;
   } catch (error) {
-    console.error(error);
+    console.log("123456789 error in connectCluster");
     throw error;
   }
 };
@@ -53,9 +58,12 @@ const connectDatabase = async () => {
       return db;
     } else {
       if (cachedClient?.db) {
+        console.log("123456789 db connecting");
         db = await cachedClient.db("basic-crud");
+        console.log("123456789 db connected");
         return db;
       } else {
+        console.log("123456789 error in connectDatabase");
         throw new Error("MongoDB client not connected.");
       }
     }
