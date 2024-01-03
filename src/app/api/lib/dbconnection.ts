@@ -84,6 +84,10 @@ const connectDatabase = async (client) => {
   }
 };
 
+export const getClient = async () => {
+  return cachedClient;
+};
+
 export const startSession = async () => {
   try {
     if (cachedSession) {
@@ -98,6 +102,56 @@ export const startSession = async () => {
     }
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+};
+
+export const startTransaction = async (client) => {
+  try {
+    const session = await client.startSession();
+    console.log("session started");
+    try {
+      await session?.startTransaction();
+      console.log("transaction started");
+      return session;
+    } catch (error) {
+      console.log("error startTransaction", error);
+      throw error;
+    }
+  } catch (error) {
+    console.log("error startSession", error);
+    throw error;
+  }
+};
+
+export const abortTransaction = async (session) => {
+  try {
+    await session.abortTransaction();
+    console.log("transaction aborted");
+    try {
+      await session?.endSession();
+      console.log("session closed");
+    } catch (error) {
+      console.log("error endSession", error);
+    }
+  } catch (error) {
+    console.log("error abortTransaction", error);
+    throw error;
+  }
+};
+
+export const commitTransaction = async (session) => {
+  try {
+    await session.commitTransaction();
+    console.log("transaction committed");
+    try {
+      await session?.endSession();
+      console.log("session closed");
+    } catch (error) {
+      console.log("error endSession", error);
+    }
+  } catch (error) {
+    console.log("error commitTransaction", error);
     throw error;
   }
 };

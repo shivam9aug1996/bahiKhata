@@ -1,13 +1,7 @@
 import { deleteCache } from "@/cache";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
-import {
-  abortTransaction,
-  commitTransaction,
-  connectDB,
-  getClient,
-  startTransaction,
-} from "../lib/dbconnection";
+import { connectDB } from "../lib/dbconnection";
 import { deleteImage, uploadImage } from "../lib/global";
 
 export async function POST(req, res) {
@@ -392,13 +386,9 @@ export async function DELETE(req, res) {
         { status: 400 }
       );
     }
-    let session;
+
     try {
       const db = await connectDB(req);
-      const client = await getClient();
-      console.log("393", client?.topology?.s?.id);
-      // session = await client?.startSession();
-      // console.log("session started");
       const transaction = await db
         .collection("transactions")
         .findOne({ _id: new ObjectId(transactionId), businessId, partyId });
@@ -408,7 +398,6 @@ export async function DELETE(req, res) {
           { status: 400 }
         );
       }
-      await deleteCache(businessId);
       const { imageUrl } = transaction;
 
       for (let i = 0; i < imageUrl?.length; i++) {
@@ -418,17 +407,13 @@ export async function DELETE(req, res) {
           console.error(`Error deleting image`);
         }
       }
-      session = await startTransaction(client);
       const deletedTransaction = await db
         .collection("transactions")
-        .findOneAndDelete(
-          {
-            _id: new ObjectId(transactionId),
-            businessId,
-            partyId,
-          },
-          { session }
-        );
+        .findOneAndDelete({
+          _id: new ObjectId(transactionId),
+          businessId,
+          partyId,
+        });
 
       if (!deletedTransaction?._id) {
         return NextResponse.json(
@@ -436,7 +421,7 @@ export async function DELETE(req, res) {
           { status: 404 }
         );
       }
-
+      await deleteCache(businessId);
       // Calculate the balance after deleting the transaction
       const allTransactions = await db
         .collection("transactions")
@@ -453,25 +438,19 @@ export async function DELETE(req, res) {
       });
 
       // Update the customer's balance directly in the customer collection
-
-      console.log("transaction started");
       await db
         .collection(partyType == "customer" ? "customers" : "suppliers")
         .updateOne(
           { _id: new ObjectId(partyId), businessId },
-          { $set: { balance } },
-          { session }
+          { $set: { balance } }
         );
 
-      await commitTransaction(session);
       return NextResponse.json(
         { message: "Transaction deleted successfully" },
         { status: 200 }
       );
     } catch (error) {
       console.log(error);
-      await abortTransaction(session);
-
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }
