@@ -1,14 +1,12 @@
 import { isTokenVerified } from "@/json";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
+
 import { dbUrl } from "./keys";
-import AsyncLock from "async-lock";
 
 let cachedClient;
 let db;
 let cachedSession;
 const uri = dbUrl;
-
-const lock = new AsyncLock();
 
 export const connectDB = async (req) => {
   try {
@@ -21,16 +19,8 @@ export const connectDB = async (req) => {
       }
     }
     console.log("123456789 connectDB starting");
-
-    const client = await lock.acquire("connection", async () => {
-      if (!cachedClient) {
-        cachedClient = await connectCluster();
-      }
-      return cachedClient;
-    });
-
-    console.log("123456789 client id", client.topology.s.id);
-    const res = await connectDatabase(client);
+    let client = await connectCluster();
+    let res = await connectDatabase(client);
     console.log("123456789 connectDB started");
     return res;
   } catch (error) {
