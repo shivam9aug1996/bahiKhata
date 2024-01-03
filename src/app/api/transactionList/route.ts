@@ -9,6 +9,7 @@ import {
   startTransaction,
 } from "../lib/dbconnection";
 import { deleteImage, uploadImage } from "../lib/global";
+import { deleteMultipleImages, uploadMultipleImages } from "../lib/globalFun";
 
 export async function POST(req, res) {
   if (req.method === "POST") {
@@ -28,8 +29,6 @@ export async function POST(req, res) {
     const partyType = formData?.get("partyType");
     const imageFile = formData?.getAll("images[]"); // Get the uploaded image file
 
-    const db = await connectDB(req);
-
     if (
       !businessId ||
       !partyId ||
@@ -44,33 +43,29 @@ export async function POST(req, res) {
       );
     }
     const createdAt = new Date();
+    let session;
+    let imageUrl;
     try {
-      let imageUrl = [];
-      if (imageFile) {
-        for (let i = 0; i < imageFile.length; i++) {
-          try {
-            let data = await uploadImage(imageFile[i]);
-            imageUrl.push(data);
-          } catch (uploadError) {
-            // Log the error and continue processing other images or handle it as needed
-            console.error(`Error uploading image`);
-            // Optionally, you can decide to break the loop or perform any other action
-          }
-        }
-      }
-
+      const db = await connectDB(req);
+      const client = await getClient();
       await deleteCache(businessId);
-      const result = await db.collection("transactions").insertOne({
-        partyId,
-        businessId,
-        amount,
-        type,
-        description,
-        date,
-        partyType,
-        createdAt,
-        imageUrl,
-      });
+      session = await startTransaction(client);
+      imageUrl = await uploadMultipleImages(imageFile);
+
+      const result = await db.collection("transactions").insertOne(
+        {
+          partyId,
+          businessId,
+          amount,
+          type,
+          description,
+          date,
+          partyType,
+          createdAt,
+          imageUrl,
+        },
+        { session }
+      );
 
       const allTransactions = await db
         .collection("transactions")
@@ -92,9 +87,10 @@ export async function POST(req, res) {
         .collection(partyType == "customer" ? "customers" : "suppliers")
         .updateOne(
           { _id: new ObjectId(partyId), businessId },
-          { $set: { balance } }
+          { $set: { balance } },
+          { session }
         );
-
+      await commitTransaction(session);
       return NextResponse.json(
         {
           message: "Transaction created successfully",
@@ -115,6 +111,8 @@ export async function POST(req, res) {
         { status: 201 }
       );
     } catch (error) {
+      await deleteMultipleImages(imageUrl);
+      await abortTransaction(session);
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }
@@ -247,8 +245,6 @@ export async function PUT(req, res) {
       imageArray.push(imageObject);
     }
 
-    const db = await connectDB(req);
-
     if (
       !transactionId ||
       !businessId ||
@@ -261,8 +257,11 @@ export async function PUT(req, res) {
         { status: 400 }
       );
     }
-
+    let session;
+    let imageUrl;
     try {
+      const db = await connectDB(req);
+      const client = await getClient();
       const transaction = await db.collection("transactions").findOne({
         _id: new ObjectId(transactionId),
         businessId,
@@ -280,7 +279,7 @@ export async function PUT(req, res) {
 
       // Update fields based on the provided updatedFields object
       const updatedValues = {};
-      let imageUrl = [];
+      imageUrl = [];
       console.log("imageArray", imageArray);
 
       for (let i = 0; i < imageArray.length; i++) {
@@ -319,12 +318,15 @@ export async function PUT(req, res) {
 
       updatedValues.imageUrl = imageUrl;
 
+      session = await startTransaction(client);
+
       // Update transaction fields
       const updatedResult = await db
         .collection("transactions")
         .updateOne(
           { _id: new ObjectId(transactionId), businessId },
-          { $set: updatedValues }
+          { $set: updatedValues },
+          { session }
         );
 
       if (updatedResult.modifiedCount === 1) {
@@ -353,15 +355,18 @@ export async function PUT(req, res) {
             .collection(partyType == "customer" ? "customers" : "suppliers")
             .updateOne(
               { _id: new ObjectId(partyId), businessId },
-              { $set: { balance } }
+              { $set: { balance } },
+              { session }
             );
         }
 
+        await commitTransaction(session);
         return NextResponse.json(
           { message: "Transaction updated successfully" },
           { status: 200 }
         );
       } else {
+        await commitTransaction(session);
         return NextResponse.json(
           { message: "No updates were made or changes were found" },
           { status: 404 }
@@ -369,6 +374,8 @@ export async function PUT(req, res) {
       }
     } catch (error) {
       console.log("error", error);
+      await deleteImage(imageUrl);
+      await abortTransaction(session);
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }
@@ -393,6 +400,7 @@ export async function DELETE(req, res) {
       );
     }
     let session;
+
     try {
       const db = await connectDB(req);
       const client = await getClient();
@@ -411,13 +419,8 @@ export async function DELETE(req, res) {
       await deleteCache(businessId);
       const { imageUrl } = transaction;
 
-      for (let i = 0; i < imageUrl?.length; i++) {
-        try {
-          await deleteImage(imageUrl[i]);
-        } catch (error) {
-          console.error(`Error deleting image`);
-        }
-      }
+      await deleteMultipleImages(imageUrl);
+
       session = await startTransaction(client);
       const deletedTransaction = await db
         .collection("transactions")
@@ -431,6 +434,7 @@ export async function DELETE(req, res) {
         );
 
       if (!deletedTransaction?._id) {
+        await commitTransaction(session);
         return NextResponse.json(
           { message: "Transaction not found" },
           { status: 404 }

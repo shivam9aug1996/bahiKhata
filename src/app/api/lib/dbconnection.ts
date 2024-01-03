@@ -109,17 +109,17 @@ export const startSession = async () => {
 export const startTransaction = async (client) => {
   try {
     const session = await client.startSession();
-    console.log("session started");
+    console.log("123456789 session started");
     try {
       await session?.startTransaction();
-      console.log("transaction started");
+      console.log("123456789 transaction started");
       return session;
     } catch (error) {
-      console.log("error startTransaction", error);
+      console.log("123456789 error startTransaction", error);
       throw error;
     }
   } catch (error) {
-    console.log("error startSession", error);
+    console.log("123456789 error startSession", error);
     throw error;
   }
 };
@@ -127,15 +127,15 @@ export const startTransaction = async (client) => {
 export const abortTransaction = async (session) => {
   try {
     await session.abortTransaction();
-    console.log("transaction aborted");
+    console.log("123456789 transaction aborted");
     try {
       await session?.endSession();
-      console.log("session closed");
+      console.log("123456789 session closed");
     } catch (error) {
-      console.log("error endSession", error);
+      console.log("123456789 error endSession", error);
     }
   } catch (error) {
-    console.log("error abortTransaction", error);
+    console.log("123456789 error abortTransaction", error);
     throw error;
   }
 };
@@ -143,15 +143,15 @@ export const abortTransaction = async (session) => {
 export const commitTransaction = async (session) => {
   try {
     await session.commitTransaction();
-    console.log("transaction committed");
+    console.log("123456789 transaction committed");
     try {
       await session?.endSession();
-      console.log("session closed");
+      console.log("123456789 session closed");
     } catch (error) {
-      console.log("error endSession", error);
+      console.log("123456789 error endSession", error);
     }
   } catch (error) {
-    console.log("error commitTransaction", error);
+    console.log("123456789 error commitTransaction", error);
     throw error;
   }
 };
