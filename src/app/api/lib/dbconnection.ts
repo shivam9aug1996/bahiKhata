@@ -19,8 +19,8 @@ export const connectDB = async (req) => {
       }
     }
     console.log("123456789 connectDB starting");
-    await connectCluster();
-    let res = await connectDatabase();
+    let client = await connectCluster();
+    let res = await connectDatabase(client);
     console.log("123456789 connectDB started");
     return res;
   } catch (error) {
@@ -43,6 +43,7 @@ const connectCluster = async () => {
   try {
     console.log("123456789 client connecting");
     await client.connect();
+    db = null;
     console.log("123456789 client connected");
     cachedClient = client;
     return client;
@@ -52,14 +53,14 @@ const connectCluster = async () => {
   }
 };
 
-const connectDatabase = async () => {
+const connectDatabase = async (client) => {
   try {
     if (db) {
       return db;
     } else {
-      if (cachedClient?.db) {
+      if (client?.db) {
         console.log("123456789 db connecting");
-        db = await cachedClient.db("basic-crud");
+        db = await client.db("basic-crud");
         console.log("123456789 db connected");
         return db;
       } else {
