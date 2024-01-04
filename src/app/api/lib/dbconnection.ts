@@ -35,7 +35,7 @@ export const connectDB = async (req) => {
     return res;
   } catch (error) {
     console.log("123456789 error in connectDB");
-    throw error;
+    // throw error;
   }
 };
 
@@ -59,7 +59,7 @@ const connectCluster = async () => {
     return client;
   } catch (error) {
     console.log("123456789 error in connectCluster");
-    throw error;
+    // throw error;
   }
 };
 
@@ -75,12 +75,12 @@ const connectDatabase = async (client) => {
         return db;
       } else {
         console.log("123456789 error in connectDatabase");
-        throw new Error("MongoDB client not connected.");
+        // throw new Error("MongoDB client not connected.");
       }
     }
   } catch (error) {
     console.log(error);
-    throw error;
+    // throw error;
   }
 };
 
@@ -97,12 +97,12 @@ export const startSession = async () => {
         cachedSession = cachedClient.startSession();
         return cachedSession;
       } else {
-        throw new Error("MongoDB client not connected.");
+        // throw new Error("MongoDB client not connected.");
       }
     }
   } catch (error) {
     console.error(error);
-    throw error;
+    // throw error;
   }
 };
 
@@ -116,7 +116,7 @@ export const startTransaction = async (client) => {
       return session;
     } catch (error) {
       console.log("123456789 error startTransaction", error);
-      throw error;
+      //  throw error;
     }
   } catch (error) {
     console.log("123456789 error startSession", error);
