@@ -8,7 +8,7 @@ import { setSelectedCustomer } from "../redux/features/businessSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
 import Loader from "./Loader";
 import TransactionListModal from "./TransactionListModal";
-import Pagination from "./Pagination";
+import PaginationWrapper from "./PaginationWrapper";
 
 const NoParty = dynamic(() => import("./NoParty"));
 
@@ -33,6 +33,7 @@ const CustomerData = ({
   );
   const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(false);
+
   return (
     <div
       style={{
@@ -127,11 +128,17 @@ const CustomerData = ({
           </div>
         </div>
       ))}
-      <Pagination
+      {/* <Pagination
         totalPages={getCustomerData?.totalPages}
         currentPage={page}
         setPage={setPage}
         containerRef={containerRef}
+      /> */}
+      <PaginationWrapper
+        containerRef={containerRef}
+        totalPages={getCustomerData?.totalPages}
+        currentPage={page}
+        setPage={setPage}
       />
 
       {getCustomerData?.data.length == 0 &&

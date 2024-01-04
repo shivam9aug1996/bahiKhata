@@ -116,6 +116,7 @@ export default function Login() {
         formData={formData}
         handleInputChange={handleInputChange}
         type={"login"}
+        loading={isLoginLoading || authLoader}
       />
       <Lottie />
     </>

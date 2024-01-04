@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import Image from "next/image";
+// import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import {
 import { isValidData, todayDate } from "../utils/function";
 import Loader from "./Loader";
 import imageCompression from "browser-image-compression";
+import { Image } from "@nextui-org/react";
 
 export default function TransactionModal({
   isOpen,
@@ -184,7 +185,9 @@ export default function TransactionModal({
 
   const handleImageChange = async (e) => {
     const selectedImage = e.target.files[0];
-
+    event.target.value = "";
+    console.log(e.target.files[0]);
+    console.log("juytfdcvji8765rfgh", selectedImage);
     const options = {
       maxSizeMB: 0.5,
       maxWidthOrHeight: 500,
@@ -452,6 +455,18 @@ export default function TransactionModal({
                             >
                               <div className="w-20 h-20 cursor-pointer">
                                 <Image
+                                  isZoomed
+                                  src={
+                                    image?.type == "edit"
+                                      ? image?.image
+                                      : image?.type == "add"
+                                      ? URL.createObjectURL(image?.image)
+                                      : null
+                                  }
+                                  alt={`Preview ${index}`}
+                                  className="w-20 h-20 object-cover rounded-md border"
+                                />
+                                {/* <Image
                                   loading="lazy"
                                   fill
                                   src={
@@ -463,7 +478,7 @@ export default function TransactionModal({
                                   }
                                   alt={`Preview ${index}`}
                                   className="w-20 h-20 object-cover rounded-md border"
-                                />
+                                /> */}
                               </div>
 
                               {/* <img
@@ -478,7 +493,7 @@ export default function TransactionModal({
                                 className="w-20 h-20 object-cover rounded-md border"
                               /> */}
                               <button
-                                className="absolute top-0 right-0 -mt-1 -mr-1 bg-black p-0 rounded-full text-white hover:text-red-500"
+                                className="absolute top-0 right-0 -mt-1 -mr-1 bg-black p-0 rounded-full text-white hover:text-red-500 z-10"
                                 onClick={(e) => {
                                   handleRemoveImage(e, index, image);
                                 }}

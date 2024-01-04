@@ -32,7 +32,7 @@ import {
 // import TransactionReport from "./TransactionReport";
 import toast from "react-hot-toast";
 import { Transition } from "@headlessui/react";
-import Pagination from "./Pagination";
+import PaginationWrapper from "./PaginationWrapper";
 
 // const Pagination = dynamic(() => import("./Pagination"), {
 //   loading: () => (
@@ -331,7 +331,7 @@ const Sidebar = ({
                   </p>
                 </div>
               ))}
-              <Pagination
+              <PaginationWrapper
                 totalPages={getTransactionData?.totalPages}
                 currentPage={page}
                 setPage={setPage}

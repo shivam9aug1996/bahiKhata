@@ -1,6 +1,15 @@
 import React from "react";
+import { Button } from "@nextui-org/button";
+import ButtonLoader from "./ButtonLoader";
+import { Input } from "@nextui-org/react";
 
-const AuthForm = ({ handleSubmit, formData, handleInputChange, type }) => {
+const AuthForm = ({
+  handleSubmit,
+  formData,
+  handleInputChange,
+  type,
+  loading,
+}) => {
   return (
     <div className="py-6 px-8">
       <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -27,6 +36,7 @@ const AuthForm = ({ handleSubmit, formData, handleInputChange, type }) => {
             Enter your 10-digit mobile number
           </div>
         </div>
+
         <div>
           <label htmlFor="password" className="sr-only">
             Password
@@ -45,12 +55,15 @@ const AuthForm = ({ handleSubmit, formData, handleInputChange, type }) => {
           <div className="mt-1 text-sm text-gray-600">Enter your password</div>
         </div>
         <div>
-          <button
+          <Button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full bg-red-500"
+            color="primary"
+            isLoading={loading}
+            spinner={<ButtonLoader />}
           >
             {type == "login" ? "Login" : "Signup"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

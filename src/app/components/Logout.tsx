@@ -1,12 +1,12 @@
 "use client";
-import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useLogoutMutation } from "../redux/features/authSlice";
+import { Button } from "@nextui-org/button";
 
 import Loader from "./Loader";
+import ButtonLoader from "./ButtonLoader";
 
 const Logout = () => {
-  const router = useRouter();
   const [
     logout,
     {
@@ -29,14 +29,18 @@ const Logout = () => {
   return (
     <>
       {isLogoutLoading && <Loader />}
-      <button
+      <Button
         onClick={() => {
           logout();
         }}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-2 py-1 rounded"
+        color="primary"
+        isLoading={isLogoutLoading}
+        spinner={<ButtonLoader />}
+        variant={"flat"}
+        size={"sm"}
       >
         Logout
-      </button>
+      </Button>
     </>
   );
 };

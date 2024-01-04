@@ -28,7 +28,7 @@ import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
 import { formatNumberOrStringWithFallback } from "../utils/function";
 
-import Pagination from "./Pagination";
+import PaginationWrapper from "./PaginationWrapper";
 import TransactionListModal from "./TransactionListModal";
 const NoBusinessExists = dynamic(() => import("./NoBusinessExists"), {
   loading: () => <PartySkeleton />,
@@ -351,7 +351,7 @@ const Supplier = () => {
                   </div>
                 ))}
               </div>
-              <Pagination
+              <PaginationWrapper
                 containerRef={containerRef}
                 totalPages={getSupplierData?.totalPages}
                 currentPage={page}

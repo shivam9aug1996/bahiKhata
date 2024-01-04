@@ -106,6 +106,7 @@ export default function Signup() {
         formData={formData}
         handleInputChange={handleInputChange}
         type={"signup"}
+        loading={isSignupLoading || authLoader}
       />
       <Lottie />
     </>

@@ -10,6 +10,7 @@ import { setBusinessIdSelected } from "../redux/features/businessSlice";
 
 import store from "../redux/store";
 import { getFp } from "../utils/function";
+import { NextUIProvider } from "@nextui-org/react";
 
 const Providers = ({ children, getCookies, getBusinessIdSelected }: any) => {
   const [fpHash, setFpHash] = useState("");
@@ -27,10 +28,12 @@ const Providers = ({ children, getCookies, getBusinessIdSelected }: any) => {
   };
   return (
     <Provider store={store}>
-      <div>
-        <Toaster />
-      </div>
-      <div className="flex flex-col">{children}</div>
+      <NextUIProvider>
+        <div>
+          <Toaster />
+        </div>
+        <div className="flex flex-col">{children}</div>
+      </NextUIProvider>
     </Provider>
   );
 };
