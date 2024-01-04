@@ -28,12 +28,12 @@ const Providers = ({ children, getCookies, getBusinessIdSelected }: any) => {
   };
   return (
     <Provider store={store}>
-      {/* <NextUIProvider> */}
-      <div>
-        <Toaster />
-      </div>
-      <div className="flex flex-col">{children}</div>
-      {/* </NextUIProvider> */}
+      <NextUIProvider>
+        <div>
+          <Toaster />
+        </div>
+        <div className="flex flex-col">{children}</div>
+      </NextUIProvider>
     </Provider>
   );
 };

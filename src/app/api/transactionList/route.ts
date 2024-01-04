@@ -338,7 +338,7 @@ export async function PUT(req, res) {
         ) {
           const allTransactions = await db
             .collection("transactions")
-            .find({ partyId, businessId })
+            .find({ partyId, businessId }, { session })
             .toArray();
 
           // Calculate the balance based on all transactions

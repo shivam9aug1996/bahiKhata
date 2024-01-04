@@ -264,7 +264,7 @@ export async function DELETE(req, res) {
       session = await startTransaction(client);
       const transactions = await db
         .collection("transactions")
-        .find({ partyId: customerId, businessId })
+        .find({ partyId: customerId, businessId }, { session })
         .toArray();
 
       const deleteTransactionsResult = await db
