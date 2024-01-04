@@ -16,10 +16,10 @@ const PaginationWrapper = ({
     }, 100);
   };
   return (
-    <div className="flex flex-col gap-5 items-center">
-      <p className="text-small text-default-500">
-        Selected Page: {currentPage}
-      </p>
+    <div
+      className="flex flex-col gap-5 items-center mt-10"
+      style={{ zIndex: 0, position: "relative" }}
+    >
       <Pagination
         total={totalPages}
         color="primary"
