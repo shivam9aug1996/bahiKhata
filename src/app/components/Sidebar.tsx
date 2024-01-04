@@ -15,6 +15,7 @@ import Link from "next/link";
 import {
   countNonEmptyKeys,
   formatNumberOrStringWithFallback,
+  isValidData,
 } from "../utils/function";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +34,7 @@ import {
 import toast from "react-hot-toast";
 import { Transition } from "@headlessui/react";
 import PaginationWrapper from "./PaginationWrapper";
+import { Image } from "@nextui-org/react";
 
 // const Pagination = dynamic(() => import("./Pagination"), {
 //   loading: () => (
@@ -108,6 +110,12 @@ const Sidebar = ({
       document.removeEventListener("mousedown", closeSidebar);
     };
   }, [showSidebar, toggleSidebar]);
+
+  const handleImageClick = (e, image) => {
+    window.open(image, "_blank");
+    e.stopPropagation();
+    e.preventDefault();
+  };
 
   return (
     <div
@@ -329,6 +337,24 @@ const Sidebar = ({
                       ? new Date(transaction?.date)?.toLocaleDateString()
                       : ""}
                   </p>
+                  <div className="flex flex-wrap gap-2">
+                    {transaction?.imageUrl?.map((image, index) => {
+                      return isValidData(image) ? (
+                        <div
+                          className="w-10 h-10 cursor-pointer"
+                          onClick={(e) => handleImageClick(e, image)}
+                        >
+                          <Image
+                            loading={"lazy"}
+                            isZoomed
+                            src={image}
+                            alt={`Preview ${index}`}
+                            className="w-10 h-10 object-cover rounded-md border"
+                          />
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
                 </div>
               ))}
               <PaginationWrapper
