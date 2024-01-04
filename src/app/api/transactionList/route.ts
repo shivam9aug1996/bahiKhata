@@ -443,7 +443,7 @@ export async function DELETE(req, res) {
       // Calculate the balance after deleting the transaction
       const allTransactions = await db
         .collection("transactions")
-        .find({ partyId, businessId })
+        .find({ partyId, businessId }, { session })
         .toArray();
 
       let balance = 0;
