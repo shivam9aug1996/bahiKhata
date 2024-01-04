@@ -20,7 +20,9 @@ import Loader from "./Loader";
 
 import Sidebar from "./Sidebar";
 const DeleteModal = dynamic(() => import("./DeleteModal"), {
-  loading: () => <Loader />,
+  loading: () => (
+    <Loader wrapperStyle={{ alignItems: "flex-start", marginTop: "20rem" }} />
+  ),
 });
 
 const Transaction = ({ partyId, setIsTransactionsOpen }) => {

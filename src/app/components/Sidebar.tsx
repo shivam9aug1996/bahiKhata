@@ -42,7 +42,9 @@ import { Image } from "@nextui-org/react";
 //   ),
 // });
 const TransactionModal = dynamic(() => import("./TransactionModal"), {
-  loading: () => <Loader />,
+  loading: () => (
+    <Loader wrapperStyle={{ alignItems: "flex-start", marginTop: "20rem" }} />
+  ),
 });
 const NoTransaction = dynamic(() => import("./NoTransaction"), {
   loading: () => <TransactionSkeleton />,
@@ -51,7 +53,9 @@ const TransactionReport = dynamic(() => import("./TransactionReport"));
 const TransactionFilterModal = dynamic(
   () => import("./TransactionFilterModal"),
   {
-    loading: () => <Loader />,
+    loading: () => (
+      <Loader wrapperStyle={{ alignItems: "flex-start", marginTop: "20rem" }} />
+    ),
   }
 );
 const Sidebar = ({

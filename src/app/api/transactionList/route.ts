@@ -33,7 +33,7 @@ export async function POST(req, res) {
       !businessId ||
       !partyId ||
       !partyType ||
-      amount < 0 ||
+      amount <= 0 ||
       !amount ||
       !date
     ) {
@@ -251,6 +251,7 @@ export async function PUT(req, res) {
       !businessId ||
       !partyId ||
       !updatedFields ||
+      updatedFields?.amount <= 0 ||
       !partyType
     ) {
       return NextResponse.json(
