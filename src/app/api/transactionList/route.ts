@@ -419,8 +419,6 @@ export async function DELETE(req, res) {
       await deleteCache(businessId);
       const { imageUrl } = transaction;
 
-      await deleteMultipleImages(imageUrl);
-
       session = await startTransaction(client);
       const deletedTransaction = await db
         .collection("transactions")
@@ -466,8 +464,9 @@ export async function DELETE(req, res) {
           { $set: { balance } },
           { session }
         );
-
+      await deleteMultipleImages(imageUrl);
       await commitTransaction(session);
+
       return NextResponse.json(
         { message: "Transaction deleted successfully" },
         { status: 200 }

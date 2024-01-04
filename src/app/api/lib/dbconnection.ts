@@ -120,7 +120,7 @@ export const startTransaction = async (client) => {
     }
   } catch (error) {
     console.log("123456789 error startSession", error);
-    throw error;
+    //throw error;
   }
 };
 
@@ -136,7 +136,6 @@ export const abortTransaction = async (session) => {
     }
   } catch (error) {
     console.log("123456789 error abortTransaction", error);
-    throw error;
   }
 };
 
@@ -152,6 +151,6 @@ export const commitTransaction = async (session) => {
     }
   } catch (error) {
     console.log("123456789 error commitTransaction", error);
-    throw error;
+    //throw error;
   }
 };

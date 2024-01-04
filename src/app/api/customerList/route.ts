@@ -3,7 +3,13 @@ import { ObjectId } from "mongodb";
 
 import { NextResponse } from "next/server";
 
-import { connectDB } from "../lib/dbconnection";
+import {
+  abortTransaction,
+  commitTransaction,
+  connectDB,
+  getClient,
+  startTransaction,
+} from "../lib/dbconnection";
 import { deleteImage } from "../lib/global";
 
 export async function POST(req, res) {
@@ -229,7 +235,6 @@ export async function PUT(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { customerId, businessId } = await req.json();
-    const db = await connectDB(req);
 
     if (!customerId || !businessId) {
       return NextResponse.json(
@@ -237,8 +242,10 @@ export async function DELETE(req, res) {
         { status: 400 }
       );
     }
-
+    let session;
     try {
+      const db = await connectDB(req);
+      const client = await getClient();
       // Check if the customer exists
       const customer = await db.collection("customers").findOne({
         _id: new ObjectId(customerId),
@@ -252,14 +259,21 @@ export async function DELETE(req, res) {
         );
       }
       await deleteCache(businessId);
+
       // Delete customer and their corresponding transactions
-      const deleteCustomerResult = await db
-        .collection("customers")
-        .deleteOne({ _id: new ObjectId(customerId), businessId });
+      session = await startTransaction(client);
       const transactions = await db
         .collection("transactions")
         .find({ partyId: customerId, businessId })
         .toArray();
+
+      const deleteTransactionsResult = await db
+        .collection("transactions")
+        .deleteMany({ partyId: customerId, businessId }, { session });
+
+      const deleteCustomerResult = await db
+        .collection("customers")
+        .deleteOne({ _id: new ObjectId(customerId), businessId }, { session });
 
       if (transactions && transactions.length > 0) {
         try {
@@ -275,46 +289,22 @@ export async function DELETE(req, res) {
             }
           }
         } catch (error) {
-          // Handle image deletion errors (log the error, return a response, etc.)
           console.error("Error deleting images:", error);
-          // Depending on your logic, you might want to throw an error or return a response here
         }
-
-        // Now that the associated images are deleted, proceed to delete the transactions
-        const deleteTransactionsResult = await db
-          .collection("transactions")
-          .deleteMany({ partyId: customerId, businessId });
-
-        // Handle the response after deleting the transactions
-        // Return a success message, updated data, or any other required response
       }
-
-      const deleteTransactionsResult = await db
-        .collection("transactions")
-        .deleteMany({ partyId: customerId, businessId });
-
-      if (deleteCustomerResult.deletedCount === 1) {
-        return NextResponse.json(
-          {
-            message:
-              "Customer and corresponding transactions deleted successfully",
-            deletedCustomerCount: deleteCustomerResult.deletedCount,
-            deletedTransactionsCount: deleteTransactionsResult.deletedCount,
-          },
-          { status: 200 }
-        );
-      } else {
-        return NextResponse.json(
-          {
-            message: "Customer not deleted or not found",
-            deletedCustomerCount: deleteCustomerResult.deletedCount,
-            deletedTransactionsCount: deleteTransactionsResult.deletedCount,
-          },
-          { status: 200 }
-        );
-      }
+      await commitTransaction(session);
+      return NextResponse.json(
+        {
+          message:
+            "Customer and corresponding transactions deleted successfully",
+          deletedCustomerCount: deleteCustomerResult.deletedCount,
+          deletedTransactionsCount: deleteTransactionsResult.deletedCount,
+        },
+        { status: 200 }
+      );
     } catch (error) {
       console.log(error);
+      await abortTransaction(session);
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }
