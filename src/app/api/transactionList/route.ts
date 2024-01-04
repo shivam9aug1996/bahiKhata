@@ -46,9 +46,10 @@ export async function POST(req, res) {
     let session;
     let imageUrl;
     try {
+      await deleteCache(businessId);
       const db = await connectDB(req);
       const client = await getClient();
-      await deleteCache(businessId);
+
       session = await startTransaction(client);
       imageUrl = await uploadMultipleImages(imageFile);
 
@@ -69,7 +70,7 @@ export async function POST(req, res) {
 
       const allTransactions = await db
         .collection("transactions")
-        .find({ partyId, businessId, partyType })
+        .find({ partyId, businessId, partyType }, { session })
         .toArray();
 
       // Calculate the balance based on all transactions

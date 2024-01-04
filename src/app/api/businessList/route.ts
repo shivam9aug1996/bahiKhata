@@ -200,6 +200,7 @@ export async function DELETE(req, res) {
       const db = await connectDB(req);
 
       await deleteCache(userId);
+      await deleteCache(id);
       const businessToDelete = await db
         .collection("businesses")
         .findOne({ _id: new ObjectId(id), userId });
