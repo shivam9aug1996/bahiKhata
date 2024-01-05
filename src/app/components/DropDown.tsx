@@ -1,11 +1,12 @@
 "use client";
 import {
+  ArrowPathIcon,
   ChevronDownIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
-import { ArrowPathIcon, CheckIcon } from "@heroicons/react/24/outline";
+import { CheckIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -348,7 +349,9 @@ const DropDown = ({
                       }}
                       // className="w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer"
                       className={`w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer  ${
-                        isGetBusinessSyncLoading ? "animate-spin" : ""
+                        isGetBusinessSyncLoading
+                          ? "animate-spin cursor-wait"
+                          : ""
                       }`}
                     />
                   </div>
