@@ -38,10 +38,10 @@ const DeleteModal = dynamic(() => import("./DeleteModal"), {
   loading: () => <Loader />,
 });
 
-// import Logo from "./Logo";
-const Logo = dynamic(() => import("./Logo"));
-// import Logout from "./Logout";
-const Logout = dynamic(() => import("./Logout"));
+import Logo from "./Logo";
+// const Logo = dynamic(() => import("./Logo"));
+import Logout from "./Logout";
+// const Logout = dynamic(() => import("./Logout"));
 const BusinessModal = dynamic(() => import("./BusinessModal"), {
   loading: () => <Loader />,
 });
@@ -281,7 +281,78 @@ const DropDown = ({
                   )}
                 </div>
                 <div className="flex flex-row justify-between mt-2 items-center">
-                  {getBusinessData?.data?.length > 0 ? (
+                  <div
+                    className={`flex flex-row gap-3 ${
+                      getBusinessData?.data?.length <= 0
+                        ? "pointer-events-none"
+                        : ""
+                    }`}
+                  >
+                    <PencilSquareIcon
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsModalOpen({
+                          ...isOpen,
+                          status: true,
+                          type: "edit",
+                          value: { name: selectedBusinessName },
+                        });
+                      }}
+                      className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer "
+                    />
+
+                    <TrashIcon
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsDeleteOpen({
+                          ...isDeleteOpen,
+                          status: true,
+                          value: businessIdSelected,
+                        });
+                      }}
+                      className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                    />
+                    <ArrowPathIcon
+                      onClick={() => {
+                        if (!isGetBusinessSyncLoading) {
+                          toast.promise(
+                            syncBusiness(
+                              JSON.stringify({
+                                businessId: businessIdSelected,
+                              })
+                            )
+                              .unwrap()
+                              .then(() => {
+                                dispatch(
+                                  customerApi.util.invalidateTags(["customer"])
+                                );
+                                dispatch(
+                                  supplierApi.util.invalidateTags(["supplier"])
+                                );
+                                dispatch(
+                                  dashboardApi.util.invalidateTags([
+                                    "dashboard",
+                                  ])
+                                );
+                              }),
+                            {
+                              loading: "Syncing data...",
+                              success: "Data synced successfully!",
+                              error:
+                                "Oops! Something went wrong during syncing.",
+                            }
+                          );
+                        }
+                      }}
+                      // className="w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer"
+                      className={`w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer  ${
+                        isGetBusinessSyncLoading ? "animate-spin" : ""
+                      }`}
+                    />
+                  </div>
+                  {/* {getBusinessData?.data?.length > 0 ? (
                     <div className="flex flex-row gap-3">
                       <PencilSquareIcon
                         onClick={(e) => {
@@ -356,7 +427,7 @@ const DropDown = ({
                       <div className="w-5 h-5"></div>
                       <div className="w-5 h-5"></div>
                     </div>
-                  )}
+                  )} */}
                   <Logout />
                 </div>
               </div>
