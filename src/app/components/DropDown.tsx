@@ -5,11 +5,12 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, CheckIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
@@ -17,6 +18,7 @@ import {
   businessApi,
   setBusinessIdSelected,
   useDeleteBusinessMutation,
+  useSyncBusinessMutation,
 } from "../redux/features/businessSlice";
 import {
   customerApi,
@@ -79,6 +81,17 @@ const DropDown = ({
     { businessId: businessIdSelected },
     { skip: !businessIdSelected }
   );
+
+  const [
+    syncBusiness,
+    {
+      isSuccess: isGetBusinessSyncSuccess,
+      isLoading: isGetBusinessSyncLoading,
+      isError: isGetBusinessSyncError,
+      error: getBusinessSyncError,
+      data: getBusinessSyncData,
+    },
+  ] = useSyncBusinessMutation();
 
   const [
     deleteBusiness,
@@ -269,7 +282,7 @@ const DropDown = ({
                 </div>
                 <div className="flex flex-row justify-between mt-2 items-center">
                   {getBusinessData?.data?.length > 0 ? (
-                    <div className="flex flex-row p-2">
+                    <div className="flex flex-row gap-3">
                       <PencilSquareIcon
                         onClick={(e) => {
                           e.stopPropagation();
@@ -281,8 +294,8 @@ const DropDown = ({
                             value: { name: selectedBusinessName },
                           });
                         }}
-                        className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
-                      ></PencilSquareIcon>
+                        className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer "
+                      />
 
                       <TrashIcon
                         onClick={(e) => {
@@ -295,6 +308,47 @@ const DropDown = ({
                           });
                         }}
                         className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
+                      />
+                      <ArrowPathIcon
+                        onClick={() => {
+                          if (!isGetBusinessSyncLoading) {
+                            toast.promise(
+                              syncBusiness(
+                                JSON.stringify({
+                                  businessId: businessIdSelected,
+                                })
+                              )
+                                .unwrap()
+                                .then(() => {
+                                  dispatch(
+                                    customerApi.util.invalidateTags([
+                                      "customer",
+                                    ])
+                                  );
+                                  dispatch(
+                                    supplierApi.util.invalidateTags([
+                                      "supplier",
+                                    ])
+                                  );
+                                  dispatch(
+                                    dashboardApi.util.invalidateTags([
+                                      "dashboard",
+                                    ])
+                                  );
+                                }),
+                              {
+                                loading: "Syncing data...",
+                                success: "Data synced successfully!",
+                                error:
+                                  "Oops! Something went wrong during syncing.",
+                              }
+                            );
+                          }
+                        }}
+                        // className="w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer"
+                        className={`w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer  ${
+                          isGetBusinessSyncLoading ? "animate-spin" : ""
+                        }`}
                       />
                     </div>
                   ) : (

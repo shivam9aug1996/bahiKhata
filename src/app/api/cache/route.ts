@@ -105,7 +105,6 @@ export async function GET(req, res) {
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { cacheId } = await req.json();
-    const db = await connectDB(req);
 
     if (!cacheId) {
       return NextResponse.json(
@@ -115,6 +114,7 @@ export async function DELETE(req, res) {
     }
 
     try {
+      const db = await connectDB(req);
       const cacheData = await db.collection("cache").findOne({
         cacheId: cacheId,
       });

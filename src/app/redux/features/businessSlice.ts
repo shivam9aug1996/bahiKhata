@@ -46,6 +46,17 @@ export const businessApi = createApi({
       }),
       invalidatesTags: ["business"],
     }),
+    syncBusiness: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/sync",
+          method: "POST",
+          body: {
+            businessId: data?.businessId,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -119,6 +130,7 @@ export const {
   useGetBusinessListQuery,
   useDeleteBusinessMutation,
   useUpdateBusinessMutation,
+  useSyncBusinessMutation,
 } = businessApi;
 
 export const {
