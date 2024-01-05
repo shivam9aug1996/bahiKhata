@@ -1,20 +1,12 @@
+"use client";
 import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import React, { Fragment } from "react";
-import Loader from "./Loader";
 
-const DeleteModal = ({
-  setIsOpen,
-  isOpen,
-  title,
-  handleSubmit,
-  subtitle,
-  loading,
-}) => {
-  function closeModal() {
-    setIsOpen({ ...isOpen, status: false, value: null });
-  }
-
+const SyncModal = ({ isOpen, setIsOpen }) => {
+  const closeModal = () => {
+    setIsOpen(false);
+  };
   return (
     <Transition appear show={isOpen.status} as={Fragment}>
       <Dialog as="div" className="relative z-30" onClose={closeModal}>
@@ -29,7 +21,7 @@ const DeleteModal = ({
         >
           <div className="fixed inset-0 bg-black/25" />
         </Transition.Child>
-        {loading && <Loader />}
+
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4 text-center">
             <Transition.Child
@@ -60,7 +52,7 @@ const DeleteModal = ({
                 <div>
                   <p className="text-sm text-gray-600 mt-3">
                     {/* Deleting this item will remove it permanently. Are you sure
-                    you want to continue? */}
+                  you want to continue? */}
                     {subtitle
                       ? subtitle
                       : "Deleting this item will remove it permanently. Are you sure you want to continue?"}
@@ -94,4 +86,4 @@ const DeleteModal = ({
   );
 };
 
-export default DeleteModal;
+export default SyncModal;

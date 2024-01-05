@@ -19,7 +19,7 @@ import { dashboardApi } from "../redux/features/dashboardSlice";
 import Loader from "./Loader";
 
 import Sidebar from "./Sidebar";
-const DeleteModal = dynamic(() => import("./DeleteModal"), {
+const GenericModal = dynamic(() => import("./GenericModal"), {
   loading: () => (
     <Loader wrapperStyle={{ alignItems: "flex-start", marginTop: "20rem" }} />
   ),
@@ -107,7 +107,7 @@ const Transaction = ({ partyId, setIsTransactionsOpen }) => {
   return (
     <>
       {isDeleteOpen?.status && (
-        <DeleteModal
+        <GenericModal
           setIsOpen={setIsDeleteOpen}
           isOpen={isDeleteOpen}
           title={"Delete Transaction"}

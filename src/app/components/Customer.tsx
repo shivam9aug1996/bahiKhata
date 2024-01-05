@@ -33,7 +33,7 @@ const PartyModal = dynamic(() => import("./PartyModal"), {
 const NoBusinessExists = dynamic(() => import("./NoBusinessExists"), {
   loading: () => <PartySkeleton />,
 });
-const DeleteModal = dynamic(() => import("./DeleteModal"), {
+const GenericModal = dynamic(() => import("./GenericModal"), {
   loading: () => <Loader />,
 });
 
@@ -259,7 +259,7 @@ const Customer = () => {
               />
             )}
             {isDeleteOpen.status && (
-              <DeleteModal
+              <GenericModal
                 setIsOpen={setIsDeleteOpen}
                 isOpen={isDeleteOpen}
                 title={"Delete Customer"}

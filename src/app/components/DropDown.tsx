@@ -35,13 +35,14 @@ import {
 } from "../redux/features/supplierSlice";
 import { formatNumberOrStringWithFallback } from "../utils/function";
 import Loader from "./Loader";
-const DeleteModal = dynamic(() => import("./DeleteModal"), {
+const GenericModal = dynamic(() => import("./GenericModal"), {
   loading: () => <Loader />,
 });
 
 import Logo from "./Logo";
 // const Logo = dynamic(() => import("./Logo"));
 import Logout from "./Logout";
+import SyncModal from "./SyncModal";
 // const Logout = dynamic(() => import("./Logout"));
 const BusinessModal = dynamic(() => import("./BusinessModal"), {
   loading: () => <Loader />,
@@ -60,6 +61,10 @@ const DropDown = ({
   );
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState({
+    status: false,
+    value: null,
+  });
   const [isDeleteOpen, setIsDeleteOpen] = useState({
     status: false,
     value: null,
@@ -194,14 +199,53 @@ const DropDown = ({
       })
     );
   };
+
+  const handleSyncData = () => {
+    if (!isGetBusinessSyncLoading) {
+      setIsSyncModalOpen({ ...isSyncModalOpen, status: false });
+      toast.promise(
+        syncBusiness(
+          JSON.stringify({
+            businessId: businessIdSelected,
+          })
+        )
+          .unwrap()
+          .then(() => {
+            dispatch(customerApi.util.invalidateTags(["customer"]));
+            dispatch(supplierApi.util.invalidateTags(["supplier"]));
+            dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
+          }),
+        {
+          loading: "Syncing data...",
+          success: "Data synced successfully!",
+          error: "Oops! Something went wrong during syncing.",
+        }
+      );
+    }
+  };
+
   return (
     <div>
       {isDeleteBusinessLoading ? <Loader /> : null}
       {isModalOpen?.status && (
         <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       )}
+      {isSyncModalOpen?.status && (
+        <GenericModal
+          setIsOpen={setIsSyncModalOpen}
+          isOpen={isSyncModalOpen}
+          title={"Sync Your Data"}
+          subtitle={
+            "Sync data to ensure accurate credit/debit entry updates on your dashboard and maintain consistency across all your stored information. Are you sure you want to submit?"
+          }
+          handleSubmit={() => {
+            handleSyncData();
+          }}
+          loading={isDeleteBusinessLoading}
+        />
+      )}
       {isDeleteOpen?.status && (
-        <DeleteModal
+        <GenericModal
           setIsOpen={setIsDeleteOpen}
           isOpen={isDeleteOpen}
           title={"Delete Business"}
@@ -317,35 +361,10 @@ const DropDown = ({
                     />
                     <ArrowPathIcon
                       onClick={() => {
-                        if (!isGetBusinessSyncLoading) {
-                          toast.promise(
-                            syncBusiness(
-                              JSON.stringify({
-                                businessId: businessIdSelected,
-                              })
-                            )
-                              .unwrap()
-                              .then(() => {
-                                dispatch(
-                                  customerApi.util.invalidateTags(["customer"])
-                                );
-                                dispatch(
-                                  supplierApi.util.invalidateTags(["supplier"])
-                                );
-                                dispatch(
-                                  dashboardApi.util.invalidateTags([
-                                    "dashboard",
-                                  ])
-                                );
-                              }),
-                            {
-                              loading: "Syncing data...",
-                              success: "Data synced successfully!",
-                              error:
-                                "Oops! Something went wrong during syncing.",
-                            }
-                          );
-                        }
+                        setIsSyncModalOpen({
+                          ...isSyncModalOpen,
+                          status: true,
+                        });
                       }}
                       // className="w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer"
                       className={`w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer  ${

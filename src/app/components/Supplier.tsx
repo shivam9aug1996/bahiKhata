@@ -33,7 +33,7 @@ import TransactionListModal from "./TransactionListModal";
 const NoBusinessExists = dynamic(() => import("./NoBusinessExists"), {
   loading: () => <PartySkeleton />,
 });
-const DeleteModal = dynamic(() => import("./DeleteModal"), {
+const GenericModal = dynamic(() => import("./GenericModal"), {
   loading: () => <Loader />,
 });
 // import NoParty from "./NoParty";
@@ -175,7 +175,7 @@ const Supplier = () => {
           />
         )}
         {isDeleteOpen?.status && (
-          <DeleteModal
+          <GenericModal
             setIsOpen={setIsDeleteOpen}
             isOpen={isDeleteOpen}
             title={"Delete Supplier"}
