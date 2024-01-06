@@ -26,7 +26,10 @@ import {
 
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
-import { formatNumberOrStringWithFallback } from "../utils/function";
+import {
+  formatNumberOrStringWithFallback,
+  transactionType,
+} from "../utils/function";
 
 import PaginationWrapper from "./PaginationWrapper";
 import TransactionListModal from "./TransactionListModal";
@@ -285,15 +288,23 @@ const Supplier = () => {
                       // href={`/dashboard/suppliers/${item?._id}`}
                       // scroll={false}
                     >
-                      <div className="flex justify-between">
+                      <div className="flex justify-between text-left">
                         <span>{item?.name}</span>
                         <div className="flex flex-col items-end">
-                          <div>
+                          <div
+                            className={`ml-2 text-right ${
+                              item.balance < 0
+                                ? "text-green-500"
+                                : item.balance > 0
+                                ? "text-red-500"
+                                : ""
+                            }`}
+                          >
                             {item.balance > 0
-                              ? "You will give"
+                              ? `You will give (${transactionType.supplier["Bakaya Rashi Supplier Ko"]})`
                               : item.balance < 0
-                              ? "You will get"
-                              : ""}{" "}
+                              ? `You will get (${transactionType.supplier["Adhik Bhugtan Supplier Ko"]})`
+                              : ""}
                           </div>
                           {item.balance == 0 ? (
                             <div style={{ height: 24 }}></div>
@@ -301,9 +312,9 @@ const Supplier = () => {
                           {/* {item.balance == 0 && <div className="h-6"></div>} */}
                           <div
                             className={`ml-2 ${
-                              item.balance > 0
+                              item.balance < 0
                                 ? "text-green-500"
-                                : item.balance < 0
+                                : item.balance > 0
                                 ? "text-red-500"
                                 : ""
                             }`}

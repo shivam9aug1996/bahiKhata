@@ -5,7 +5,10 @@ import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedCustomer } from "../redux/features/businessSlice";
-import { formatNumberOrStringWithFallback } from "../utils/function";
+import {
+  formatNumberOrStringWithFallback,
+  transactionType,
+} from "../utils/function";
 import Loader from "./Loader";
 import TransactionListModal from "./TransactionListModal";
 import PaginationWrapper from "./PaginationWrapper";
@@ -72,14 +75,22 @@ const CustomerData = ({
             //  href={`/dashboard/customers/${item?._id}`}
             //scroll={false}
           >
-            <div className="flex justify-between ">
+            <div className="flex justify-between text-left">
               <span>{item?.name}</span>
               <div className="flex flex-col items-end">
-                <div>
+                <div
+                  className={`ml-2 text-right ${
+                    item.balance > 0
+                      ? "text-green-500"
+                      : item.balance < 0
+                      ? "text-red-500"
+                      : ""
+                  }`}
+                >
                   {item.balance > 0
-                    ? "You will give"
+                    ? `You will give (${transactionType.customer["Adhik Bhugtan Customer Se"]})`
                     : item.balance < 0
-                    ? "You will get"
+                    ? `You will get (${transactionType.customer["Bakaya Rashi Customer Se"]})`
                     : ""}
                 </div>
                 {item.balance == 0 ? <div style={{ height: 24 }}></div> : null}

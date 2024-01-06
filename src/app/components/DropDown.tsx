@@ -33,7 +33,10 @@ import {
   supplierApi,
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
-import { formatNumberOrStringWithFallback } from "../utils/function";
+import {
+  formatNumberOrStringWithFallback,
+  transactionType,
+} from "../utils/function";
 import Loader from "./Loader";
 const GenericModal = dynamic(() => import("./GenericModal"), {
   loading: () => <Loader />,
@@ -458,18 +461,18 @@ const DropDown = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-center">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h4 className="text-center mb-4 font-bold text-lg">
             Customer Balance:
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              You will give: ₹
+              {`You will give (${transactionType.customer["Adhik Bhugtan Customer Se"]}): ₹`}
               {formatNumberOrStringWithFallback(customerPositiveBalance)}
             </span>
             <span className="text-red-500">
-              You will get: ₹
+              {`You will get (${transactionType.customer["Bakaya Rashi Customer Se"]}): ₹`}
               {formatNumberOrStringWithFallback(
                 Math.abs(customerNegativeBalance)
               )}
@@ -481,12 +484,12 @@ const DropDown = ({
             Supplier Balance:
           </h4>
           <div className="flex flex-col items-center">
-            <span className="text-green-500 mb-2">
-              You will give: ₹
+            <span className="text-red-500 mb-2">
+              {`You will give (${transactionType.supplier["Bakaya Rashi Supplier Ko"]}): ₹`}
               {formatNumberOrStringWithFallback(supplierPositiveBalance)}
             </span>
-            <span className="text-red-500">
-              You will get: ₹
+            <span className="text-green-500">
+              {`You will get (${transactionType.supplier["Adhik Bhugtan Supplier Ko"]}): ₹`}
               {formatNumberOrStringWithFallback(
                 Math.abs(supplierNegativeBalance)
               )}

@@ -142,3 +142,33 @@ export const isValidData = (data) => {
 
   return true;
 };
+
+export const transactionType = {
+  customer: {
+    ["Customer Ko Maal Becha"]: "Maal Becha",
+    ["Customer Se Bhugtan Prapt"]: "Bhugtan Prapt",
+    ["Bakaya Rashi Customer Se"]: "Bakaya Rashi",
+    ["Adhik Bhugtan Customer Se"]: "Adhik Bhugtan",
+  },
+  supplier: {
+    ["Supplier Ko Payment Ki"]: "Payment Ki",
+    ["Supplier Se Maal Khareeda"]: "Maal Khareeda",
+    ["Bakaya Rashi Supplier Ko"]: "Bakaya Rashi",
+    ["Adhik Bhugtan Supplier Ko"]: "Adhik Bhugtan",
+  },
+};
+
+// export const transactionType = {
+//   customer: {
+//     ["Customer Ko Maal Becha"]: "Customer Ko Maal Becha",
+//     ["Customer Se Bhugtan Prapt"]: "Customer Se Bhugtan Prapt",
+//     ["Bakaya Rashi Customer Se"]: "Bakaya Rashi Customer Se",
+//     ["Adhik Bhugtan Customer Se"]: "Adhik Bhugtan Customer Se",
+//   },
+//   supplier: {
+//     ["Supplier Ko Payment Ki"]: "Supplier Ko Payment Ki",
+//     ["Supplier Se Maal Khareeda"]: "Supplier Se Maal Khareeda",
+//     ["Bakaya Rashi Supplier Ko"]: "Bakaya Rashi Supplier Ko",
+//     ["Adhik Bhugtan Supplier Ko"]: "Adhik Bhugtan Supplier Ko",
+//   },
+// };

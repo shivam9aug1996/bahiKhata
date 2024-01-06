@@ -16,6 +16,7 @@ import {
   countNonEmptyKeys,
   formatNumberOrStringWithFallback,
   isValidData,
+  transactionType,
 } from "../utils/function";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -279,7 +280,14 @@ const Sidebar = ({
           ) : (
             <div className="grid gap-4">
               <div className="mt-4"></div>
-              {isFetching && <Loader />}
+              {isFetching && (
+                <Loader
+                  wrapperStyle={{
+                    alignItems: "flex-start",
+                    marginTop: "20rem",
+                  }}
+                />
+              )}
               {getTransactionData?.data?.length == 0 &&
               countNonEmptyKeys(isFilterOpen?.value) > 0 &&
               businessIdSelected ? (
@@ -293,16 +301,42 @@ const Sidebar = ({
                   <div
                     key={index}
                     className={`flex  flex-row justify-between ${
-                      transaction.type === "debit"
+                      pathname.includes("customer")
+                        ? transaction.type === "debit"
+                          ? "text-red-500"
+                          : "text-green-500"
+                        : transaction.type === "credit"
                         ? "text-red-500"
                         : "text-green-500"
                     }`}
                   >
-                    <p>
-                      Amount: ₹
-                      {formatNumberOrStringWithFallback(transaction?.amount)}(
-                      {transaction.type === "debit" ? "You Gave" : "You Got"})
-                    </p>
+                    <div className="flex flex-col">
+                      <p>
+                        Amount: ₹
+                        {formatNumberOrStringWithFallback(transaction?.amount)}{" "}
+                      </p>
+                      <p>
+                        {transaction.type === "debit"
+                          ? `You Gave (${
+                              pathname.includes("customer")
+                                ? transactionType.customer[
+                                    "Customer Ko Maal Becha"
+                                  ]
+                                : transactionType.supplier[
+                                    "Supplier Ko Payment Ki"
+                                  ]
+                            })`
+                          : `You Got (${
+                              pathname.includes("customer")
+                                ? transactionType.customer[
+                                    "Customer Se Bhugtan Prapt"
+                                  ]
+                                : transactionType.supplier[
+                                    "Supplier Se Maal Khareeda"
+                                  ]
+                            })`}
+                      </p>
+                    </div>
                     <div className="flex flex-row">
                       <PencilSquareIcon
                         onClick={() => {
@@ -334,13 +368,14 @@ const Sidebar = ({
                       />
                     </div>
                   </div>
-                  <p>Description: {transaction?.description}</p>
+
                   <p>
                     Date:{" "}
                     {transaction.date
                       ? new Date(transaction?.date)?.toLocaleDateString()
                       : ""}
                   </p>
+                  <p>Description: {transaction?.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {transaction?.imageUrl?.map((image, index) => {
                       return isValidData(image) ? (

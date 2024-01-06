@@ -14,7 +14,7 @@ import {
   useCreateTransactionMutation,
   useUpdateTransactionMutation,
 } from "../redux/features/transactionSlice";
-import { isValidData, todayDate } from "../utils/function";
+import { isValidData, todayDate, transactionType } from "../utils/function";
 import Loader from "./Loader";
 import imageCompression from "browser-image-compression";
 import { Image } from "@nextui-org/react";
@@ -75,7 +75,7 @@ export default function TransactionModal({
 
   const [formData, setFormData] = useState({
     amount: "",
-    type: "credit", // Default value for type as "credit"
+    type: pathname.includes("customer") ? "debit" : "credit", // Default value for type as "credit"
     description: "", // Add description field
     date: todayDate(),
   });
@@ -365,8 +365,28 @@ export default function TransactionModal({
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="credit">You Got</option>
-                        <option value="debit">You Gave</option>
+                        <option value="debit">
+                          {`You Gave (${
+                            pathname.includes("customer")
+                              ? transactionType.customer[
+                                  "Customer Ko Maal Becha"
+                                ]
+                              : transactionType.supplier[
+                                  "Supplier Ko Payment Ki"
+                                ]
+                          })`}
+                        </option>
+                        <option value="credit">
+                          {`You Got (${
+                            pathname.includes("customer")
+                              ? transactionType.customer[
+                                  "Customer Se Bhugtan Prapt"
+                                ]
+                              : transactionType.supplier[
+                                  "Supplier Se Maal Khareeda"
+                                ]
+                          })`}
+                        </option>
                       </select>
                     </div>
                     {/* Date input field */}

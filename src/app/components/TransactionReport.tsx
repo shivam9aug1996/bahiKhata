@@ -1,5 +1,8 @@
 import React, { useRef } from "react";
-import { formatNumberOrStringWithFallback } from "../utils/function";
+import {
+  formatNumberOrStringWithFallback,
+  transactionType,
+} from "../utils/function";
 import NoTransaction from "./NoTransaction";
 
 const TransactionReport = ({
@@ -41,10 +44,18 @@ const TransactionReport = ({
       <div className="mb-3 p-2 rounded-md shadow-md">
         Transactions Type:
         {filterData?.type === "credit"
-          ? "Credit"
+          ? `You Got (${
+              partyType === "customer"
+                ? transactionType.customer["Customer Se Bhugtan Prapt"]
+                : transactionType.supplier["Supplier Se Maal Khareeda"]
+            })`
           : filterData?.type === "debit"
-          ? "Debit"
-          : "Credit/Debit"}
+          ? `You Gave (${
+              partyType === "customer"
+                ? transactionType.customer["Customer Ko Maal Becha"]
+                : transactionType.supplier["Supplier Ko Payment Ki"]
+            })`
+          : "All"}
       </div>
 
       {filterData?.startDate && filterData?.endDate ? (
@@ -68,6 +79,7 @@ const TransactionReport = ({
       ) : null}
       {!filterData?.startDate && !filterData?.endDate ? (
         <div className="mb-3 p-2 rounded-md shadow-md">
+          Date Range:
           {`All Transactions`}
         </div>
       ) : null}
@@ -87,12 +99,28 @@ const TransactionReport = ({
           <div
             key={index}
             className={`flex sm:flex-row flex-col justify-between ${
-              transaction.type === "debit" ? "text-red-500" : "text-green-500"
+              partyType === "customer"
+                ? transaction.type === "debit"
+                  ? "text-red-500"
+                  : "text-green-500"
+                : transaction.type === "credit"
+                ? "text-red-500"
+                : "text-green-500"
             }`}
           >
             <p>
-              Amount: ₹{formatNumberOrStringWithFallback(transaction?.amount)} (
-              {transaction.type === "debit" ? "Debit" : "Credit"})
+              Amount: ₹{formatNumberOrStringWithFallback(transaction?.amount)}{" "}
+              {transaction.type === "debit"
+                ? `You Gave (${
+                    partyType === "customer"
+                      ? transactionType.customer["Customer Ko Maal Becha"]
+                      : transactionType.supplier["Supplier Ko Payment Ki"]
+                  })`
+                : `You Got (${
+                    partyType === "customer"
+                      ? transactionType.customer["Customer Se Bhugtan Prapt"]
+                      : transactionType.supplier["Supplier Se Maal Khareeda"]
+                  })`}
             </p>
           </div>
           {/* <p>Description: {transaction?.description}</p> */}
@@ -107,30 +135,70 @@ const TransactionReport = ({
 
       <div className="mt-10 border-4 border-gray-950 rounded-md">
         <div className="p-4 flex flex-col justify-between">
-          <div className="text-green-500 mb-4">
+          <div
+            className={`${
+              partyType === "customer"
+                ? `text-green-500 mb-4`
+                : `text-red-500 mb-4`
+            }`}
+          >
             <p>
-              Total Credit Amount: ₹
-              {formatNumberOrStringWithFallback(creditAmount)}
+              Total{" "}
+              {`You Got (${
+                partyType === "customer"
+                  ? transactionType.customer["Customer Se Bhugtan Prapt"]
+                  : transactionType.supplier["Supplier Se Maal Khareeda"]
+              })`}{" "}
+              Amount: ₹{formatNumberOrStringWithFallback(creditAmount)}
             </p>
           </div>
           <hr className="mt-2 mb-2" />
-          <div className="text-red-500">
+          <div
+            className={`${
+              partyType === "supplier"
+                ? `text-green-500 mb-4`
+                : `text-red-500 mb-4`
+            }`}
+          >
             <p>
-              Total Debit Amount: ₹
-              {formatNumberOrStringWithFallback(debitAmount)}
+              Total{" "}
+              {`You Gave (${
+                partyType === "customer"
+                  ? transactionType.customer["Customer Ko Maal Becha"]
+                  : transactionType.supplier["Supplier Ko Payment Ki"]
+              })`}{" "}
+              Amount: ₹{formatNumberOrStringWithFallback(debitAmount)}
             </p>
           </div>
           <hr className="mt-2 mb-2" />
-          <div className="text-red-500">
-            <p>
+          <div
+            className={`${
+              partyType == "customer"
+                ? balance > 0
+                  ? "text-green-500"
+                  : `text-red-500`
+                : balance < 0
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+          >
+            <p className="text-lg">
               Total Balance:
-              {balance < 0
-                ? `Customer will pay ₹${formatNumberOrStringWithFallback(
-                    Math.abs(balance)
-                  )}`
-                : `Customer will receive ${formatNumberOrStringWithFallback(
-                    balance
-                  )} `}
+              {partyType == "customer"
+                ? balance < 0
+                  ? `You will get (${
+                      transactionType.customer["Bakaya Rashi Customer Se"]
+                    }) ₹${formatNumberOrStringWithFallback(Math.abs(balance))}`
+                  : `You will give (${
+                      transactionType.customer["Adhik Bhugtan Customer Se"]
+                    }) ${formatNumberOrStringWithFallback(balance)} `
+                : balance > 0
+                ? `You will give (${
+                    transactionType.supplier["Bakaya Rashi Supplier Ko"]
+                  }) ₹${formatNumberOrStringWithFallback(balance)}`
+                : `You will get (${
+                    transactionType.supplier["Adhik Bhugtan Supplier Ko"]
+                  }) ${formatNumberOrStringWithFallback(Math.abs(balance))} `}
             </p>
           </div>
         </div>

@@ -1,7 +1,9 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import { usePathname } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
+import { transactionType } from "../utils/function";
 
 const TransactionFilterModal = ({ isOpen, setIsOpen, setPage }) => {
   const [formData, setFormData] = useState({
@@ -9,6 +11,7 @@ const TransactionFilterModal = ({ isOpen, setIsOpen, setPage }) => {
     startDate: "",
     endDate: "",
   });
+  const pathname = usePathname();
   useEffect(() => {
     if (isOpen?.status == true) {
       setFormData({
@@ -106,8 +109,23 @@ const TransactionFilterModal = ({ isOpen, setIsOpen, setPage }) => {
                       className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">All</option>
-                      <option value="credit">You Got</option>
-                      <option value="debit">You Gave</option>
+                      <option value="credit">{`You Got (${
+                        pathname.includes("customer")
+                          ? transactionType.customer[
+                              "Customer Se Bhugtan Prapt"
+                            ]
+                          : transactionType.supplier[
+                              "Supplier Se Maal Khareeda"
+                            ]
+                      })`}</option>
+                      <option value="debit">
+                        {" "}
+                        {`You Gave (${
+                          pathname.includes("customer")
+                            ? transactionType.customer["Customer Ko Maal Becha"]
+                            : transactionType.supplier["Supplier Ko Payment Ki"]
+                        })`}
+                      </option>
                     </select>
                   </div>
 
