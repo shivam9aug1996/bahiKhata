@@ -1,21 +1,60 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
-// import { QrReader } from "react-qr-reader";
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { QrScanner } from "@yudiel/react-qr-scanner";
+import { useScanQRcodeMutation } from "../redux/features/qrSlice";
+import toast from "react-hot-toast";
+import Loader from "./Loader";
 
-const QRscanner = () => {
-  const [isOpen, setIsOpen] = useState({ status: false, value: null });
+const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
+  const [scannedResult, setScannedResult] = useState({
+    status: false,
+    value: "",
+  });
+
+  const [
+    scanQRcode,
+    {
+      isSuccess: isScanQRSuccess,
+      isLoading: isScanQRLoading,
+      isError: isScanQRError,
+      error: scanQRError,
+      data: scanQRData,
+    },
+  ] = useScanQRcodeMutation();
 
   useEffect(() => {
-    if (
-      "mediaDevices" in navigator &&
-      "getUserMedia" in navigator.mediaDevices
-    ) {
-      navigator.mediaDevices.getUserMedia({ video: true });
+    if (scannedResult?.status == true) {
+      let id = toast.loading(
+        "Verifying... Please wait a moment for authentication."
+      );
+      scanQRcode({ token: scannedResult.value })
+        ?.unwrap()
+        ?.then((res) => {
+          toast.success("QR scanned successfully");
+        })
+        ?.catch((err) => {
+          console.log("hiii err", err);
+          toast.error(
+            "QR Code Expired! Please generate a new QR code to continue."
+          );
+        })
+        ?.finally(() => {
+          toast.remove(id);
+          setIsOpen({ ...isOpen, status: false, value: null });
+        });
     }
-  }, []);
+  }, [scannedResult.status]);
+
+  useEffect(() => {
+    if (isOpen?.status) {
+      setScannedResult({
+        status: false,
+        value: "",
+      });
+    }
+  }, [isOpen?.status]);
 
   function closeModal() {
     setIsOpen({ ...isOpen, status: false, value: null });
@@ -64,26 +103,40 @@ const QRscanner = () => {
                     </button>
                   </div>
                   <div>
-                    <QrScanner
-                      constraints={{
-                        facingMode: "environment",
-                        width: {
-                          min: 640,
-                          ideal: 720,
-                          max: 1920,
-                        },
-                        height: {
-                          min: 640,
-                          ideal: 720,
-                          max: 1080,
-                        },
-                      }}
-                      hideCount={false}
-                      tracker={true}
-                      scanDelay={100}
-                      onDecode={(result) => console.log(result)}
-                      onError={(error) => console.log(error?.message)}
-                    />
+                    {scannedResult.status ? (
+                      <div
+                        className="flex justify-center items-center mt-20"
+                        style={{ width: 400, height: 400 }}
+                      >
+                        <Loader />
+                        <p className="text-lg">Please wait...</p>
+                      </div>
+                    ) : (
+                      <QrScanner
+                        constraints={{
+                          facingMode: "environment",
+                          width: {
+                            min: 640,
+                            ideal: 720,
+                            max: 1920,
+                          },
+                          height: {
+                            min: 640,
+                            ideal: 720,
+                            max: 1080,
+                          },
+                        }}
+                        hideCount={true}
+                        tracker={true}
+                        scanDelay={100}
+                        onDecode={(result) => {
+                          console.log(result);
+                          if (scannedResult.status == false)
+                            setScannedResult({ status: true, value: result });
+                        }}
+                        onError={(error) => console.log(error?.message)}
+                      />
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -91,9 +144,6 @@ const QRscanner = () => {
           </div>
         </Dialog>
       </Transition>
-      <button onClick={() => setIsOpen({ ...isOpen, status: true })}>
-        scan
-      </button>
     </>
   );
 };

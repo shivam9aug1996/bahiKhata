@@ -7,6 +7,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import { CheckIcon } from "@heroicons/react/24/outline";
+
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -29,6 +30,7 @@ import {
   dashboardApi,
   useGetDashboardQuery,
 } from "../redux/features/dashboardSlice";
+import { useScanQRcodeMutation } from "../redux/features/qrSlice";
 import {
   supplierApi,
   useGetSupplierListQuery,
@@ -69,6 +71,10 @@ const DropDown = ({
     status: false,
     value: null,
   });
+  const [isQrScannerOpen, setIsQrScannerOpen] = useState({
+    status: false,
+    value: null,
+  });
   const [isDeleteOpen, setIsDeleteOpen] = useState({
     status: false,
     value: null,
@@ -80,6 +86,17 @@ const DropDown = ({
   const router = useRouter();
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
+
+  const [
+    scanQRcode,
+    {
+      isSuccess: isScanQRSuccess,
+      isLoading: isScanQRLoading,
+      isError: isScanQRError,
+      error: scanQRError,
+      data: scanQRData,
+    },
+  ] = useScanQRcodeMutation();
 
   const {
     isSuccess: isGetDashboardSuccess,
@@ -234,6 +251,9 @@ const DropDown = ({
       {isModalOpen?.status && (
         <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       )}
+      {isQrScannerOpen && (
+        <QRscanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} />
+      )}
       {isSyncModalOpen?.status && (
         <GenericModal
           setIsOpen={setIsSyncModalOpen}
@@ -377,84 +397,31 @@ const DropDown = ({
                           : ""
                       }`}
                     />
-                    <QRscanner />
-                  </div>
-                  {/* {getBusinessData?.data?.length > 0 ? (
-                    <div className="flex flex-row gap-3">
-                      <PencilSquareIcon
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          setIsModalOpen({
-                            ...isOpen,
-                            status: true,
-                            type: "edit",
-                            value: { name: selectedBusinessName },
-                          });
-                        }}
-                        className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer "
-                      />
 
-                      <TrashIcon
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          setIsDeleteOpen({
-                            ...isDeleteOpen,
-                            status: true,
-                            value: businessIdSelected,
-                          });
-                        }}
-                        className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-                      />
-                      <ArrowPathIcon
-                        onClick={() => {
-                          if (!isGetBusinessSyncLoading) {
-                            toast.promise(
-                              syncBusiness(
-                                JSON.stringify({
-                                  businessId: businessIdSelected,
-                                })
-                              )
-                                .unwrap()
-                                .then(() => {
-                                  dispatch(
-                                    customerApi.util.invalidateTags([
-                                      "customer",
-                                    ])
-                                  );
-                                  dispatch(
-                                    supplierApi.util.invalidateTags([
-                                      "supplier",
-                                    ])
-                                  );
-                                  dispatch(
-                                    dashboardApi.util.invalidateTags([
-                                      "dashboard",
-                                    ])
-                                  );
-                                }),
-                              {
-                                loading: "Syncing data...",
-                                success: "Data synced successfully!",
-                                error:
-                                  "Oops! Something went wrong during syncing.",
-                              }
-                            );
-                          }
-                        }}
-                        // className="w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer"
-                        className={`w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer  ${
-                          isGetBusinessSyncLoading ? "animate-spin" : ""
-                        }`}
-                      />
+                    <div
+                      onClick={() =>
+                        setIsQrScannerOpen({ ...isQrScannerOpen, status: true })
+                      }
+                      className="w-4 h-4 border-gray-600 border-1 relative hover:text-blue-500 cursor-pointer"
+                    >
+                      <div
+                        className="h-2 border-1 absolute border-white"
+                        style={{ left: -1, top: 3 }}
+                      ></div>
+                      <div
+                        className="h-2 border-1 absolute border-white"
+                        style={{ right: -1, top: 3 }}
+                      ></div>{" "}
+                      <div
+                        className="w-2 border-1 absolute  border-white"
+                        style={{ left: 3, top: -1 }}
+                      ></div>
+                      <div
+                        className="w-2 border-1 absolute  border-white"
+                        style={{ left: 3, bottom: -1 }}
+                      ></div>
                     </div>
-                  ) : (
-                    <div className="flex flex-row p-2">
-                      <div className="w-5 h-5"></div>
-                      <div className="w-5 h-5"></div>
-                    </div>
-                  )} */}
+                  </div>
                   <Logout />
                 </div>
               </div>

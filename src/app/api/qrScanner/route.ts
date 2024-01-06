@@ -1,10 +1,8 @@
-import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
-
-import QRCode from "qrcode";
 import { pusher } from "../lib/pusher";
 import jwt from "jsonwebtoken";
 import { secretKey } from "../lib/keys";
+import { cookies } from "next/headers";
 
 export async function POST(req, res) {
   if (req.method === "POST") {
@@ -13,10 +11,24 @@ export async function POST(req, res) {
       const { token } = await req?.json();
       console.log(token);
       decoded = await jwt.verify(token, secretKey);
-      // pusher.trigger("my-channel", id, {
-      //   message: "hello world",
-      // });
-      console.log("decoded", decoded);
+      if (decoded?.action === "login") {
+        let data = cookies().get("bahi_khata_user_data")?.value;
+        if (data) data = JSON.parse(data);
+
+        const newToken = await jwt.sign(
+          { id: data?.userId, action: "login" },
+          secretKey,
+          {
+            expiresIn: "20s",
+          }
+        );
+        pusher.trigger("my-channel", token, {
+          message: "login",
+          data: {
+            newToken,
+          },
+        });
+      }
     } catch (error) {
       return NextResponse.json(
         { message: "Something went wrong" },
@@ -28,7 +40,7 @@ export async function POST(req, res) {
       {
         message: "QR scanned successfully",
       },
-      { status: 201 }
+      { status: 200 }
     );
   } else {
     return NextResponse.json(

@@ -9,7 +9,6 @@ import useErrorNotification from "../custom-hooks/useErrorNotification";
 
 import { setAuthLoader, useLoginMutation } from "../redux/features/authSlice";
 
-import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 
 import Lottie from "../components/Lottie";
@@ -17,6 +16,7 @@ import AuthForm from "../components/AuthForm";
 import usePageLoader from "../custom-hooks/usePageLoader";
 import { deleteCookies } from "../actions";
 import dynamic from "next/dynamic";
+import { Button } from "@nextui-org/react";
 // import QrSocket from "../components/QrSocket";
 const QrSocket = dynamic(() => import("../components/QrSocket"), {
   ssr: false,
@@ -26,6 +26,10 @@ export default function Login() {
   const [formData, setFormData] = useState({
     mobileNumber: "",
     password: "",
+  });
+  const [qrCodeModal, setQrCodeModal] = useState({
+    status: false,
+    value: null,
   });
 
   const dispatch = useDispatch();
@@ -117,7 +121,6 @@ export default function Login() {
       {isLoginLoading && <Loader />}
       {authLoader ? <Loader /> : null}
       {!pageLoaded ? <Loader /> : null}
-      {/* <QrSocket /> */}
       <AuthForm
         handleSubmit={handleSubmit}
         formData={formData}
@@ -125,7 +128,19 @@ export default function Login() {
         type={"login"}
         loading={isLoginLoading || authLoader}
       />
+      <div className="flex justify-center flex-col items-center">
+        <p className="text-lg mb-3">or</p>
+        <Button
+          className="w-min"
+          onClick={() => setQrCodeModal({ status: true, value: null })}
+        >
+          Generate QR to Login
+        </Button>
+      </div>
       <Lottie />
+      {qrCodeModal.status && (
+        <QrSocket isOpen={qrCodeModal} setIsOpen={setQrCodeModal} />
+      )}
     </>
   );
 }
