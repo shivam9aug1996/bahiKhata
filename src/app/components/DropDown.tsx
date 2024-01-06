@@ -45,6 +45,7 @@ const GenericModal = dynamic(() => import("./GenericModal"), {
 import Logo from "./Logo";
 // const Logo = dynamic(() => import("./Logo"));
 import Logout from "./Logout";
+import QRscanner from "./QRscanner";
 import SyncModal from "./SyncModal";
 // const Logout = dynamic(() => import("./Logout"));
 const BusinessModal = dynamic(() => import("./BusinessModal"), {
@@ -376,6 +377,7 @@ const DropDown = ({
                           : ""
                       }`}
                     />
+                    <QRscanner />
                   </div>
                   {/* {getBusinessData?.data?.length > 0 ? (
                     <div className="flex flex-row gap-3">

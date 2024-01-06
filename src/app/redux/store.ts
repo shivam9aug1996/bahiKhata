@@ -4,6 +4,7 @@ import authSlice, { authApi } from "./features/authSlice";
 import businessSlice, { businessApi } from "./features/businessSlice";
 import customerSlice, { customerApi } from "./features/customerSlice";
 import dashboardSlice, { dashboardApi } from "./features/dashboardSlice";
+import qrSlice, { qrApi } from "./features/qrSlice";
 import supplierSlice, { supplierApi } from "./features/supplierSlice";
 import transactionSlice, { transactionApi } from "./features/transactionSlice";
 
@@ -21,6 +22,8 @@ const store = configureStore({
     [dashboardApi.reducerPath]: dashboardApi.reducer,
     auth: authSlice,
     [authApi.reducerPath]: authApi.reducer,
+    qr: qrSlice,
+    [qrApi.reducerPath]: qrApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -29,7 +32,8 @@ const store = configureStore({
       .concat(supplierApi.middleware)
       .concat(transactionApi.middleware)
       .concat(dashboardApi.middleware)
-      .concat(authApi.middleware),
+      .concat(authApi.middleware)
+      .concat(qrApi.middleware),
 });
 
 export default store;

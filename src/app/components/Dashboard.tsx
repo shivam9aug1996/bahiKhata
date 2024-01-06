@@ -19,6 +19,7 @@ import DropDown from "./DropDown";
 
 import Loader from "./Loader";
 import Cookies from "js-cookie";
+// import QrSocket from "./QrSocket";
 
 const Dashboard = () => {
   const userId = useSelector((state) => state?.auth?.userData?.userId || null);
@@ -108,6 +109,7 @@ const Dashboard = () => {
         <Loader />
       ) : null}
       {/* <Suspense fallback={<Loader />}> */}
+
       <DropDown
         selectedItem={selectedItem}
         selectedBusinessName={selectedBusinessName}

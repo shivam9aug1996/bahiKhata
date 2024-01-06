@@ -16,7 +16,11 @@ import Lottie from "../components/Lottie";
 import AuthForm from "../components/AuthForm";
 import usePageLoader from "../custom-hooks/usePageLoader";
 import { deleteCookies } from "../actions";
-
+import dynamic from "next/dynamic";
+// import QrSocket from "../components/QrSocket";
+const QrSocket = dynamic(() => import("../components/QrSocket"), {
+  ssr: false,
+});
 export default function Login() {
   const authLoader = useSelector((state) => state?.auth?.authLoader || "");
   const [formData, setFormData] = useState({
@@ -57,6 +61,8 @@ export default function Login() {
       router.replace("/dashboard/customers");
     }
   }, [isLoginSuccess]);
+
+  useEffect(() => {}, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -111,6 +117,7 @@ export default function Login() {
       {isLoginLoading && <Loader />}
       {authLoader ? <Loader /> : null}
       {!pageLoaded ? <Loader /> : null}
+      {/* <QrSocket /> */}
       <AuthForm
         handleSubmit={handleSubmit}
         formData={formData}
