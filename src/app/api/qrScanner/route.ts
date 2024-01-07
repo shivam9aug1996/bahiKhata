@@ -31,7 +31,7 @@ export async function POST(req, res) {
         );
         console.log("kjhgfdfghjkl", newToken, token);
 
-        pusher.trigger(token, "e1", {
+        await pusher.trigger(token, "e1", {
           message: "login",
           data: {
             newToken,
