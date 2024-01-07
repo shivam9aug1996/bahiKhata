@@ -18,8 +18,8 @@ export async function POST(req, res) {
     try {
       const { token } = await req?.json();
       console.log("hgfdfghjkf", token);
-      decoded = await jwt.verify(token, secretKey);
-      if (decoded?.action === "login") {
+      // decoded = await jwt.verify(token, secretKey);
+      if (token) {
         let data = cookies().get("bahi_khata_user_data")?.value;
         if (data) data = JSON.parse(data);
 
@@ -29,12 +29,18 @@ export async function POST(req, res) {
         );
         console.log("kjhgfdfghjkl", newToken);
 
-        await pusher.trigger("my-channel", token, {
+        pusher.trigger("my-channel", token, {
           message: "login",
           data: {
             newToken,
           },
         });
+        // pusher.trigger("my-channel", token, {
+        //   message: "login",
+        //   data: {
+        //     newToken,
+        //   },
+        // });
 
         return NextResponse.json(
           {
@@ -44,7 +50,7 @@ export async function POST(req, res) {
         );
       } else {
         return NextResponse.json(
-          { message: "Token not verified" },
+          { message: "Token not present" },
           { status: 400 }
         );
       }
