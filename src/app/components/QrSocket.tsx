@@ -72,9 +72,8 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
       ?.unwrap()
       ?.then((res) => {
         // pusher.disconnect();
-        setTimeout(() => {
-          pusher.connect();
-        }, 1000);
+
+        pusher.connect();
 
         channel.bind(res?.temp, function (data) {
           console.log("jjjjjj", data);
