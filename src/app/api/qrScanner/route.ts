@@ -27,7 +27,7 @@ export async function POST(req, res) {
           { id: data?.userId, action: "login" },
           secretKey
         );
-        console.log("kjhgfdfghjkl", newToken);
+        console.log("kjhgfdfghjkl", newToken, token);
 
         pusher.trigger("my-channel", token, {
           message: "login",
@@ -35,12 +35,12 @@ export async function POST(req, res) {
             newToken,
           },
         });
-        pusher.trigger("my-channel", token, {
-          message: "login",
-          data: {
-            newToken,
-          },
-        });
+        // pusher.trigger("my-channel", token, {
+        //   message: "login",
+        //   data: {
+        //     newToken,
+        //   },
+        // });
 
         return NextResponse.json(
           {

@@ -14,7 +14,7 @@ export async function GET(req, res) {
     // );
     const token = uuidv4();
     const generatedUrl = await QRCode.toDataURL(uuidv4());
-
+    console.log("kjhgfdfghjkl", token);
     return NextResponse.json(
       {
         message: "QR generated successfully",
