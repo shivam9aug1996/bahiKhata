@@ -126,7 +126,7 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
                     </button>
                   </div>
                   <div>
-                    {!scannedResult.status ? (
+                    {scannedResult.status ? (
                       <div
                         className="flex justify-center items-center mt-20"
                         style={{ height: 400 }}
