@@ -143,35 +143,35 @@ export const isValidData = (data) => {
   return true;
 };
 
-export const transactionType = {
-  customer: {
-    ["Customer Ko Maal Becha"]: "Maal Becha",
-    ["Customer Se Bhugtan Prapt"]: "Bhugtan Prapt",
-    ["Bakaya Rashi Customer Se"]: "Bakaya Rashi",
-    ["Adhik Bhugtan Customer Se"]: "Adhik Bhugtan",
-  },
-  supplier: {
-    ["Supplier Ko Payment Ki"]: "Payment Ki",
-    ["Supplier Se Maal Khareeda"]: "Maal Khareeda",
-    ["Bakaya Rashi Supplier Ko"]: "Bakaya Rashi",
-    ["Adhik Bhugtan Supplier Ko"]: "Adhik Bhugtan",
-  },
-};
-
 // export const transactionType = {
 //   customer: {
-//     ["Customer Ko Maal Becha"]: "Goods Sold",
-//     ["Customer Se Bhugtan Prapt"]: "Payment Received",
-//     ["Bakaya Rashi Customer Se"]: "Pending Amount",
-//     ["Adhik Bhugtan Customer Se"]: "Overpayment by Customer",
+//     ["Customer Ko Maal Becha"]: "Maal Becha",
+//     ["Customer Se Bhugtan Prapt"]: "Bhugtan Prapt",
+//     ["Bakaya Rashi Customer Se"]: "Bakaya Rashi",
+//     ["Adhik Bhugtan Customer Se"]: "Adhik Bhugtan",
 //   },
 //   supplier: {
-//     ["Supplier Ko Payment Ki"]: "Payment Made",
-//     ["Supplier Se Maal Khareeda"]: "Goods Purchased",
-//     ["Bakaya Rashi Supplier Ko"]: "Outstanding Payables",
-//     ["Adhik Bhugtan Supplier Ko"]: "Overpayment to Supplier",
+//     ["Supplier Ko Payment Ki"]: "Payment Ki",
+//     ["Supplier Se Maal Khareeda"]: "Maal Khareeda",
+//     ["Bakaya Rashi Supplier Ko"]: "Bakaya Rashi",
+//     ["Adhik Bhugtan Supplier Ko"]: "Adhik Bhugtan",
 //   },
 // };
+
+export const transactionType = {
+  customer: {
+    ["Customer Ko Maal Becha"]: "Goods Sold",
+    ["Customer Se Bhugtan Prapt"]: "Payment Received",
+    ["Bakaya Rashi Customer Se"]: "Customer will Pay",
+    ["Adhik Bhugtan Customer Se"]: "Business will pay",
+  },
+  supplier: {
+    ["Supplier Ko Payment Ki"]: "Payment Made",
+    ["Supplier Se Maal Khareeda"]: "Goods Purchased",
+    ["Bakaya Rashi Supplier Ko"]: "Business will Pay",
+    ["Adhik Bhugtan Supplier Ko"]: "Supplier will pay",
+  },
+};
 
 // export const transactionType = {
 //   customer: {

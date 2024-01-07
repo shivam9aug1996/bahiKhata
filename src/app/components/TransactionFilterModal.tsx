@@ -109,7 +109,7 @@ const TransactionFilterModal = ({ isOpen, setIsOpen, setPage }) => {
                       className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">All</option>
-                      <option value="credit">{`You Got (${
+                      <option value="credit">{`${
                         pathname.includes("customer")
                           ? transactionType.customer[
                               "Customer Se Bhugtan Prapt"
@@ -117,14 +117,14 @@ const TransactionFilterModal = ({ isOpen, setIsOpen, setPage }) => {
                           : transactionType.supplier[
                               "Supplier Se Maal Khareeda"
                             ]
-                      })`}</option>
+                      }`}</option>
                       <option value="debit">
                         {" "}
-                        {`You Gave (${
+                        {`${
                           pathname.includes("customer")
                             ? transactionType.customer["Customer Ko Maal Becha"]
                             : transactionType.supplier["Supplier Ko Payment Ki"]
-                        })`}
+                        }`}
                       </option>
                     </select>
                   </div>

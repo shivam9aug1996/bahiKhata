@@ -437,11 +437,11 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-green-500 mb-2">
-              {`You will give (${transactionType.customer["Adhik Bhugtan Customer Se"]}): ₹`}
+              {`${transactionType.customer["Adhik Bhugtan Customer Se"]}: ₹`}
               {formatNumberOrStringWithFallback(customerPositiveBalance)}
             </span>
             <span className="text-red-500">
-              {`You will get (${transactionType.customer["Bakaya Rashi Customer Se"]}): ₹`}
+              {`${transactionType.customer["Bakaya Rashi Customer Se"]}: ₹`}
               {formatNumberOrStringWithFallback(
                 Math.abs(customerNegativeBalance)
               )}
@@ -454,11 +454,11 @@ const DropDown = ({
           </h4>
           <div className="flex flex-col items-center">
             <span className="text-red-500 mb-2">
-              {`You will give (${transactionType.supplier["Bakaya Rashi Supplier Ko"]}): ₹`}
+              {`${transactionType.supplier["Bakaya Rashi Supplier Ko"]}: ₹`}
               {formatNumberOrStringWithFallback(supplierPositiveBalance)}
             </span>
             <span className="text-green-500">
-              {`You will get (${transactionType.supplier["Adhik Bhugtan Supplier Ko"]}): ₹`}
+              {`${transactionType.supplier["Adhik Bhugtan Supplier Ko"]}: ₹`}
               {formatNumberOrStringWithFallback(
                 Math.abs(supplierNegativeBalance)
               )}

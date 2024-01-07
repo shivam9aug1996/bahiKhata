@@ -317,7 +317,7 @@ const Sidebar = ({
                       </p>
                       <p>
                         {transaction.type === "debit"
-                          ? `You Gave (${
+                          ? `${
                               pathname.includes("customer")
                                 ? transactionType.customer[
                                     "Customer Ko Maal Becha"
@@ -325,8 +325,8 @@ const Sidebar = ({
                                 : transactionType.supplier[
                                     "Supplier Ko Payment Ki"
                                   ]
-                            })`
-                          : `You Got (${
+                            }`
+                          : `${
                               pathname.includes("customer")
                                 ? transactionType.customer[
                                     "Customer Se Bhugtan Prapt"
@@ -334,7 +334,7 @@ const Sidebar = ({
                                 : transactionType.supplier[
                                     "Supplier Se Maal Khareeda"
                                   ]
-                            })`}
+                            }`}
                       </p>
                     </div>
                     <div className="flex flex-row">

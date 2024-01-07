@@ -40,8 +40,8 @@ const DashboardFallback = () => {
             Customer Balance:
           </h4>
           <div className="flex flex-col items-center">
-            <span className="text-green-500 mb-2">You will give: ₹0</span>
-            <span className="text-red-500">You will get: ₹0</span>
+            <span className="text-green-500 mb-2">Business will pay: ₹0</span>
+            <span className="text-red-500">Customer will Pay: ₹0</span>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -49,8 +49,8 @@ const DashboardFallback = () => {
             Supplier Balance:
           </h4>
           <div className="flex flex-col items-center">
-            <span className="text-green-500 mb-2">You will give: ₹0</span>
-            <span className="text-red-500">You will get: ₹0</span>
+            <span className="text-red-500 mb-2">Business will pay: ₹0</span>
+            <span className="text-green-500">Supplier will pay: ₹0</span>
           </div>
         </div>
       </div>

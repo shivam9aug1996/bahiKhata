@@ -301,9 +301,9 @@ const Supplier = () => {
                             }`}
                           >
                             {item.balance > 0
-                              ? `You will give (${transactionType.supplier["Bakaya Rashi Supplier Ko"]})`
+                              ? `${transactionType.supplier["Bakaya Rashi Supplier Ko"]}`
                               : item.balance < 0
-                              ? `You will get (${transactionType.supplier["Adhik Bhugtan Supplier Ko"]})`
+                              ? `${transactionType.supplier["Adhik Bhugtan Supplier Ko"]}`
                               : ""}
                           </div>
                           {item.balance == 0 ? (

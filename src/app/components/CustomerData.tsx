@@ -88,9 +88,9 @@ const CustomerData = ({
                   }`}
                 >
                   {item.balance > 0
-                    ? `You will give (${transactionType.customer["Adhik Bhugtan Customer Se"]})`
+                    ? `${transactionType.customer["Adhik Bhugtan Customer Se"]}`
                     : item.balance < 0
-                    ? `You will get (${transactionType.customer["Bakaya Rashi Customer Se"]})`
+                    ? `${transactionType.customer["Bakaya Rashi Customer Se"]}`
                     : ""}
                 </div>
                 {item.balance == 0 ? <div style={{ height: 24 }}></div> : null}

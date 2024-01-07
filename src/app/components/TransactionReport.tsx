@@ -44,17 +44,17 @@ const TransactionReport = ({
       <div className="mb-3 p-2 rounded-md shadow-md">
         Transactions Type:
         {filterData?.type === "credit"
-          ? `You Got (${
+          ? `${
               partyType === "customer"
                 ? transactionType.customer["Customer Se Bhugtan Prapt"]
                 : transactionType.supplier["Supplier Se Maal Khareeda"]
-            })`
+            }`
           : filterData?.type === "debit"
-          ? `You Gave (${
+          ? `${
               partyType === "customer"
                 ? transactionType.customer["Customer Ko Maal Becha"]
                 : transactionType.supplier["Supplier Ko Payment Ki"]
-            })`
+            }`
           : "All"}
       </div>
 
@@ -111,16 +111,16 @@ const TransactionReport = ({
             <p>
               Amount: ₹{formatNumberOrStringWithFallback(transaction?.amount)}{" "}
               {transaction.type === "debit"
-                ? `You Gave (${
+                ? `${
                     partyType === "customer"
                       ? transactionType.customer["Customer Ko Maal Becha"]
                       : transactionType.supplier["Supplier Ko Payment Ki"]
-                  })`
-                : `You Got (${
+                  }`
+                : `${
                     partyType === "customer"
                       ? transactionType.customer["Customer Se Bhugtan Prapt"]
                       : transactionType.supplier["Supplier Se Maal Khareeda"]
-                  })`}
+                  }`}
             </p>
           </div>
           {/* <p>Description: {transaction?.description}</p> */}
@@ -144,11 +144,11 @@ const TransactionReport = ({
           >
             <p>
               Total{" "}
-              {`You Got (${
+              {`${
                 partyType === "customer"
                   ? transactionType.customer["Customer Se Bhugtan Prapt"]
                   : transactionType.supplier["Supplier Se Maal Khareeda"]
-              })`}{" "}
+              }`}{" "}
               Amount: ₹{formatNumberOrStringWithFallback(creditAmount)}
             </p>
           </div>
@@ -162,11 +162,11 @@ const TransactionReport = ({
           >
             <p>
               Total{" "}
-              {`You Gave (${
+              {`${
                 partyType === "customer"
                   ? transactionType.customer["Customer Ko Maal Becha"]
                   : transactionType.supplier["Supplier Ko Payment Ki"]
-              })`}{" "}
+              }`}{" "}
               Amount: ₹{formatNumberOrStringWithFallback(debitAmount)}
             </p>
           </div>
@@ -186,19 +186,19 @@ const TransactionReport = ({
               Total Balance:
               {partyType == "customer"
                 ? balance < 0
-                  ? `You will get (${
+                  ? `${
                       transactionType.customer["Bakaya Rashi Customer Se"]
-                    }) ₹${formatNumberOrStringWithFallback(Math.abs(balance))}`
-                  : `You will give (${
+                    } ₹${formatNumberOrStringWithFallback(Math.abs(balance))}`
+                  : `${
                       transactionType.customer["Adhik Bhugtan Customer Se"]
-                    }) ${formatNumberOrStringWithFallback(balance)} `
+                    } ${formatNumberOrStringWithFallback(balance)} `
                 : balance > 0
-                ? `You will give (${
+                ? `${
                     transactionType.supplier["Bakaya Rashi Supplier Ko"]
-                  }) ₹${formatNumberOrStringWithFallback(balance)}`
-                : `You will get (${
+                  } ₹${formatNumberOrStringWithFallback(balance)}`
+                : `${
                     transactionType.supplier["Adhik Bhugtan Supplier Ko"]
-                  }) ${formatNumberOrStringWithFallback(Math.abs(balance))} `}
+                  } ${formatNumberOrStringWithFallback(Math.abs(balance))} `}
             </p>
           </div>
         </div>
