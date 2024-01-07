@@ -53,7 +53,8 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
           timerRef.current = setTimeout(() => {
             setIsOpen({ ...isOpen, status: false, value: null });
             toast.error("Try again!");
-          }, 10000);
+            toast.remove(id);
+          }, 20000);
         })
         ?.catch((err) => {
           console.log("hiii err", err);
