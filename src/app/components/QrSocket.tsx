@@ -6,13 +6,17 @@ import { useLazyGetQRcodeQuery } from "../redux/features/qrSlice";
 import { useLoginMutation } from "../redux/features/authSlice";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import { useRouter } from "next/navigation";
-import { Image } from "@nextui-org/react";
+
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import Loader from "./Loader";
 
 const pusher = new Pusher("a7a14b0a75a3d073c905", {
   cluster: "ap2",
 });
+Pusher.logToConsole = true;
+var channel = pusher.subscribe("my-channel");
 
 const QrSocket = ({ isOpen, setIsOpen }) => {
   const [data, setData] = useState(null);
@@ -60,7 +64,6 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
     }, 20000);
     return () => {
       clearInterval(timer);
-      pusher.unsubscribe("my-channel");
     };
   }, []);
 
@@ -68,21 +71,31 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
     getQRcode()
       ?.unwrap()
       ?.then((res) => {
-        console.log(res);
+        pusher.disconnect();
+        setTimeout(() => {
+          pusher.connect();
+        }, 500);
 
-        pusher.unsubscribe("my-channel");
-        var channel = pusher.subscribe("my-channel");
         channel.bind(res?.temp, function (data) {
+          console.log("jjjjjj", data);
           if (data?.data?.newToken) {
             login({ token: data?.data?.newToken });
           }
-          setData(data);
         });
+        // pusher.unsubscribe("my-channel");
+        console.log("ghjklr676trtghjkl", res);
       });
+    // .finally(() => {
+    //   pusher.unsubscribe("my-channel");
+    //   pusher.disconnect();
+    // });
   };
 
   function closeModal() {
     setIsOpen({ ...isOpen, status: false, value: null });
+    pusher.disconnect();
+    channel.unbind_all();
+    // pusher.unsubscribe("my-channel");
   }
 
   return (
@@ -137,13 +150,25 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
                       login.
                     </p>
                     <div className="flex justify-center mt-4">
-                      <Image
-                        isLoading={isGetQRcodeLoading}
+                      {/* <Image
+                        unoptimized={true}
                         src={getQRcodeData?.data}
                         width={150}
                         height={150}
                         alt={"qr code"}
-                      />
+                      /> */}
+                      {getQRcodeData?.data ? (
+                        <img
+                          src={getQRcodeData?.data}
+                          width={150}
+                          height={150}
+                          alt={"qr code"}
+                        />
+                      ) : (
+                        <div style={{ width: 150, height: 150 }}>
+                          <Loader />
+                        </div>
+                      )}
                     </div>
                     <div className="mt-2 text-gray-500">
                       A new QR code is generated every 20 seconds for login.

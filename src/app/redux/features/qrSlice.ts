@@ -10,12 +10,14 @@ export const qrApi = createApi({
       headers.set("user-fingerprint", await getFp());
     },
   }),
+  keepUnusedDataFor: 0,
   endpoints: (builder) => ({
     getQRcode: builder.query({
       query: (data) => ({
         url: "/auth/getQR",
         method: "GET",
       }),
+      forceRefetch: () => true,
     }),
     scanQRcode: builder.mutation({
       query: (data) => ({
