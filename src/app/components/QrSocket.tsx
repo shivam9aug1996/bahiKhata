@@ -12,16 +12,12 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Loader from "./Loader";
 import { useDispatch } from "react-redux";
-
 const pusher = new Pusher("a7a14b0a75a3d073c905", {
   cluster: "ap2",
 });
-Pusher.logToConsole = true;
-var channel = pusher.subscribe("my-channel");
-
 const QrSocket = ({ isOpen, setIsOpen }) => {
   const [data, setData] = useState(null);
-  const timerRef = useRef(null);
+  const pusherRef = useRef(null);
   const dispatch = useDispatch();
   const router = useRouter();
   const [
@@ -69,13 +65,15 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
   }, []);
 
   const generateQR = () => {
+    // Pusher.logToConsole = true;
+    var channel = pusher?.subscribe("my-channel");
     //  dispatch(qrApi.util.resetApiState());
     getQRcode()
       ?.unwrap()
       ?.then((res) => {
         // pusher.disconnect();
         setData(res);
-        pusher.connect();
+        //  pusher.connect();
 
         channel.bind(res?.temp, function (data) {
           console.log("jjjjjj", data);
@@ -95,6 +93,9 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
   function closeModal() {
     setIsOpen({ ...isOpen, status: false, value: null });
     pusher.disconnect();
+    pusher.unbind_all();
+    pusher?.unsubscribe("my-channel");
+    /// pusher.disconnect();
     //channel.unbind_all();
     //pusher.unsubscribe("my-channel");
     dispatch(qrApi.util.resetApiState());
