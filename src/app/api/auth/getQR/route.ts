@@ -8,6 +8,7 @@ export async function GET(req, res) {
     const token = jwt.sign(
       {
         action: "login",
+        timestamp: new Date().getTime(),
       },
       secretKey,
       { expiresIn: "30s" }
