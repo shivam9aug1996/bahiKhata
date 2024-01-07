@@ -93,9 +93,9 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
 
   function closeModal() {
     setIsOpen({ ...isOpen, status: false, value: null });
-    pusher.disconnect();
-    channel.unbind_all();
-    pusher.unsubscribe("my-channel");
+    // pusher.disconnect();
+    // channel.unbind_all();
+    // pusher.unsubscribe("my-channel");
     dispatch(qrApi.util.resetApiState());
     // pusher.unsubscribe("my-channel");
   }
