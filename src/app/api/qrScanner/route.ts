@@ -3,6 +3,7 @@ import { pusher } from "../lib/pusher";
 import jwt from "jsonwebtoken";
 import { secretKey } from "../lib/keys";
 import { cookies } from "next/headers";
+import { calculateSecondsElapsed } from "../lib/globalFun";
 // import Pusher from "pusher";
 
 // const pusher = new Pusher({
@@ -17,9 +18,9 @@ export async function POST(req, res) {
     let decoded;
     try {
       const { token } = await req?.json();
-      console.log("hgfdfghjkf", token);
+      console.log("hgfdfghjkf", token, calculateSecondsElapsed(token));
       // decoded = await jwt.verify(token, secretKey);
-      if (token) {
+      if (token && calculateSecondsElapsed(token) <= 20) {
         let data = cookies().get("bahi_khata_user_data")?.value;
         if (data) data = JSON.parse(data);
 
@@ -45,14 +46,12 @@ export async function POST(req, res) {
         return NextResponse.json(
           {
             message: "QR scanned successfully",
+            token: token,
           },
           { status: 200 }
         );
       } else {
-        return NextResponse.json(
-          { message: "Token not present" },
-          { status: 400 }
-        );
+        return NextResponse.json({ message: "Token Expires" }, { status: 400 });
       }
     } catch (error) {
       console.log("error", decoded, error);

@@ -1,6 +1,6 @@
 "use client";
 import React, { Fragment, memo, useEffect, useRef, useState } from "react";
-import Pusher from "pusher-js/with-encryption";
+import Pusher from "pusher-js";
 import { qrApi, useGetQRcodeMutation } from "../redux/features/qrSlice";
 
 import { useLoginMutation } from "../redux/features/authSlice";
@@ -92,12 +92,11 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
 
   function closeModal() {
     setIsOpen({ ...isOpen, status: false, value: null });
-    pusher.disconnect();
-    pusher.unbind_all();
-    pusher?.unsubscribe("my-channel");
+    // pusher.disconnect();
+    // pusher.unbind_all();
+    // pusher?.unsubscribe("my-channel");
     /// pusher.disconnect();
-    //channel.unbind_all();
-    //pusher.unsubscribe("my-channel");
+    pusher.unsubscribe("my-channel");
     dispatch(qrApi.util.resetApiState());
     // pusher.unsubscribe("my-channel");
   }

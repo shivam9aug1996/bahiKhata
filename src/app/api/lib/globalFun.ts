@@ -27,3 +27,16 @@ export const deleteMultipleImages = async (imageUrls = []) => {
     }
   }
 };
+
+export const calculateSecondsElapsed = (initialTime) => {
+  // Get the current time in milliseconds
+  let currentTime = new Date().getTime();
+
+  // Calculate the difference in milliseconds
+  let timeElapsedInMilliseconds = currentTime - initialTime;
+
+  // Convert milliseconds to seconds
+  let timeElapsedInSeconds = timeElapsedInMilliseconds / 1000;
+
+  return timeElapsedInSeconds;
+};

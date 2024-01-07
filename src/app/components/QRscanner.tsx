@@ -1,17 +1,22 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { useScanQRcodeMutation } from "../redux/features/qrSlice";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
+import Pusher from "pusher-js";
+const pusher = new Pusher("a7a14b0a75a3d073c905", {
+  cluster: "ap2",
+});
 
 const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
   const [scannedResult, setScannedResult] = useState({
     status: false,
     value: "",
   });
+  const timerRef = useRef(null);
 
   const [
     scanQRcode,
@@ -32,18 +37,36 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
       scanQRcode({ token: scannedResult.value })
         ?.unwrap()
         ?.then((res) => {
-          toast.success("QR scanned successfully");
+          console.log("mhgfgkjhgfghjkl", res);
+          var channel = pusher?.subscribe("my-channel");
+          channel.bind(res?.token, function (data) {
+            console.log("jjjjjj", data);
+            if (data?.data?.newToken) {
+              toast.remove(id);
+              clearTimeout(timerRef.current);
+              setIsOpen({ ...isOpen, status: false, value: null });
+              toast.success("QR scanned successfully");
+              //pusher.unbind_all();
+              pusher.unsubscribe("my-channel");
+            }
+          });
+          timerRef.current = setTimeout(() => {
+            setIsOpen({ ...isOpen, status: false, value: null });
+            toast.error("Try again!");
+          }, 10000);
         })
         ?.catch((err) => {
           console.log("hiii err", err);
+          toast.remove(id);
+          setIsOpen({ ...isOpen, status: false, value: null });
           toast.error(
             "QR Code Expired! Please generate a new QR code to continue."
           );
-        })
-        ?.finally(() => {
-          toast.remove(id);
-          setIsOpen({ ...isOpen, status: false, value: null });
         });
+      // ?.finally(() => {
+      //   toast.remove(id);
+      //   setIsOpen({ ...isOpen, status: false, value: null });
+      // });
     }
   }, [scannedResult.status]);
 
