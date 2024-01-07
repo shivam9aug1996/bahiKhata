@@ -11,7 +11,6 @@ export async function GET(req, res) {
         timestamp: new Date().getTime(),
       },
       secretKey
-      // { expiresIn: "30s" }
     );
     const generatedUrl = await QRCode.toDataURL(token);
 
