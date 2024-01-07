@@ -18,6 +18,7 @@ export async function GET(req, res) {
       {
         message: "QR generated successfully",
         data: generatedUrl,
+        temp: token,
       },
       { status: 201 }
     );
