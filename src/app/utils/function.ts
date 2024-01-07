@@ -160,6 +160,21 @@ export const transactionType = {
 
 // export const transactionType = {
 //   customer: {
+//     ["Customer Ko Maal Becha"]: "Goods Sold",
+//     ["Customer Se Bhugtan Prapt"]: "Payment Received",
+//     ["Bakaya Rashi Customer Se"]: "Pending Amount",
+//     ["Adhik Bhugtan Customer Se"]: "Overpayment by Customer",
+//   },
+//   supplier: {
+//     ["Supplier Ko Payment Ki"]: "Payment Made",
+//     ["Supplier Se Maal Khareeda"]: "Goods Purchased",
+//     ["Bakaya Rashi Supplier Ko"]: "Outstanding Payables",
+//     ["Adhik Bhugtan Supplier Ko"]: "Overpayment to Supplier",
+//   },
+// };
+
+// export const transactionType = {
+//   customer: {
 //     ["Customer Ko Maal Becha"]: "Customer Ko Maal Becha",
 //     ["Customer Se Bhugtan Prapt"]: "Customer Se Bhugtan Prapt",
 //     ["Bakaya Rashi Customer Se"]: "Bakaya Rashi Customer Se",

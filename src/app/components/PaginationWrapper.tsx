@@ -7,13 +7,15 @@ const PaginationWrapper = ({
   setPage,
 }) => {
   const handleSetPage = (data) => {
-    containerRef?.current?.scrollIntoView({
-      behavior: "instant",
-      block: "start",
-    });
+    setTimeout(() => {
+      containerRef?.current?.scrollIntoView({
+        behavior: "instant",
+        block: "start",
+      });
+    }, 200);
     setTimeout(() => {
       setPage(data);
-    }, 100);
+    }, 200);
   };
   console.log(currentPage, totalPages);
   if (currentPage > totalPages) return null;
