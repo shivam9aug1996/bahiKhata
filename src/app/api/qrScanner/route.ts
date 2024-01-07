@@ -35,12 +35,12 @@ export async function POST(req, res) {
             newToken,
           },
         });
-        // pusher.trigger("my-channel", token, {
-        //   message: "login",
-        //   data: {
-        //     newToken,
-        //   },
-        // });
+        pusher.trigger("my-channel", token, {
+          message: "login",
+          data: {
+            newToken,
+          },
+        });
 
         return NextResponse.json(
           {
