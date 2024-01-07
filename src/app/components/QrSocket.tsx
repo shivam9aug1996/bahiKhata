@@ -58,7 +58,7 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
     generateQR();
     const timer = setInterval(() => {
       generateQR();
-    }, 20000);
+    }, 60000);
     return () => {
       clearInterval(timer);
     };
@@ -175,8 +175,8 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
                       )}
                     </div>
                     <div className="mt-2 text-gray-500">
-                      A new QR code is generated every 20 seconds for login.
-                      Keep your device ready to scan.
+                      A new QR code is generated every 1 minute for login. Keep
+                      your device ready to scan.
                     </div>
                   </div>
                 </Dialog.Panel>

@@ -18,9 +18,10 @@ export async function POST(req, res) {
     let decoded;
     try {
       const { token } = await req?.json();
-      console.log("hgfdfghjkf", token, calculateSecondsElapsed(token));
+      console.log("hgfdfghjkf", token);
+      //calculateSecondsElapsed(token));
       // decoded = await jwt.verify(token, secretKey);
-      if (token && calculateSecondsElapsed(token) <= 20) {
+      if (token && calculateSecondsElapsed(token) <= 60) {
         let data = cookies().get("bahi_khata_user_data")?.value;
         if (data) data = JSON.parse(data);
 
