@@ -69,6 +69,7 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
   }, []);
 
   const generateQR = () => {
+    dispatch(qrApi.util.resetApiState());
     getQRcode()
       ?.unwrap()
       ?.then((res) => {
