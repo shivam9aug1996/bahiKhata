@@ -8,7 +8,10 @@ const QRsocket2 = ({ isOpen, setIsOpen }) => {
   const generateQR = async () => {
     console.log("hi");
     setData(null);
-    let res = await fetch("/api/auth/getQR", { cache: "no-store" });
+    let res = await fetch("/api/auth/getQR", {
+      cache: "no-store",
+      method: "post",
+    });
     res = await res.json();
     setData(res);
   };
