@@ -25,14 +25,11 @@ export async function POST(req, res) {
 
         const newToken = await jwt.sign(
           { id: data?.userId, action: "login" },
-          secretKey,
-          {
-            expiresIn: "30s",
-          }
+          secretKey
         );
         console.log("kjhgfdfghjkl", newToken);
 
-        pusher.trigger("my-channel", token, {
+        await pusher.trigger("my-channel", token, {
           message: "login",
           data: {
             newToken,
