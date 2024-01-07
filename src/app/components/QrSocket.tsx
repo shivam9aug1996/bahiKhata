@@ -65,15 +65,16 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
   }, []);
 
   const generateQR = () => {
+    pusher.disconnect();
     // Pusher.logToConsole = true;
     var channel = pusher?.subscribe("my-channel");
     //  dispatch(qrApi.util.resetApiState());
     getQRcode()
       ?.unwrap()
       ?.then((res) => {
+        pusher.connect();
         // pusher.disconnect();
         setData(res);
-        //  pusher.connect();
 
         channel.bind(res?.temp, function (data) {
           console.log("jjjjjj", data);
@@ -95,7 +96,7 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
     // pusher.disconnect();
     // pusher.unbind_all();
     // pusher?.unsubscribe("my-channel");
-    /// pusher.disconnect();
+    pusher.disconnect();
     pusher.unsubscribe("my-channel");
     dispatch(qrApi.util.resetApiState());
     // pusher.unsubscribe("my-channel");

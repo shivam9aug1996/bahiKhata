@@ -7,9 +7,6 @@ import { useScanQRcodeMutation } from "../redux/features/qrSlice";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
 import Pusher from "pusher-js";
-const pusher = new Pusher("a7a14b0a75a3d073c905", {
-  cluster: "ap2",
-});
 
 const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
   const [scannedResult, setScannedResult] = useState({
@@ -31,6 +28,9 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
 
   useEffect(() => {
     if (scannedResult?.status == true) {
+      const pusher = new Pusher("a7a14b0a75a3d073c905", {
+        cluster: "ap2",
+      });
       let id = toast.loading(
         "Verifying... Please wait a moment for authentication."
       );
@@ -39,6 +39,7 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
         ?.then((res) => {
           console.log("mhgfgkjhgfghjkl", res);
           var channel = pusher?.subscribe("my-channel");
+          pusher.connect();
           channel.bind(res?.token, function (data) {
             console.log("jjjjjj", data);
             if (data?.data?.newToken) {
@@ -52,6 +53,8 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
           });
           timerRef.current = setTimeout(() => {
             setIsOpen({ ...isOpen, status: false, value: null });
+            pusher.unsubscribe("my-channel");
+            pusher.disconnect();
             toast.error("Try again!");
             toast.remove(id);
           }, 40000);
