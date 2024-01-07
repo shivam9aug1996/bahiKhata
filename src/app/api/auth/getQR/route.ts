@@ -20,6 +20,7 @@ export async function GET(req, res) {
         message: "QR generated successfully",
         data: generatedUrl,
         temp: token,
+        timeStamp: new Date().getTime(),
       },
       { status: 201 }
     );
