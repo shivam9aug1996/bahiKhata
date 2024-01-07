@@ -12,10 +12,10 @@ export const qrApi = createApi({
   }),
   keepUnusedDataFor: 0,
   endpoints: (builder) => ({
-    getQRcode: builder.query({
+    getQRcode: builder.mutation({
       query: (data) => ({
         url: "/auth/getQR",
-        method: "GET",
+        method: "POST",
       }),
       forceRefetch: () => true,
     }),
@@ -36,7 +36,7 @@ const qrSlice = createSlice({
   extraReducers: (builder) => {},
 });
 
-export const { useLazyGetQRcodeQuery, useScanQRcodeMutation } = qrApi;
+export const { useGetQRcodeMutation, useScanQRcodeMutation } = qrApi;
 
 export const {} = qrSlice.actions;
 

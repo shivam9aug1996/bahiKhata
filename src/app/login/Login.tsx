@@ -17,12 +17,8 @@ import usePageLoader from "../custom-hooks/usePageLoader";
 import { deleteCookies } from "../actions";
 import dynamic from "next/dynamic";
 import { Button } from "@nextui-org/react";
-// import QRsocket2 from "../components/QrSocket2";
 // import QrSocket from "../components/QrSocket";
 const QrSocket = dynamic(() => import("../components/QrSocket"), {
-  ssr: false,
-});
-const QRsocket2 = dynamic(() => import("../components/QRsocket2"), {
   ssr: false,
 });
 export default function Login() {
@@ -132,8 +128,19 @@ export default function Login() {
         type={"login"}
         loading={isLoginLoading || authLoader}
       />
-      <QRsocket2 />
+      <div className="flex justify-center flex-col items-center">
+        <p className="text-lg mb-3">or</p>
+        <Button
+          className="w-min"
+          onClick={() => setQrCodeModal({ status: true, value: null })}
+        >
+          Generate QR to Login
+        </Button>
+      </div>
       <Lottie />
+      {qrCodeModal.status && (
+        <QrSocket isOpen={qrCodeModal} setIsOpen={setQrCodeModal} />
+      )}
     </>
   );
 }
