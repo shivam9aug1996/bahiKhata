@@ -17,6 +17,7 @@ export async function POST(req, res) {
     let decoded;
     try {
       const { token } = await req?.json();
+      console.log("hgfdfghjkf", token);
       decoded = await jwt.verify(token, secretKey);
       if (decoded?.action === "login") {
         let data = cookies().get("bahi_khata_user_data")?.value;
@@ -51,6 +52,7 @@ export async function POST(req, res) {
         );
       }
     } catch (error) {
+      console.log("error", decoded, error);
       return NextResponse.json(
         { message: "Something went wrong" },
         { status: 500 }
