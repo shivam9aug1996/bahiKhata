@@ -109,15 +109,15 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
   useEffect(() => {
     if (message) {
       if (message?.data?.newToken) {
-        setIsLoading(false);
-        setScannedResult({
-          status: false,
-          value: "",
-        });
         dispatch(qrApi.util.resetApiState());
-        setTimeout(() => {
-          closeModal();
-        }, 300);
+        // setTimeout(() => {
+        closeModal();
+        setIsLoading(false);
+        // setScannedResult({
+        //   status: false,
+        //   value: "",
+        // });
+        // }, 300);
       }
     }
   }, [message]);
