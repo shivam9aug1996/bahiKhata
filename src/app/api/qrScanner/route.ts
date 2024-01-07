@@ -31,7 +31,7 @@ export async function POST(req, res) {
         );
         console.log("kjhgfdfghjkl", newToken, token);
 
-        pusher.trigger("my-channel", token, {
+        pusher.trigger(token, "e1", {
           message: "login",
           data: {
             newToken,
@@ -52,7 +52,10 @@ export async function POST(req, res) {
           { status: 200 }
         );
       } else {
-        return NextResponse.json({ message: "Token Expires" }, { status: 400 });
+        return NextResponse.json(
+          { message: "QR code expired" },
+          { status: 400 }
+        );
       }
     } catch (error) {
       console.log("error", decoded, error);

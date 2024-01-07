@@ -17,10 +17,17 @@ import usePageLoader from "../custom-hooks/usePageLoader";
 import { deleteCookies } from "../actions";
 import dynamic from "next/dynamic";
 import { Button } from "@nextui-org/react";
+// import QRsocket2 from "../components/QRsocket2";
+import QRsocket3 from "../components/QRsocket3";
+// import PusherComponent from "../components/PusherComponent";
+
 // import QrSocket from "../components/QrSocket";
-const QrSocket = dynamic(() => import("../components/QrSocket"), {
-  ssr: false,
-});
+// const QrSocket = dynamic(() => import("../components/QrSocket"), {
+//   ssr: false,
+// });
+// const PusherComponent = dynamic(() => import("../components/PusherComponent"), {
+//   ssr: false,
+// });
 export default function Login() {
   const authLoader = useSelector((state) => state?.auth?.authLoader || "");
   const [formData, setFormData] = useState({
@@ -138,9 +145,14 @@ export default function Login() {
         </Button>
       </div>
       <Lottie />
-      {qrCodeModal.status && (
+      {/* {qrCodeModal.status && (
         <QrSocket isOpen={qrCodeModal} setIsOpen={setQrCodeModal} />
       )}
+      <QRsocket2 /> */}
+      {qrCodeModal?.status ? (
+        <QRsocket3 isOpen={qrCodeModal} setIsOpen={setQrCodeModal} />
+      ) : null}
+      {/* <PusherComponent /> */}
     </>
   );
 }

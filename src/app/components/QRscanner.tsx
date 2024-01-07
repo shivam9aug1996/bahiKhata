@@ -3,17 +3,26 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { QrScanner } from "@yudiel/react-qr-scanner";
-import { useScanQRcodeMutation } from "../redux/features/qrSlice";
+import { qrApi, useScanQRcodeMutation } from "../redux/features/qrSlice";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
-import Pusher from "pusher-js";
+import usePusher from "../custom-hooks/usePusher";
+import { useDispatch } from "react-redux";
+import { calculateSecondsElapsed } from "../utils/function";
+// import Pusher from "pusher-js";
 
 const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
   const [scannedResult, setScannedResult] = useState({
     status: false,
     value: "",
   });
+  const dispatch = useDispatch();
   const timerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { isConnected, error, startSocket, closeSocket, message } = usePusher(
+    "a7a14b0a75a3d073c905",
+    "ap2"
+  );
 
   const [
     scanQRcode,
@@ -28,51 +37,90 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
 
   useEffect(() => {
     if (scannedResult?.status == true) {
-      const pusher = new Pusher("a7a14b0a75a3d073c905", {
-        cluster: "ap2",
-      });
-      let id = toast.loading(
-        "Verifying... Please wait a moment for authentication."
-      );
-      scanQRcode({ token: scannedResult.value })
-        ?.unwrap()
-        ?.then((res) => {
-          console.log("mhgfgkjhgfghjkl", res);
-          var channel = pusher?.subscribe("my-channel");
-          pusher.connect();
-          channel.bind(res?.token, function (data) {
-            console.log("jjjjjj", data);
-            if (data?.data?.newToken) {
-              toast.remove(id);
-              clearTimeout(timerRef.current);
-              setIsOpen({ ...isOpen, status: false, value: null });
-              toast.success("QR scanned successfully");
-              //pusher.unbind_all();
-              pusher.unsubscribe("my-channel");
-            }
-          });
-          timerRef.current = setTimeout(() => {
-            setIsOpen({ ...isOpen, status: false, value: null });
-            pusher.unsubscribe("my-channel");
-            pusher.disconnect();
-            toast.error("Try again!");
-            toast.remove(id);
-          }, 40000);
-        })
-        ?.catch((err) => {
-          console.log("hiii err", err);
-          toast.remove(id);
-          setIsOpen({ ...isOpen, status: false, value: null });
-          toast.error(
-            "QR Code Expired! Please generate a new QR code to continue."
-          );
-        });
-      // ?.finally(() => {
-      //   toast.remove(id);
-      //   setIsOpen({ ...isOpen, status: false, value: null });
+      if (calculateSecondsElapsed(scannedResult?.value) <= 60) {
+        console.log(calculateSecondsElapsed(scannedResult?.value));
+        startSocket(scannedResult.value, "e1");
+      } else {
+        toast.error("QR code expired");
+
+        // dispatch(qrApi.util.resetApiState());
+        setTimeout(() => {
+          closeModal();
+        }, 500);
+      }
+
+      // const pusher = new Pusher("a7a14b0a75a3d073c905", {
+      //   cluster: "ap2",
       // });
+      // let id = toast.loading(
+      //   "Verifying... Please wait a moment for authentication."
+      // );
+      // scanQRcode({ token: scannedResult.value })
+      //   ?.unwrap()
+      //   ?.then((res) => {
+      //     console.log("mhgfgkjhgfghjkl", res);
+      //     var channel = pusher?.subscribe("my-channel");
+      //     pusher.connect();
+      //     channel.bind(res?.token, function (data) {
+      //       console.log("jjjjjj", data);
+      //       if (data?.data?.newToken) {
+      //         toast.remove(id);
+      //         clearTimeout(timerRef.current);
+      //         setIsOpen({ ...isOpen, status: false, value: null });
+      //         toast.success("QR scanned successfully");
+      //         //pusher.unbind_all();
+      //         pusher.unsubscribe("my-channel");
+      //       }
+      //     });
+      //     timerRef.current = setTimeout(() => {
+      //       setIsOpen({ ...isOpen, status: false, value: null });
+      //       pusher.unsubscribe("my-channel");
+      //       pusher.disconnect();
+      //       toast.error("Try again!");
+      //       toast.remove(id);
+      //     }, 40000);
+      //   })
+      //   ?.catch((err) => {
+      //     console.log("hiii err", err);
+      //     toast.remove(id);
+      //     setIsOpen({ ...isOpen, status: false, value: null });
+      //     toast.error(
+      //       "QR Code Expired! Please generate a new QR code to continue."
+      //     );
+      //   });
     }
   }, [scannedResult.status]);
+
+  // useEffect(() => {
+  //   if (isScanQRSuccess) {
+  //     if (scanQRData?.token) {
+  //       startSocket(scanQRData.token, "e1");
+  //     }
+  //   }
+  // }, [isScanQRSuccess]);
+
+  useEffect(() => {
+    if (isConnected) {
+      setIsLoading(true);
+      scanQRcode({ token: scannedResult.value });
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (message) {
+      if (message?.data?.newToken) {
+        setIsLoading(false);
+        setScannedResult({
+          status: false,
+          value: "",
+        });
+        dispatch(qrApi.util.resetApiState());
+        setTimeout(() => {
+          closeModal();
+        }, 300);
+      }
+    }
+  }, [message]);
 
   useEffect(() => {
     if (isOpen?.status) {
@@ -85,7 +133,9 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
 
   function closeModal() {
     setIsOpen({ ...isOpen, status: false, value: null });
+    closeSocket();
   }
+  console.log(scannedResult);
   return (
     <>
       <Transition appear show={isOpen.status} as={Fragment}>
@@ -130,7 +180,7 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
                     </button>
                   </div>
                   <div>
-                    {scannedResult.status ? (
+                    {scannedResult.status && isLoading ? (
                       <div
                         className="flex justify-center items-center mt-20"
                         style={{ height: 400 }}

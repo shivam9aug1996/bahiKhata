@@ -13,11 +13,12 @@ export const qrApi = createApi({
   keepUnusedDataFor: 0,
   endpoints: (builder) => ({
     getQRcode: builder.mutation({
-      query: (data) => ({
+      query: () => ({
         url: "/auth/getQR",
         method: "POST",
+        body: {},
       }),
-      forceRefetch: () => true,
+      // forceRefetch: () => true,
     }),
     scanQRcode: builder.mutation({
       query: (data) => ({

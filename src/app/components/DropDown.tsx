@@ -251,7 +251,7 @@ const DropDown = ({
       {isModalOpen?.status && (
         <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
       )}
-      {isQrScannerOpen && (
+      {isQrScannerOpen.status && (
         <QRscanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} />
       )}
       {isSyncModalOpen?.status && (

@@ -172,3 +172,17 @@ export const transactionType = {
 //     ["Adhik Bhugtan Supplier Ko"]: "Adhik Bhugtan Supplier Ko",
 //   },
 // };
+
+export const calculateSecondsElapsed = (initialTime) => {
+  initialTime = parseInt(initialTime);
+  // Get the current time in milliseconds
+  let currentTime = new Date().getTime();
+
+  // Calculate the difference in milliseconds
+  let timeElapsedInMilliseconds = currentTime - initialTime;
+
+  // Convert milliseconds to seconds
+  let timeElapsedInSeconds = timeElapsedInMilliseconds / 1000;
+
+  return timeElapsedInSeconds;
+};

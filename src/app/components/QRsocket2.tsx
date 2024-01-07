@@ -1,34 +1,44 @@
-import { Button } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
-import Loader from "./Loader";
+"use client";
+import React, { useState, useEffect } from "react";
+import pusher from "./pusher"; // Import the initialized Pusher instance
 
-const QRsocket2 = ({ isOpen, setIsOpen }) => {
-  const [data, setData] = useState(null);
+const QRsocket2 = () => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [channel, setChannel] = useState(null);
 
-  const generateQR = async () => {
-    console.log("hi");
-    setData(null);
-    let res = await fetch("/api/auth/getQR", {
-      cache: "no-store",
-      method: "post",
-    });
-    res = await res.json();
-    setData(res);
+  useEffect(() => {
+    if (isConnected) {
+      const newChannel = pusher.subscribe("my-channel");
+      setChannel(newChannel);
+    } else {
+      if (channel) {
+        channel?.unbind(); // Unbind all event callbacks
+        pusher.unsubscribe("my-channel"); // Unsubscribe from the channel
+        setChannel(null);
+      }
+    }
+
+    // Cleanup when component unmounts
+    return () => {
+      if (channel) {
+        channel.unbind(); // Unbind all event callbacks
+        pusher.unsubscribe("my-channel"); // Unsubscribe from the channel
+      }
+    };
+  }, [isConnected]); // Re-run effect only if 'isConnected' changes
+
+  // Function to start or close the socket connection and channel subscription
+  const toggleSocket = () => {
+    setIsConnected((prevState) => !prevState);
   };
 
   return (
-    <div className="flex justify-center flex-col items-center">
-      <p className="text-lg mb-3">or</p>
-      <Button className="w-min" onClick={() => generateQR()}>
-        Generate QR to Login
-      </Button>
-
-      {data?.data ? (
-        <>
-          <img src={data?.data} width={150} height={150} alt={"qr code"} />
-          <p>{data?.temp}</p>
-        </>
-      ) : null}
+    <div>
+      <button onClick={toggleSocket}>
+        {isConnected ? "Close Socket" : "Start Socket"}
+      </button>
+      <div>Status: {isConnected ? "Connected" : "Disconnected"}</div>
+      {/* Other components or content related to Pusher */}
     </div>
   );
 };
