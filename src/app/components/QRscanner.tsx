@@ -9,7 +9,7 @@ import Loader from "./Loader";
 import usePusher from "../custom-hooks/usePusher";
 import { useDispatch } from "react-redux";
 import { calculateSecondsElapsed } from "../utils/function";
-// import Pusher from "pusher-js";
+import { pusher_public_api_key, pusher_public_cluster } from "../api/lib/keys";
 
 const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
   const [scannedResult, setScannedResult] = useState({
@@ -17,11 +17,10 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
     value: "",
   });
   const dispatch = useDispatch();
-  const timerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const { isConnected, error, startSocket, closeSocket, message } = usePusher(
-    "a7a14b0a75a3d073c905",
-    "ap2"
+    pusher_public_api_key,
+    pusher_public_cluster
   );
 
   const [
@@ -43,61 +42,12 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
       } else {
         toast.error("QR code expired");
 
-        // dispatch(qrApi.util.resetApiState());
         setTimeout(() => {
           closeModal();
         }, 500);
       }
-
-      // const pusher = new Pusher("a7a14b0a75a3d073c905", {
-      //   cluster: "ap2",
-      // });
-      // let id = toast.loading(
-      //   "Verifying... Please wait a moment for authentication."
-      // );
-      // scanQRcode({ token: scannedResult.value })
-      //   ?.unwrap()
-      //   ?.then((res) => {
-      //     console.log("mhgfgkjhgfghjkl", res);
-      //     var channel = pusher?.subscribe("my-channel");
-      //     pusher.connect();
-      //     channel.bind(res?.token, function (data) {
-      //       console.log("jjjjjj", data);
-      //       if (data?.data?.newToken) {
-      //         toast.remove(id);
-      //         clearTimeout(timerRef.current);
-      //         setIsOpen({ ...isOpen, status: false, value: null });
-      //         toast.success("QR scanned successfully");
-      //         //pusher.unbind_all();
-      //         pusher.unsubscribe("my-channel");
-      //       }
-      //     });
-      //     timerRef.current = setTimeout(() => {
-      //       setIsOpen({ ...isOpen, status: false, value: null });
-      //       pusher.unsubscribe("my-channel");
-      //       pusher.disconnect();
-      //       toast.error("Try again!");
-      //       toast.remove(id);
-      //     }, 40000);
-      //   })
-      //   ?.catch((err) => {
-      //     console.log("hiii err", err);
-      //     toast.remove(id);
-      //     setIsOpen({ ...isOpen, status: false, value: null });
-      //     toast.error(
-      //       "QR Code Expired! Please generate a new QR code to continue."
-      //     );
-      //   });
     }
   }, [scannedResult.status]);
-
-  // useEffect(() => {
-  //   if (isScanQRSuccess) {
-  //     if (scanQRData?.token) {
-  //       startSocket(scanQRData.token, "e1");
-  //     }
-  //   }
-  // }, [isScanQRSuccess]);
 
   useEffect(() => {
     if (isConnected) {
@@ -110,14 +60,8 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
     if (message) {
       if (message?.data?.newToken) {
         dispatch(qrApi.util.resetApiState());
-        // setTimeout(() => {
         closeModal();
         setIsLoading(false);
-        // setScannedResult({
-        //   status: false,
-        //   value: "",
-        // });
-        // }, 300);
       }
     }
   }, [message]);

@@ -5,6 +5,7 @@ import { Spinner } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { pusher_public_api_key, pusher_public_cluster } from "../api/lib/keys";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import usePusher from "../custom-hooks/usePusher";
 import { useLoginMutation } from "../redux/features/authSlice";
@@ -36,8 +37,8 @@ const QRsocket3 = ({ isOpen, setIsOpen }) => {
   useErrorNotification(loginError, isLoginError);
   useErrorNotification(getQRcodeError, isGetQRcodeError);
   const { isConnected, error, startSocket, closeSocket, message } = usePusher(
-    "a7a14b0a75a3d073c905",
-    "ap2"
+    pusher_public_api_key,
+    pusher_public_cluster
   );
 
   useEffect(() => {

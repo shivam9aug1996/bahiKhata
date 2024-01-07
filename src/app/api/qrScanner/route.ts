@@ -4,15 +4,7 @@ import jwt from "jsonwebtoken";
 import { secretKey } from "../lib/keys";
 import { cookies } from "next/headers";
 import { calculateSecondsElapsed } from "../lib/globalFun";
-// import Pusher from "pusher";
 
-// const pusher = new Pusher({
-//   appId: "1735073",
-//   key: "a7a14b0a75a3d073c905",
-//   secret: "dd3949900fc1f693b821",
-//   cluster: "ap2",
-//   useTLS: true,
-// });
 export async function POST(req, res) {
   if (req.method === "POST") {
     let decoded;
@@ -37,12 +29,6 @@ export async function POST(req, res) {
             newToken,
           },
         });
-        // pusher.trigger("my-channel", token, {
-        //   message: "login",
-        //   data: {
-        //     newToken,
-        //   },
-        // });
 
         return NextResponse.json(
           {

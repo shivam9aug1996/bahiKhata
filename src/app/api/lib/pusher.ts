@@ -1,9 +1,15 @@
 import Pusher from "pusher";
+import {
+  pusher_api_key,
+  pusher_app_id,
+  pusher_cluster,
+  pusher_secret_key,
+} from "./keys";
 
 export const pusher = new Pusher({
-  appId: "1735073",
-  key: "a7a14b0a75a3d073c905",
-  secret: "dd3949900fc1f693b821",
-  cluster: "ap2",
+  appId: pusher_app_id,
+  key: pusher_api_key,
+  secret: pusher_secret_key,
+  cluster: pusher_cluster,
   useTLS: true,
 });
