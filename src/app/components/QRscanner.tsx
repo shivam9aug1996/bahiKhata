@@ -126,10 +126,10 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
                     </button>
                   </div>
                   <div>
-                    {scannedResult.status ? (
+                    {!scannedResult.status ? (
                       <div
                         className="flex justify-center items-center mt-20"
-                        style={{ width: 400, height: 400 }}
+                        style={{ height: 400 }}
                       >
                         <Loader />
                         <p className="text-lg">Please wait...</p>
