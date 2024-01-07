@@ -1,7 +1,7 @@
 "use client";
 import React, { Fragment, memo, useEffect, useRef, useState } from "react";
 import Pusher from "pusher-js/with-encryption";
-import { useLazyGetQRcodeQuery } from "../redux/features/qrSlice";
+import { qrApi, useLazyGetQRcodeQuery } from "../redux/features/qrSlice";
 
 import { useLoginMutation } from "../redux/features/authSlice";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
@@ -11,6 +11,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Loader from "./Loader";
+import { useDispatch } from "react-redux";
 
 const pusher = new Pusher("a7a14b0a75a3d073c905", {
   cluster: "ap2",
@@ -21,7 +22,7 @@ var channel = pusher.subscribe("my-channel");
 const QrSocket = ({ isOpen, setIsOpen }) => {
   const [data, setData] = useState(null);
   const timerRef = useRef(null);
-
+  const dispatch = useDispatch();
   const router = useRouter();
   const [
     login,
@@ -72,7 +73,7 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
       ?.unwrap()
       ?.then((res) => {
         // pusher.disconnect();
-
+        setData(res);
         pusher.connect();
 
         channel.bind(res?.temp, function (data) {
@@ -94,6 +95,8 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
     setIsOpen({ ...isOpen, status: false, value: null });
     pusher.disconnect();
     channel.unbind_all();
+    pusher.unsubscribe("my-channel");
+    dispatch(qrApi.util.resetApiState());
     // pusher.unsubscribe("my-channel");
   }
 
@@ -156,9 +159,9 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
                         height={150}
                         alt={"qr code"}
                       /> */}
-                      {getQRcodeData?.data ? (
+                      {data?.data ? (
                         <img
-                          src={getQRcodeData?.data}
+                          src={data?.data}
                           width={150}
                           height={150}
                           alt={"qr code"}
