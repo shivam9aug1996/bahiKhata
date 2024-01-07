@@ -68,28 +68,41 @@ const QrSocket = ({ isOpen, setIsOpen }) => {
     };
   }, []);
 
-  const generateQR = () => {
-    dispatch(qrApi.util.resetApiState());
-    getQRcode()
-      ?.unwrap()
-      ?.then((res) => {
-        // pusher.disconnect();
-        setData(res);
-        //  pusher.connect();
+  const generateQR = async () => {
+    // dispatch(qrApi.util.resetApiState());
+    // getQRcode()
+    //   ?.unwrap()
+    //   ?.then((res) => {
+    //     // pusher.disconnect();
+    //     setData(res);
+    //     //  pusher.connect();
 
-        channel.bind(res?.temp, function (data) {
-          console.log("jjjjjj", data);
-          if (data?.data?.newToken) {
-            login({ token: data?.data?.newToken });
-          }
-        });
-        // pusher.unsubscribe("my-channel");
-        console.log("ghjklr676trtghjkl", res);
-      });
-    // .finally(() => {
-    //   pusher.unsubscribe("my-channel");
-    //   pusher.disconnect();
-    // });
+    //     channel.bind(res?.temp, function (data) {
+    //       console.log("jjjjjj", data);
+    //       if (data?.data?.newToken) {
+    //         login({ token: data?.data?.newToken });
+    //       }
+    //     });
+    //     // pusher.unsubscribe("my-channel");
+    //     console.log("ghjklr676trtghjkl", res);
+    //   });
+    // // .finally(() => {
+    // //   pusher.unsubscribe("my-channel");
+    // //   pusher.disconnect();
+    // // });
+    let res = await fetch("/api/auth/getQR");
+    res = await res.json();
+    setData(res);
+    //  pusher.connect();
+
+    channel.bind(res?.temp, function (data) {
+      console.log("jjjjjj", data);
+      if (data?.data?.newToken) {
+        login({ token: data?.data?.newToken });
+      }
+    });
+    // pusher.unsubscribe("my-channel");
+    console.log("ghjklr676trtghjkl", res);
   };
 
   function closeModal() {
