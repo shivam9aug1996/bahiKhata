@@ -12,7 +12,7 @@ export async function GET(req, res) {
     //   },
     //   secretKey
     // );
-    const token = new Date().getTime();
+    const token = new Date().getTime()?.toString();
     const generatedUrl = await QRCode.toDataURL(token);
     console.log("kjhgfdfghjkl", token);
     return NextResponse.json(
