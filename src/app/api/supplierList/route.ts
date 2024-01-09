@@ -17,12 +17,22 @@ export async function POST(req, res) {
       );
     }
     let balance = 0;
+    const latestCreditTransaction = null;
+    const latestDebitTransaction = null;
     const createdAt = new Date();
     try {
       await deleteCache(businessId);
       const result = await db
         .collection("suppliers")
-        .insertOne({ businessId, name, mobileNumber, balance, createdAt });
+        .insertOne({
+          businessId,
+          name,
+          mobileNumber,
+          balance,
+          createdAt,
+          latestCreditTransaction,
+          latestDebitTransaction,
+        });
 
       return NextResponse.json(
         {
@@ -34,6 +44,8 @@ export async function POST(req, res) {
             mobileNumber,
             balance,
             createdAt,
+            latestCreditTransaction,
+            latestDebitTransaction,
           },
         },
         { status: 201 }

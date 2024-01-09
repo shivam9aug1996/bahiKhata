@@ -1,11 +1,17 @@
 "use client";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid";
+import {
+  BanknotesIcon,
+  PencilSquareIcon,
+  ShoppingBagIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedCustomer } from "../redux/features/businessSlice";
 import {
+  calculateDuration,
   formatNumberOrStringWithFallback,
   transactionType,
 } from "../utils/function";
@@ -62,7 +68,8 @@ const CustomerData = ({
         <div className={`relative mb-4`} key={item?._id}>
           <button
             key={index}
-            className={`w-full block p-4 border rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 ${
+            style={{ height: 130 }}
+            className={`w-full block p-4 border rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 pt-0 ${
               isTransactionsOpen && selectedTransaction == item?._id
                 ? "scale-105"
                 : ""
@@ -77,7 +84,7 @@ const CustomerData = ({
           >
             <div className="flex justify-between text-left">
               <span>{item?.name}</span>
-              <div className="flex flex-col items-end">
+              <div className="flex flex-col items-end justify-between ">
                 <div
                   className={`ml-2 text-right ${
                     item.balance > 0
@@ -110,7 +117,7 @@ const CustomerData = ({
             </div>
             <div className="h-5"></div>
           </button>
-          <div className="flex flex-row absolute bottom-0 p-4">
+          <div className="flex flex-row absolute bottom-0 p-4 right-0">
             <PencilSquareIcon
               onClick={(e) => {
                 e.stopPropagation();
@@ -137,14 +144,37 @@ const CustomerData = ({
               className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
             />
           </div>
+
+          <div
+            className="flex flex-col bottom-0 absolute p-4 items-start left-0  rounded-lg text-xs"
+            style={{ minWidth: 200 }}
+          >
+            {item?.latestDebitTransaction?.date && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <ShoppingBagIcon className="w-4 h-4 mr-2 text-red-500" />
+                  <span className="font-semibold text-red-500">GS:</span>
+                </div>
+                <div className="ml-1 text-red-500">
+                  {calculateDuration(item?.latestDebitTransaction?.date)}
+                </div>
+              </div>
+            )}
+            {item?.latestCreditTransaction?.date && (
+              <div className="flex items-center justify-between mt-3">
+                <div className="flex items-center">
+                  <BanknotesIcon className="w-4 h-4 mr-2 text-green-500" />
+                  <span className="font-semibold text-green-500">PR:</span>
+                </div>
+                <div className="ml-1 text-green-500">
+                  {calculateDuration(item?.latestCreditTransaction?.date)}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       ))}
-      {/* <Pagination
-        totalPages={getCustomerData?.totalPages}
-        currentPage={page}
-        setPage={setPage}
-        containerRef={containerRef}
-      /> */}
+
       <PaginationWrapper
         containerRef={containerRef}
         totalPages={getCustomerData?.totalPages}

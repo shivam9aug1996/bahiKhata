@@ -83,12 +83,32 @@ export async function POST(req, res) {
         }
       });
 
+      const latestCreditTransaction = await db
+        .collection("transactions")
+        .find({ partyId, businessId, type: "credit" }, { session })
+        .sort({ date: -1, createdAt: -1 })
+        .limit(1)
+        .toArray();
+
+      const latestDebitTransaction = await db
+        .collection("transactions")
+        .find({ partyId, businessId, type: "debit" }, { session })
+        .sort({ date: -1, createdAt: -1 })
+        .limit(1)
+        .toArray();
+
       // Update the customer's balance directly in the customer collection
       await db
         .collection(partyType == "customer" ? "customers" : "suppliers")
         .updateOne(
           { _id: new ObjectId(partyId), businessId },
-          { $set: { balance } },
+          {
+            $set: {
+              balance,
+              latestCreditTransaction: latestCreditTransaction[0] || null,
+              latestDebitTransaction: latestDebitTransaction[0] || null,
+            },
+          },
           { session }
         );
       await commitTransaction(session);
@@ -342,6 +362,20 @@ export async function PUT(req, res) {
             .find({ partyId, businessId }, { session })
             .toArray();
 
+          const latestCreditTransaction = await db
+            .collection("transactions")
+            .find({ partyId, businessId, type: "credit" }, { session })
+            .sort({ date: -1, createdAt: -1 })
+            .limit(1)
+            .toArray();
+
+          const latestDebitTransaction = await db
+            .collection("transactions")
+            .find({ partyId, businessId, type: "debit" }, { session })
+            .sort({ date: -1, createdAt: -1 })
+            .limit(1)
+            .toArray();
+
           // Calculate the balance based on all transactions
           let balance = 0;
           allTransactions?.forEach((transaction) => {
@@ -357,7 +391,13 @@ export async function PUT(req, res) {
             .collection(partyType == "customer" ? "customers" : "suppliers")
             .updateOne(
               { _id: new ObjectId(partyId), businessId },
-              { $set: { balance } },
+              {
+                $set: {
+                  balance,
+                  latestCreditTransaction: latestCreditTransaction[0] || null,
+                  latestDebitTransaction: latestDebitTransaction[0] || null,
+                },
+              },
               { session }
             );
         }
@@ -447,6 +487,20 @@ export async function DELETE(req, res) {
         .find({ partyId, businessId }, { session })
         .toArray();
 
+      const latestCreditTransaction = await db
+        .collection("transactions")
+        .find({ partyId, businessId, type: "credit" }, { session })
+        .sort({ date: -1, createdAt: -1 })
+        .limit(1)
+        .toArray();
+
+      const latestDebitTransaction = await db
+        .collection("transactions")
+        .find({ partyId, businessId, type: "debit" }, { session })
+        .sort({ date: -1, createdAt: -1 })
+        .limit(1)
+        .toArray();
+
       let balance = 0;
       allTransactions?.forEach((transaction) => {
         if (transaction?.type === "credit") {
@@ -463,7 +517,13 @@ export async function DELETE(req, res) {
         .collection(partyType == "customer" ? "customers" : "suppliers")
         .updateOne(
           { _id: new ObjectId(partyId), businessId },
-          { $set: { balance } },
+          {
+            $set: {
+              balance,
+              latestCreditTransaction: latestCreditTransaction[0] || null,
+              latestDebitTransaction: latestDebitTransaction[0] || null,
+            },
+          },
           { session }
         );
       await deleteMultipleImages(imageUrl);
@@ -489,9 +549,3 @@ export async function DELETE(req, res) {
     );
   }
 }
-
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };

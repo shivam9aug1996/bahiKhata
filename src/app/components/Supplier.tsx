@@ -1,8 +1,10 @@
 "use client";
 import {
+  BanknotesIcon,
   MagnifyingGlassIcon,
   PencilSquareIcon,
   PlusCircleIcon,
+  ShoppingBagIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
@@ -27,6 +29,7 @@ import {
 import Loader from "./Loader";
 import PartySkeleton from "./PartySkeleton";
 import {
+  calculateDuration,
   formatNumberOrStringWithFallback,
   transactionType,
 } from "../utils/function";
@@ -274,6 +277,7 @@ const Supplier = () => {
                 {getSupplierData?.data?.map((item, index) => (
                   <div className="relative mb-4" key={item?._id}>
                     <button
+                      style={{ height: 130 }}
                       onClick={() => {
                         dispatch(setSelectedCustomer(item));
                         setIsTransactionsOpen(true);
@@ -328,7 +332,7 @@ const Supplier = () => {
                       </div>
                       <div className="h-5"></div>
                     </button>
-                    <div className="flex flex-row absolute bottom-0 p-4">
+                    <div className="flex flex-row absolute bottom-0 right-0 p-4">
                       <PencilSquareIcon
                         onClick={(e) => {
                           e.stopPropagation();
@@ -358,6 +362,42 @@ const Supplier = () => {
                         }}
                         className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                       />
+                    </div>
+                    <div
+                      className="flex flex-col bottom-0 absolute p-4 items-start left-0  rounded-lg text-xs"
+                      style={{ minWidth: 200 }}
+                    >
+                      {item?.latestDebitTransaction?.date && (
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <BanknotesIcon className="w-4 h-4 mr-2 text-green-500" />
+
+                            <span className="font-semibold text-green-500">
+                              PM:
+                            </span>
+                          </div>
+                          <div className="ml-1 text-green-500">
+                            {calculateDuration(
+                              item?.latestDebitTransaction?.date
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      {item?.latestCreditTransaction?.date && (
+                        <div className="flex items-center justify-between mt-3">
+                          <div className="flex items-center">
+                            <ShoppingBagIcon className="w-4 h-4 mr-2 text-red-500" />
+                            <span className="font-semibold text-red-500">
+                              GP:
+                            </span>
+                          </div>
+                          <div className="ml-1 text-red-500">
+                            {calculateDuration(
+                              item?.latestCreditTransaction?.date
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

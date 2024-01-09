@@ -164,6 +164,8 @@ export const transactionType = {
     ["Customer Se Bhugtan Prapt"]: "Payment Received",
     ["Bakaya Rashi Customer Se"]: "Customer will Pay",
     ["Adhik Bhugtan Customer Se"]: "Business will pay",
+    ["Last Payment Received"]: "PR",
+    ["Last Goods Sold"]: "GS",
   },
   supplier: {
     ["Supplier Ko Payment Ki"]: "Payment Made",
@@ -188,16 +190,57 @@ export const transactionType = {
 //   },
 // };
 
-export const calculateSecondsElapsed = (initialTime) => {
-  initialTime = parseInt(initialTime);
-  // Get the current time in milliseconds
-  let currentTime = new Date().getTime();
+export const calculateDuration = (dateStr) => {
+  // Parse the date string into a Date object
+  const inputDate = new Date(dateStr);
+
+  // Get the current date
+  const currentDate = new Date();
 
   // Calculate the difference in milliseconds
-  let timeElapsedInMilliseconds = currentTime - initialTime;
+  const differenceInMilliseconds = currentDate.getTime() - inputDate.getTime();
 
-  // Convert milliseconds to seconds
-  let timeElapsedInSeconds = timeElapsedInMilliseconds / 1000;
+  // Convert the difference to days
+  const differenceInDays = Math.floor(
+    differenceInMilliseconds / (1000 * 60 * 60 * 24)
+  );
 
-  return timeElapsedInSeconds;
+  // Determine if the input date is in the past or future
+  const isPast = differenceInDays > 0;
+
+  // Calculate years, months, and remaining days
+  const years = Math.floor(differenceInDays / 365);
+  const remainingDaysAfterYears = differenceInDays % 365;
+  const months = Math.floor(remainingDaysAfterYears / 30);
+  const days = remainingDaysAfterYears % 30;
+
+  // Construct the duration string based on the calculated values
+  let durationStr = "";
+
+  if (years > 0) {
+    durationStr += years + " year" + (years === 1 ? "" : "s");
+    if (months > 0 || days > 0) {
+      durationStr += ", ";
+    }
+  }
+
+  if (months > 0) {
+    durationStr += months + " month" + (months === 1 ? "" : "s");
+    if (days > 0) {
+      durationStr += ", ";
+    }
+  }
+
+  if (days > 0) {
+    durationStr += days + " day" + (days === 1 ? "" : "s");
+  }
+
+  if (durationStr === "") {
+    durationStr = "Today";
+  } else {
+    // Add "ago" for past dates, "from now" for future dates
+    durationStr += isPast ? " ago" : " from now";
+  }
+
+  return durationStr;
 };

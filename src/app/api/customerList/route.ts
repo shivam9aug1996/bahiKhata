@@ -28,10 +28,17 @@ export async function POST(req, res) {
     const createdAt = new Date();
     try {
       await deleteCache(businessId);
-      const result = await db
-        .collection("customers")
-        .insertOne({ businessId, name, mobileNumber, balance, createdAt });
-
+      const latestCreditTransaction = null;
+      const latestDebitTransaction = null;
+      const result = await db.collection("customers").insertOne({
+        businessId,
+        name,
+        mobileNumber,
+        balance,
+        createdAt,
+        latestCreditTransaction,
+        latestDebitTransaction,
+      });
       return NextResponse.json(
         {
           message: "Customer created successfully",
@@ -42,6 +49,8 @@ export async function POST(req, res) {
             mobileNumber,
             balance,
             createdAt,
+            latestCreditTransaction,
+            latestDebitTransaction,
           },
         },
         { status: 201 }
