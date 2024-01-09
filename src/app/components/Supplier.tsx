@@ -331,6 +331,42 @@ const Supplier = () => {
                         </div>
                       </div>
                       <div className="h-5"></div>
+                      <div
+                        className="flex flex-col bottom-0 absolute p-4 items-start left-0  rounded-lg text-xs"
+                        style={{ minWidth: 200 }}
+                      >
+                        {item?.latestDebitTransaction?.date && (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <BanknotesIcon className="w-4 h-4 mr-2 text-green-500" />
+
+                              <span className="font-semibold text-green-500">
+                                PM:
+                              </span>
+                            </div>
+                            <div className="ml-1 text-green-500">
+                              {calculateDuration(
+                                item?.latestDebitTransaction?.date
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        {item?.latestCreditTransaction?.date && (
+                          <div className="flex items-center justify-between mt-3">
+                            <div className="flex items-center">
+                              <ShoppingBagIcon className="w-4 h-4 mr-2 text-red-500" />
+                              <span className="font-semibold text-red-500">
+                                GP:
+                              </span>
+                            </div>
+                            <div className="ml-1 text-red-500">
+                              {calculateDuration(
+                                item?.latestCreditTransaction?.date
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </button>
                     <div className="flex flex-row absolute bottom-0 right-0 p-4">
                       <PencilSquareIcon
@@ -362,42 +398,6 @@ const Supplier = () => {
                         }}
                         className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                       />
-                    </div>
-                    <div
-                      className="flex flex-col bottom-0 absolute p-4 items-start left-0  rounded-lg text-xs"
-                      style={{ minWidth: 200 }}
-                    >
-                      {item?.latestDebitTransaction?.date && (
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <BanknotesIcon className="w-4 h-4 mr-2 text-green-500" />
-
-                            <span className="font-semibold text-green-500">
-                              PM:
-                            </span>
-                          </div>
-                          <div className="ml-1 text-green-500">
-                            {calculateDuration(
-                              item?.latestDebitTransaction?.date
-                            )}
-                          </div>
-                        </div>
-                      )}
-                      {item?.latestCreditTransaction?.date && (
-                        <div className="flex items-center justify-between mt-3">
-                          <div className="flex items-center">
-                            <ShoppingBagIcon className="w-4 h-4 mr-2 text-red-500" />
-                            <span className="font-semibold text-red-500">
-                              GP:
-                            </span>
-                          </div>
-                          <div className="ml-1 text-red-500">
-                            {calculateDuration(
-                              item?.latestCreditTransaction?.date
-                            )}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 ))}
