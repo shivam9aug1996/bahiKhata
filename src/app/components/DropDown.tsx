@@ -224,12 +224,11 @@ const DropDown = ({
   const handleSyncData = () => {
     if (!isGetBusinessSyncLoading) {
       setIsSyncModalOpen({ ...isSyncModalOpen, status: false });
+
       toast.promise(
-        syncBusiness(
-          JSON.stringify({
-            businessId: businessIdSelected,
-          })
-        )
+        syncBusiness({
+          businessId: businessIdSelected,
+        })
           .unwrap()
           .then(() => {
             dispatch(customerApi.util.invalidateTags(["customer"]));

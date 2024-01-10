@@ -10,8 +10,6 @@ import {
 
 export async function POST(req, res) {
   if (req.method === "POST") {
-    // Retrieve all businesses
-    // const businessId = new URL(req.url).searchParams.get("businessId");
     const { businessId } = await req.json();
     let session;
     try {
@@ -58,19 +56,42 @@ export async function POST(req, res) {
 
       const aggregationPipeline = [...matchStage, ...groupAndProjectStages];
 
+      session = await startTransaction(client);
+
       const totalTransactions = await db
         .collection("transactions")
-        .aggregate(aggregationPipeline)
+        .aggregate(aggregationPipeline, { session })
         .toArray();
-      session = await startTransaction(client);
+      console.log("kjhgfhjhfdfghj", totalTransactions);
+
       for (const transaction of totalTransactions) {
         const { _id: partyId, partyType, totalAmount: balance } = transaction;
+
+        const latestCreditTransaction = await db
+          .collection("transactions")
+          .find({ partyId, type: "credit", partyType }, { session })
+          .sort({ date: -1, createdAt: -1 })
+          .limit(1)
+          .toArray();
+
+        const latestDebitTransaction = await db
+          .collection("transactions")
+          .find({ partyId, type: "debit" }, { session })
+          .sort({ date: -1, createdAt: -1 })
+          .limit(1)
+          .toArray();
 
         await db
           .collection(partyType === "customer" ? "customers" : "suppliers")
           .updateOne(
             { _id: new ObjectId(partyId) },
-            { $set: { balance } },
+            {
+              $set: {
+                balance,
+                latestCreditTransaction: latestCreditTransaction[0] || null,
+                latestDebitTransaction: latestDebitTransaction[0] || null,
+              },
+            },
             { session }
           );
       }

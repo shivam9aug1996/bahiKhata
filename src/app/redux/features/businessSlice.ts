@@ -48,6 +48,7 @@ export const businessApi = createApi({
     }),
     syncBusiness: builder.mutation({
       query: (data) => {
+        console.log("jhgfghjkl", data);
         return {
           url: "/sync",
           method: "POST",
