@@ -12,7 +12,10 @@ const Header = () => {
     return null;
   }
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-center items-start sticky top-0">
+    <div
+      className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-center items-start sticky top-0"
+      style={{ zIndex: 1 }}
+    >
       <div className="flex flex-row items-center justify-between w-full">
         <Link
           className="text-3xl md:text-4xl lg:text-5xl font-bold text-center cursor-pointer"

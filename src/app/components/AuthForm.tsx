@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "@nextui-org/button";
 import ButtonLoader from "./ButtonLoader";
-import { Input } from "@nextui-org/react";
 
 const AuthForm = ({
   handleSubmit,

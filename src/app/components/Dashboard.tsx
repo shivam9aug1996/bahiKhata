@@ -1,6 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
-
 import { useRouter } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -12,8 +10,6 @@ import {
   useGetBusinessListQuery,
   useUpdateBusinessMutation,
 } from "../redux/features/businessSlice";
-import { customerApi } from "../redux/features/customerSlice";
-import { dashboardApi } from "../redux/features/dashboardSlice";
 import DropDown from "./DropDown";
 // const DropDown = dynamic(() => import("./DropDown"));
 

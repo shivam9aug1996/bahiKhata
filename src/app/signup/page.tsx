@@ -1,11 +1,14 @@
-import React from "react";
+import React, { Suspense } from "react";
+import AuthPlaceholder from "../components/AuthPlaceholder";
 import AuthServer from "../components/AuthServer";
 import Signup from "./Signup";
 
 const page = () => {
   return (
     <AuthServer>
-      <Signup />
+      <Suspense fallback={<AuthPlaceholder type={"signup"} />}>
+        <Signup />
+      </Suspense>
     </AuthServer>
   );
 };

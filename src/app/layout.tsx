@@ -11,6 +11,7 @@ import "@dotlottie/react-player/dist/index.css";
 import { getCookies } from "./actions";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
+import Footer from "./components/Footer";
 
 const inter = Open_Sans({ subsets: ["latin"], weight: "500" });
 const Providers = dynamic(() => import("./components/Providers"));
@@ -32,10 +33,12 @@ export default function RootLayout({
         <Providers getCookies={getCookies}>
           <Header />
           {children}
+          <Footer />
         </Providers>
         <SpeedInsights />
         <Analytics />
       </body>
+      <Script strategy="lazyOnload" src="./whatsapp-script.js" />
     </html>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-
+import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -11,13 +11,16 @@ import { setAuthLoader, useLoginMutation } from "../redux/features/authSlice";
 
 import { useSearchParams } from "next/navigation";
 
-import Lottie from "../components/Lottie";
 import AuthForm from "../components/AuthForm";
 import usePageLoader from "../custom-hooks/usePageLoader";
 import { deleteCookies } from "../actions";
 
 import { Button } from "@nextui-org/react";
-import QRsocket3 from "../components/QRsocket3";
+// import QRsocket3 from "../components/QRsocket3";
+import Lottie from "../components/Lottie";
+const QRsocket3 = dynamic(() => import("../components/QRsocket3"), {
+  loading: () => <Loader />,
+});
 
 export default function Login() {
   const authLoader = useSelector((state) => state?.auth?.authLoader || "");
