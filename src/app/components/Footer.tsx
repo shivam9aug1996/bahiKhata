@@ -8,7 +8,9 @@ const Footer = () => {
         style={{ marginRight: 60 }}
       >
         <p className="text-sm">
-          &copy; {new Date().getFullYear()} BahiKhata | Created by Shivam Garg
+          &copy; {new Date().getFullYear()}{" "}
+          <span className="text-black-600">Bahi</span>
+          <span className="text-red-600">Khata</span> | Created by Shivam Garg
         </p>
         <div>
           <p className="text-sm">Contact: +91 9634396572</p>

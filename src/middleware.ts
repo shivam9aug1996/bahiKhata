@@ -6,6 +6,9 @@ export async function middleware(request: NextRequest) {
   const userToken = request.cookies.get("bahi_khata_user_token")?.value;
   let fp = request.headers.get("user-fingerprint");
   const currentPath = request.nextUrl.pathname;
+  if (currentPath === "/whatsapp-script.js") {
+    return NextResponse.next();
+  }
   if (!userToken) {
     if (currentPath.startsWith("/dashboard")) {
       let message = "token not exists";
@@ -51,5 +54,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/", "/signup", "/api/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/login",
+    "/",
+    "/signup",
+    "/api/:path*",
+    "/whatsapp-script.js",
+  ],
 };

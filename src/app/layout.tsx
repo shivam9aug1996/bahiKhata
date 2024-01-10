@@ -38,7 +38,7 @@ export default function RootLayout({
         <SpeedInsights />
         <Analytics />
       </body>
-      <Script strategy="lazyOnload" src="./whatsapp-script.js" />
+      <Script strategy="lazyOnload" src="/whatsapp-script.js" />
     </html>
   );
 }
