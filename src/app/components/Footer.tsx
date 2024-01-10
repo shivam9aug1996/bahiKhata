@@ -3,18 +3,15 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className="bg-white text-gray-800 py-6 shadow-2xl shadow-black">
-      <div
-        className="mx-auto flex flex-col justify-start px-4"
-        style={{ marginRight: 60 }}
-      >
-        <p className="text-sm">
+      <div className="mx-auto flex flex-col justify-center items-center px-4 footer-content">
+        <p>
           &copy; {new Date().getFullYear()}{" "}
           <span className="text-red-500 font-bold">Bahi</span>
           <span className="text-black-500 font-bold">Khata</span> | Created by
           Shivam Garg
         </p>
         <div>
-          <p className="text-sm">Contact: +91 9634396572</p>
+          <p>Contact: +91 9634396572</p>
           {/* You can add additional contact details, social media links, or any other relevant information here */}
         </div>
       </div>

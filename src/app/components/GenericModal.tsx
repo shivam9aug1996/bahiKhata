@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import React, { Fragment } from "react";
+import React, { Fragment, memo } from "react";
 import Loader from "./Loader";
 
 const GenericModal = ({
@@ -94,4 +94,4 @@ const GenericModal = ({
   );
 };
 
-export default GenericModal;
+export default memo(GenericModal);

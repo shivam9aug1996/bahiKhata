@@ -2,7 +2,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { usePathname, useRouter } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
@@ -25,7 +25,7 @@ import {
 } from "../redux/features/transactionSlice";
 import Loader from "./Loader";
 
-export default function BusinessModal({ isOpen, setIsOpen }) {
+export const BusinessModal = ({ isOpen, setIsOpen }) => {
   const userId = useSelector((state) => state?.auth?.userData?.userId || null);
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -219,4 +219,6 @@ export default function BusinessModal({ isOpen, setIsOpen }) {
       </Transition>
     </>
   );
-}
+};
+
+export default memo(BusinessModal);

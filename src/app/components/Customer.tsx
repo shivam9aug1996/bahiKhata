@@ -236,7 +236,6 @@ const Customer = () => {
               getCustomerData={getCustomerData}
               page={page}
               setPage={setPage}
-              deleteCustomer={deleteCustomer}
               isGetCustomerSuccess={isGetCustomerSuccess}
               debouncedInputValue={debouncedInputValue}
               businessIdSelected={businessIdSelected}

@@ -2,7 +2,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useErrorNotification from "../custom-hooks/useErrorNotification";
 import useSuccessNotification from "../custom-hooks/useSuccessNotification";
@@ -22,13 +22,13 @@ import {
 
 import Loader from "./Loader";
 
-export default function PartyModal({
+const PartyModal = ({
   isOpen,
   setIsOpen,
   setSearchQuery,
   partyData,
   setPage,
-}) {
+}) => {
   const businessIdSelected = useSelector(
     (state) => state?.business?.businessIdSelected || ""
   );
@@ -328,4 +328,6 @@ export default function PartyModal({
       </Transition>
     </>
   );
-}
+};
+
+export default memo(PartyModal);

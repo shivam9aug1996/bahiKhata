@@ -31,3 +31,10 @@
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+@media only screen and (max-width: 420px) {
+  .footer-content {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import Loader from "./Loader";
 
 const BusinessModal = dynamic(() => import("./BusinessModal"), {
@@ -47,4 +47,4 @@ const NoBusinessExists = ({ type }) => {
   );
 };
 
-export default NoBusinessExists;
+export default memo(NoBusinessExists);

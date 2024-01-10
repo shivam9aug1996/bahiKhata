@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/20/solid";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedCustomer } from "../redux/features/businessSlice";
 import {
@@ -26,7 +26,6 @@ const CustomerData = ({
   getCustomerData,
   page,
   setPage,
-  deleteCustomer,
   isGetCustomerSuccess,
   debouncedInputValue,
   businessIdSelected,
@@ -193,4 +192,4 @@ const CustomerData = ({
   );
 };
 
-export default CustomerData;
+export default memo(CustomerData);

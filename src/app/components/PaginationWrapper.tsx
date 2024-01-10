@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Pagination } from "@nextui-org/react";
 const PaginationWrapper = ({
   totalPages = 1,
@@ -36,4 +36,4 @@ const PaginationWrapper = ({
   );
 };
 
-export default PaginationWrapper;
+export default memo(PaginationWrapper);

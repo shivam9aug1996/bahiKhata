@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, memo, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setSelectedCustomer } from "../redux/features/businessSlice";
 import Transaction from "./Transaction";
@@ -100,4 +100,4 @@ const TransactionListModal = ({
   );
 };
 
-export default TransactionListModal;
+export default memo(TransactionListModal);
