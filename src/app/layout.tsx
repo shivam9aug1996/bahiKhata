@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { Open_Sans } from "next/font/google";
+import { Lato } from "next/font/google";
 // import Providers from "./components/Providers";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -13,7 +13,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import Footer from "./components/Footer";
 
-const inter = Open_Sans({ subsets: ["latin"], weight: "500" });
+const inter = Lato({ subsets: ["latin"], weight: "400" });
 const Providers = dynamic(() => import("./components/Providers"));
 
 export const metadata: Metadata = {

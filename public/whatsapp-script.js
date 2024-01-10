@@ -1,6 +1,6 @@
 var config = {
   phone: "9634396572",
-  call: "Chat",
+  call: "Help!",
   position: "ww-right",
   size: "ww-normal",
   text: "",
