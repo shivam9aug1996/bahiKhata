@@ -81,6 +81,7 @@ const QRsocket3 = ({ isOpen, setIsOpen }) => {
     setIsOpen({ ...isOpen, status: false, value: null });
     dispatch(qrApi.util.resetApiState());
   }
+  console.log(error);
 
   return (
     <Transition appear show={isOpen.status} as={Fragment}>
