@@ -257,3 +257,7 @@ export const calculateSecondsElapsed = (initialTime) => {
 
   return timeElapsedInSeconds;
 };
+
+export const truncateString = (str = "", maxLength = 20) => {
+  return str?.length > maxLength ? str?.slice(0, maxLength - 3) + "..." : str;
+};

@@ -14,6 +14,7 @@ import {
   calculateDuration,
   formatNumberOrStringWithFallback,
   transactionType,
+  truncateString,
 } from "../utils/function";
 import Loader from "./Loader";
 import TransactionListModal from "./TransactionListModal";
@@ -83,7 +84,7 @@ const CustomerData = ({
             //scroll={false}
           >
             <div className="flex justify-between text-left">
-              <span>{item?.name}</span>
+              <span>{truncateString(item?.name, 30)}</span>
               <div className="flex flex-col items-end justify-between ">
                 <div
                   className={`ml-2 text-right ${
