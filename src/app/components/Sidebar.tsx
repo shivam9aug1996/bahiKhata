@@ -295,6 +295,7 @@ const Sidebar = ({
               ) : null}
               {getTransactionData?.data?.map((transaction, index) => (
                 <div
+                  style={{ opacity: isFetching ? 0.5 : 1 }}
                   key={transaction?._id}
                   className="p-4 border rounded-md flex  flex-col"
                 >

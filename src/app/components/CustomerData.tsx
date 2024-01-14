@@ -65,7 +65,11 @@ const CustomerData = ({
       ) : null}
 
       {getCustomerData?.data?.map((item, index) => (
-        <div className={`relative mb-4`} key={item?._id}>
+        <div
+          className={`relative mb-4`}
+          style={{ opacity: isFetching ? 0.5 : 1 }}
+          key={item?._id}
+        >
           <button
             key={index}
             style={{ height: 130 }}

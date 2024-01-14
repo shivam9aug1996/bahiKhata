@@ -275,7 +275,11 @@ const Supplier = () => {
               ) : null}
               <div style={{ marginTop: 25 }}>
                 {getSupplierData?.data?.map((item, index) => (
-                  <div className="relative mb-4" key={item?._id}>
+                  <div
+                    style={{ opacity: isFetching ? 0.5 : 1 }}
+                    className="relative mb-4"
+                    key={item?._id}
+                  >
                     <button
                       style={{ height: 130 }}
                       onClick={() => {
