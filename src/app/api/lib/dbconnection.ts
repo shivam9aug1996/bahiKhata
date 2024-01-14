@@ -16,9 +16,9 @@ export const connectDB = async (req) => {
     if (req) {
       isToken = await isTokenVerified(req);
 
-      if (!isToken) {
-        return;
-      }
+      // if (!isToken) {
+      //   return;
+      // }
     }
     console.log("123456789 connectDB starting");
 

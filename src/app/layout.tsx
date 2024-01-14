@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
 import { Lato } from "next/font/google";
 // import Providers from "./components/Providers";
@@ -17,8 +17,13 @@ const inter = Lato({ subsets: ["latin"], weight: "400" });
 const Providers = dynamic(() => import("./components/Providers"));
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: "BahiKhata",
   description: "Simplify Business Management",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
 };
 
 export default function RootLayout({

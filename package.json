@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@dotlottie/react-player": "^1.6.9",
+    "@ducanh2912/next-pwa": "^10.2.2",
     "@fingerprintjs/fingerprintjs": "^4.2.1",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
