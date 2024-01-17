@@ -50,7 +50,7 @@ const AuthPlaceholder = ({ type }) => {
         </form>
       </div>
 
-      <div style={{ height: 250 }}></div>
+      <div style={{ minHeight: 448 }}></div>
     </>
   );
 };

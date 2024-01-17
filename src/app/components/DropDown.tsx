@@ -6,7 +6,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, ViewfinderCircleIcon } from "@heroicons/react/24/outline";
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -397,30 +397,14 @@ const DropDown = ({
                       }`}
                     />
 
-                    <div
+                    <ViewfinderCircleIcon
                       onClick={() =>
                         setIsQrScannerOpen({ ...isQrScannerOpen, status: true })
                       }
-                      className="w-4 h-4 border-gray-600 border-1 relative hover:text-blue-500 cursor-pointer"
-                    >
-                      <div
-                        className="h-2 border-1 absolute border-white"
-                        style={{ left: -1, top: 3 }}
-                      ></div>
-                      <div
-                        className="h-2 border-1 absolute border-white"
-                        style={{ right: -1, top: 3 }}
-                      ></div>{" "}
-                      <div
-                        className="w-2 border-1 absolute  border-white"
-                        style={{ left: 3, top: -1 }}
-                      ></div>
-                      <div
-                        className="w-2 border-1 absolute  border-white"
-                        style={{ left: 3, bottom: -1 }}
-                      ></div>
-                    </div>
+                      className={`w-5 h-5 text-gray-500 hover:text-blue-500 cursor-pointer`}
+                    />
                   </div>
+
                   <Logout />
                 </div>
               </div>

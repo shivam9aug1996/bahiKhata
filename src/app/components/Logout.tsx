@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/button";
 
 import Loader from "./Loader";
 import ButtonLoader from "./ButtonLoader";
+import { Spinner } from "@nextui-org/react";
 
 const Logout = () => {
   const [
@@ -35,7 +36,7 @@ const Logout = () => {
         }}
         color="primary"
         isLoading={isLogoutLoading}
-        spinner={<ButtonLoader />}
+        spinner={<Spinner size="sm" color="white" />}
         variant={"flat"}
         size={"sm"}
       >

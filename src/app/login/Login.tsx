@@ -119,24 +119,26 @@ export default function Login() {
 
   return (
     <>
-      {isLoginLoading && <Loader />}
+      {/* {isLoginLoading && <Loader />}
       {authLoader ? <Loader /> : null}
-      {!pageLoaded ? <Loader /> : null}
-      <AuthForm
-        handleSubmit={handleSubmit}
-        formData={formData}
-        handleInputChange={handleInputChange}
-        type={"login"}
-        loading={isLoginLoading || authLoader}
-      />
-      <div className="flex justify-center flex-col items-center">
-        <p className="text-lg mb-3">or</p>
-        <Button
-          className="w-min"
-          onClick={() => setQrCodeModal({ status: true, value: null })}
-        >
-          Generate QR to Login
-        </Button>
+      {!pageLoaded ? <Loader /> : null} */}
+      <div className="flex flex-col justify-between">
+        <AuthForm
+          handleSubmit={handleSubmit}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          type={"login"}
+          loading={isLoginLoading || authLoader || !pageLoaded}
+        />
+        <div className="flex justify-center flex-col items-center">
+          <p className="text-lg mb-3">or</p>
+          <Button
+            className="w-min"
+            onClick={() => setQrCodeModal({ status: true, value: null })}
+          >
+            Generate QR to Login
+          </Button>
+        </div>
       </div>
       <Lottie />
 

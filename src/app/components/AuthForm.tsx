@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@nextui-org/button";
 import ButtonLoader from "./ButtonLoader";
+import { Spinner } from "@nextui-org/react";
 
 const AuthForm = ({
   handleSubmit,
@@ -59,7 +60,7 @@ const AuthForm = ({
             className="w-full bg-red-500"
             color="primary"
             isLoading={loading}
-            spinner={<ButtonLoader />}
+            spinner={<Spinner size="sm" color="white" />}
           >
             {type == "login" ? "Login" : "Signup"}
           </Button>

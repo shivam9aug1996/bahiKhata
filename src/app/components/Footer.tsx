@@ -6,8 +6,8 @@ const Footer = () => {
       <div className="mx-auto flex flex-col justify-center items-center px-4 footer-content">
         <p>
           &copy; {new Date().getFullYear()}{" "}
-          <span className="text-red-500 font-bold">Bahi</span>
-          <span className="text-black-500 font-bold">Khata</span> | Created by
+          <span className="text-black-500 font-bold">Bahi</span>
+          <span className="text-red-500 font-bold">Khata</span> | Created by
           Shivam Garg
         </p>
         <div>
