@@ -155,7 +155,10 @@ const QRscanner = ({ isOpen, setIsOpen, handleScan }) => {
                           if (scannedResult.status == false)
                             setScannedResult({ status: true, value: result });
                         }}
-                        onError={(error) => console.log(error?.message)}
+                        onError={(error) => {
+                          console.log("onError", error?.message);
+                          toast.error(error?.message || "Something went wrong");
+                        }}
                       />
                     )}
                   </div>
