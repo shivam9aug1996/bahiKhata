@@ -28,6 +28,8 @@ export async function POST(req, res) {
     const createdAt = new Date();
     try {
       await deleteCache(businessId);
+      await db.collection("customers").dropIndex("name_1_mobileNumber_1");
+
       const latestCreditTransaction = null;
       const latestDebitTransaction = null;
       const result = await db.collection("customers").insertOne({
@@ -92,6 +94,15 @@ export async function GET(req, res) {
     try {
       let customers;
       let totalCustomers;
+      const indexesExist = await db
+        .collection("customers")
+        .indexExists("name_1_mobileNumber_1");
+      if (!indexesExist) {
+        await db
+          .collection("customers")
+          .createIndex({ name: 1, mobileNumber: 1 });
+      }
+
       const business = await db
         .collection("businesses")
         .findOne({ _id: new ObjectId(businessId) });
@@ -114,6 +125,7 @@ export async function GET(req, res) {
               // Add more fields if needed for the search
             ],
           })
+          .hint({ name: 1, mobileNumber: 1 })
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(limit)
@@ -127,6 +139,7 @@ export async function GET(req, res) {
               { mobileNumber: { $regex: searchQuery, $options: "i" } },
             ],
           })
+          .hint({ name: 1, mobileNumber: 1 })
           .count();
       } else {
         customers = await db
@@ -175,6 +188,7 @@ export async function PUT(req, res) {
     }
 
     try {
+      await db.collection("customers").dropIndex("name_1_mobileNumber_1");
       const customer = await db.collection("customers").findOne({
         _id: new ObjectId(customerId),
         businessId,
@@ -255,6 +269,7 @@ export async function DELETE(req, res) {
     try {
       const db = await connectDB(req);
       const client = await getClient();
+      await db.collection("customers").dropIndex("name_1_mobileNumber_1");
       // Check if the customer exists
       const customer = await db.collection("customers").findOne({
         _id: new ObjectId(customerId),
