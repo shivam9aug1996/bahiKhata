@@ -31,6 +31,7 @@ import PartySkeleton from "./PartySkeleton";
 import {
   calculateDuration,
   formatNumberOrStringWithFallback,
+  isDemoUser,
   transactionType,
 } from "../utils/function";
 
@@ -78,6 +79,9 @@ const Supplier = () => {
   const containerRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState(false);
+  const mobileNumber = useSelector(
+    (state) => state?.auth?.userData?.mobileNumber || null
+  );
   const {
     isSuccess: isGetSupplierSuccess,
     isLoading: isGetSupplierLoading,
@@ -389,16 +393,18 @@ const Supplier = () => {
 
                       <TrashIcon
                         onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          setIsDeleteOpen({
-                            ...isDeleteOpen,
-                            status: true,
-                            value: {
-                              businessId: businessIdSelected,
-                              supplierId: item?._id,
-                            },
-                          });
+                          if (!isDemoUser(mobileNumber)) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setIsDeleteOpen({
+                              ...isDeleteOpen,
+                              status: true,
+                              value: {
+                                businessId: businessIdSelected,
+                                supplierId: item?._id,
+                              },
+                            });
+                          }
                         }}
                         className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                       />

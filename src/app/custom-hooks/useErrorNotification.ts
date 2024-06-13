@@ -10,7 +10,7 @@ const useErrorNotification = (errorObject, isError) => {
   error = error?.substring(0, 100);
   useEffect(() => {
     if (isError) {
-      toast.error(error);
+      toast.error(error, { id: `${new Date()}` });
       if (error == "Authentication failed") {
         setTimeout(() => {
           window.location.href =

@@ -1,5 +1,7 @@
+import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import React from "react";
+import DemoButton from "./DemoButton";
 import HeroLottie from "./HeroLottie";
 
 const Hero = () => {
@@ -18,13 +20,14 @@ const Hero = () => {
         Keep track of your trusted customers' credit and debit transactions.
       </p>
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col">
         <Link
           className="mt-8 mx-auto   font-bold text-white bg-red-500 hover:bg-red-600 rounded-full shadow-md transition-all duration-300 px-8 py-3 w-fit"
           href={"/signup"}
         >
           Get Started
         </Link>
+        <DemoButton />
       </div>
     </header>
   );

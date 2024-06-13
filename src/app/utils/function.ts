@@ -261,3 +261,15 @@ export const calculateSecondsElapsed = (initialTime) => {
 export const truncateString = (str = "", maxLength = 20) => {
   return str?.length > maxLength ? str?.slice(0, maxLength - 3) + "..." : str;
 };
+
+export const isDemoUser = (mobileNumber: string | number) => {
+  if (mobileNumber == "9634396572" || mobileNumber == 9634396572) {
+    demoError();
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const demoError = () =>
+  toast.error("Demo user cannot perform this action.");

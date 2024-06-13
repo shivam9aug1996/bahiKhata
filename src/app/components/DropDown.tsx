@@ -36,7 +36,9 @@ import {
   useGetSupplierListQuery,
 } from "../redux/features/supplierSlice";
 import {
+  demoError,
   formatNumberOrStringWithFallback,
+  isDemoUser,
   transactionType,
 } from "../utils/function";
 import Loader from "./Loader";
@@ -372,13 +374,15 @@ const DropDown = ({
 
                     <TrashIcon
                       onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setIsDeleteOpen({
-                          ...isDeleteOpen,
-                          status: true,
-                          value: businessIdSelected,
-                        });
+                        if (!isDemoUser(mobileNumber)) {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setIsDeleteOpen({
+                            ...isDeleteOpen,
+                            status: true,
+                            value: businessIdSelected,
+                          });
+                        }
                       }}
                       className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
                     />
