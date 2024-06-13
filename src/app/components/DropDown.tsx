@@ -245,9 +245,25 @@ const DropDown = ({
       );
     }
   };
-
+  console.log("98765rtyui", mobileNumber);
   return (
     <div>
+      {mobileNumber == 9634396572 || mobileNumber == "9634396572" ? (
+        <div style={{ backgroundColor: "#db6161", padding: 5 }}>
+          <p
+            style={{
+              fontSize: "small",
+              textAlign: "center",
+              color: "white",
+              fontWeight: "bold",
+              height: 20,
+            }}
+          >
+            Demo Account
+          </p>
+        </div>
+      ) : null}
+
       {isDeleteBusinessLoading ? <Loader /> : null}
       {isModalOpen?.status && (
         <BusinessModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
