@@ -228,7 +228,7 @@ const CustomerData = ({
                 const message =
                   balance < 0
                     ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}://${window.location.host}/${url}`
-                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}://${window.location.host}/${url}`;
+                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein:\n\n ${window.location.protocol}://${window.location.host}/${url}`;
                 // const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
                 //   message
                 // )}`;
