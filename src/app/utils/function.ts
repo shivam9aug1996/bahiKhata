@@ -166,12 +166,16 @@ export const transactionType = {
     ["Adhik Bhugtan Customer Se"]: "Business will pay",
     ["Last Payment Received"]: "PR",
     ["Last Goods Sold"]: "GS",
+    ["Dukandaar Se Maal Khareeda"]: "Goods Purchased",
+    ["Dukandaar Ko Payment Ki"]: "Payment Made",
   },
   supplier: {
     ["Supplier Ko Payment Ki"]: "Payment Made",
     ["Supplier Se Maal Khareeda"]: "Goods Purchased",
     ["Bakaya Rashi Supplier Ko"]: "Business will Pay",
     ["Adhik Bhugtan Supplier Ko"]: "Supplier will pay",
+    ["Dukandaar Ko Maal Becha"]: "Goods Sold",
+    ["Dukandaar Se Bhugtan Prapt"]: "Payment Received",
   },
 };
 

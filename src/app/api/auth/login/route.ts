@@ -6,6 +6,13 @@ import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
 import { secretKey } from "../../lib/keys";
 
+const generateToken = (mobileNumber) => {
+  const payload = { mobileNumber };
+  const secret = secretKey;
+  const options = { expiresIn: "1h" };
+  return jwt.sign(payload, secret, options);
+};
+
 export async function POST(req, res) {
   try {
     if (req.method !== "POST") {

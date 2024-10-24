@@ -9,7 +9,10 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import React, { memo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedCustomer } from "../redux/features/businessSlice";
+import {
+  setSelectedCustomer,
+  useGetBusinessListQuery,
+} from "../redux/features/businessSlice";
 import {
   calculateDuration,
   formatNumberOrStringWithFallback,
@@ -20,6 +23,11 @@ import {
 import Loader from "./Loader";
 import TransactionListModal from "./TransactionListModal";
 import PaginationWrapper from "./PaginationWrapper";
+import {
+  ChatBubbleBottomCenterIcon,
+  LinkIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
 
 const NoParty = dynamic(() => import("./NoParty"));
 
@@ -46,6 +54,19 @@ const CustomerData = ({
   );
   const [isTransactionsOpen, setIsTransactionsOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(false);
+  const userId = useSelector((state) => state?.auth?.userData?.userId || null);
+
+  const {
+    isSuccess: isGetBusinessSuccess,
+    isLoading: isGetBusinessLoading,
+    isError: isGetBusinessError,
+    error: getBusinessError,
+    data: getBusinessData,
+  } = useGetBusinessListQuery({ userId: userId }, { skip: !userId });
+  let data = getBusinessData?.data?.find((item, index) => {
+    return item?.primaryKey == true;
+  });
+  console.log("jhgfcvbnm,", customerSelected);
 
   return (
     <div
@@ -153,6 +174,76 @@ const CustomerData = ({
             </div>
           </button>
           <div className="flex flex-row absolute bottom-0 p-4 right-0">
+            <ChatBubbleBottomCenterIcon
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log("iuytfdghjk", item);
+                const phoneNumber = item?.mobileNumber; // The recipient's phone number
+                const balance = item?.balance;
+                const businessName = data?.name;
+                let url = `mykhata?businessId=${businessIdSelected}&partyId=${
+                  item?._id
+                }&partyType=${
+                  pathname.includes("customers") ? "customer" : "supplier"
+                }`;
+                const fBal = formatNumberOrStringWithFallback(
+                  Math.abs(balance)
+                );
+                const message =
+                  balance < 0
+                    ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}://${window.location.host}/${url}`
+                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}://${window.location.host}/${url}`;
+                const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
+                  message
+                )}`;
+                //                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                //   message
+                // )}`;
+
+                console.log("jhgfdsdfgh", message);
+
+                // // Redirect to the SMS app
+                window.location.href = smsUrl;
+              }}
+              className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+            />
+
+            <ShareIcon
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log("iuytfdghjk", item);
+                const phoneNumber = item?.mobileNumber; // The recipient's phone number
+                const balance = item?.balance;
+                const businessName = data?.name;
+                let url = `mykhata?businessId=${businessIdSelected}&partyId=${
+                  item?._id
+                }&partyType=${
+                  pathname.includes("customers") ? "customer" : "supplier"
+                }`;
+                const fBal = formatNumberOrStringWithFallback(
+                  Math.abs(balance)
+                );
+                const message =
+                  balance < 0
+                    ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}://${window.location.host}/${url}`
+                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}://${window.location.host}/${url}`;
+                // const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
+                //   message
+                // )}`;
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                  message
+                )}`;
+
+                console.log("jhgfdsdfgh", message);
+
+                // // Redirect to the SMS app
+                window.location.href = whatsappUrl;
+              }}
+              className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+            />
+
             <PencilSquareIcon
               onClick={(e) => {
                 e.stopPropagation();

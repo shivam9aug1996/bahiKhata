@@ -17,7 +17,13 @@ export async function middleware(request: NextRequest) {
         new URL(`/login?message=${encodeURIComponent(message)}`, request.url)
       );
     }
-    if (currentPath.startsWith("/api") && !currentPath.includes("/api/auth")) {
+    //     businessId: 6623cf25f271086b5380b03e
+    // partyId: 671472bfdc2b8d12b2e09d62
+    if (
+      currentPath.startsWith("/api") &&
+      !currentPath.includes("/api/auth") &&
+      !currentPath.includes("/api/transactionList/public")
+    ) {
       return new NextResponse(
         JSON.stringify({ success: false, message: "Authentication failed" }),
         { status: 401 }

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import Dashboard from "../components/Dashboard";
+import SpeechToText from "../components/Speech";
 import MainTab from "../components/Tab";
 //const MainTab = dynamic(() => import("../components/Tab"));
 // import DashboardFallback from "../components/DashboardFallback";
@@ -22,6 +23,7 @@ export default function DashboardLayout({
     <>
       <Dashboard />
       <MainTab />
+      {/* <SpeechToText /> */}
       {children}
     </>
   );

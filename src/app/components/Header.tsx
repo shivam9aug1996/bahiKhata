@@ -11,23 +11,27 @@ const Header = () => {
   if (pathname.includes("dashboard")) {
     return null;
   }
+  const isMyKhataView = pathname.includes("mykhata");
   return (
     <div
       className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-center items-start sticky top-0"
-      style={{ zIndex: 1 }}
+      style={{ zIndex: isMyKhataView ? 2 : 1 }}
     >
       <div className="flex flex-row items-center justify-between w-full">
         <Link
           className="text-3xl md:text-4xl lg:text-5xl font-bold text-center cursor-pointer"
-          href="/"
+          style={{ pointerEvents: isMyKhataView ? "none" : "auto" }}
+          href={"/"}
         >
           <Logo />
         </Link>
-        <div className="flex items-center space-x-4">
-          <HeaderNavLink title={"Home"} path={"/"} />
-          <HeaderNavLink title={"Login"} path={"/login"} />
-          <HeaderNavLink title={"Signup"} path={"/signup"} />
-        </div>
+        {isMyKhataView ? null : (
+          <div className="flex items-center space-x-4">
+            <HeaderNavLink title={"Home"} path={"/"} />
+            <HeaderNavLink title={"Login"} path={"/login"} />
+            <HeaderNavLink title={"Signup"} path={"/signup"} />
+          </div>
+        )}
       </div>
     </div>
   );
