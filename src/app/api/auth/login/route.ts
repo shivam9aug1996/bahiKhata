@@ -55,7 +55,7 @@ export async function POST(req, res) {
           let expirationDate = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 
           cookies().set("bahi_khata_user_token", token, {
-            expires: expirationDate,
+            // expires: expirationDate,
             httpOnly: true,
             secure: true,
           });
@@ -63,7 +63,7 @@ export async function POST(req, res) {
             "bahi_khata_user_data",
             JSON.stringify({ mobileNumber, userId: user?._id }),
             {
-              expires: expirationDate,
+              // expires: expirationDate,
               httpOnly: true,
               secure: true,
             }
@@ -122,7 +122,7 @@ export async function POST(req, res) {
       let expirationDate = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 
       cookies().set("bahi_khata_user_token", token, {
-        expires: expirationDate,
+        // expires: expirationDate,
         httpOnly: true,
         secure: true,
       });
@@ -130,7 +130,7 @@ export async function POST(req, res) {
         "bahi_khata_user_data",
         JSON.stringify({ mobileNumber, userId: user?._id }),
         {
-          expires: expirationDate,
+          //  expires: expirationDate,
           httpOnly: true,
           secure: true,
         }
