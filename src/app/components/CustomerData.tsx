@@ -214,7 +214,7 @@ const CustomerData = ({
                 e.stopPropagation();
                 e.preventDefault();
                 console.log("iuytfdghjk", item);
-                const phoneNumber = item?.mobileNumber; // The recipient's phone number
+                const phoneNumber = `91${item?.mobileNumber}`; // The recipient's phone number
                 const balance = item?.balance;
                 const businessName = data?.name;
                 let url = `mykhata?businessId=${businessIdSelected}&partyId=${
@@ -228,7 +228,7 @@ const CustomerData = ({
                 const message =
                   balance < 0
                     ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`
-                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein:\n\n ${window.location.protocol}//${window.location.host}/${url}`;
+                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`;
                 // const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
                 //   message
                 // )}`;
