@@ -267,7 +267,7 @@ export const truncateString = (str = "", maxLength = 20) => {
 };
 
 export const isDemoUser = (mobileNumber: string | number) => {
-  if (mobileNumber == "9634396572" || mobileNumber == 9634396572) {
+  if (mobileNumber == "999999999" || mobileNumber == 999999999) {
     demoError();
     return true;
   } else {
