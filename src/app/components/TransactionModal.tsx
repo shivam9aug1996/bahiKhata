@@ -190,7 +190,7 @@ export default function TransactionModal({
     console.log("juytfdcvji8765rfgh", selectedImage);
     const options = {
       maxSizeMB: 0.5,
-      maxWidthOrHeight: 500,
+      //maxWidthOrHeight: 500,
       useWebWorker: true,
     };
     console.log(

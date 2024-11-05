@@ -25,9 +25,12 @@ import TransactionListModal from "./TransactionListModal";
 import PaginationWrapper from "./PaginationWrapper";
 import {
   ChatBubbleBottomCenterIcon,
+  ClipboardDocumentIcon,
   LinkIcon,
   ShareIcon,
 } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
+import Link from "next/link";
 
 const NoParty = dynamic(() => import("./NoParty"));
 
@@ -67,6 +70,35 @@ const CustomerData = ({
     return item?.primaryKey == true;
   });
   console.log("jhgfcvbnm,", customerSelected);
+
+  const getWhatsappUrl = (item, data) => {
+    // e.stopPropagation();
+    // e.preventDefault();
+    console.log("iuytfdghjk", item);
+    const phoneNumber = `91${item?.mobileNumber}`; // The recipient's phone number
+    const balance = item?.balance;
+    const businessName = data?.name;
+    let url = `mykhata?businessId=${businessIdSelected}&partyId=${
+      item?._id
+    }&partyType=${pathname.includes("customers") ? "customer" : "supplier"}`;
+    const fBal = formatNumberOrStringWithFallback(Math.abs(balance));
+    const message =
+      balance < 0
+        ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`
+        : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`;
+    // const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
+    //   message
+    // )}`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    console.log("jhgfdsdfgh", message);
+    return whatsappUrl;
+
+    // // Redirect to the SMS app
+    // window.location.href = whatsappUrl;
+  };
 
   return (
     <div
@@ -174,6 +206,19 @@ const CustomerData = ({
             </div>
           </button>
           <div className="flex flex-row absolute bottom-0 p-4 right-0">
+            <ClipboardDocumentIcon
+              className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+              onClick={() => {
+                let url = `mykhata?businessId=${businessIdSelected}&partyId=${
+                  item?._id
+                }&partyType=${
+                  pathname.includes("customers") ? "customer" : "supplier"
+                }`;
+                const fUrl = `${window.location.protocol}//${window.location.host}/${url}`;
+                navigator.clipboard.writeText(fUrl);
+                toast.success("Copied");
+              }}
+            />
             <ChatBubbleBottomCenterIcon
               onClick={(e) => {
                 e.stopPropagation();
@@ -208,8 +253,24 @@ const CustomerData = ({
               }}
               className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
             />
+            {/* <a aria-label="Chat on WhatsApp" href={getWhatsappUrl(item, data)}> */}
+            <Link
+              className="w-5 h-5 text-gray-300 hover:text-cyan-500 cursor-pointer mr-2"
+              href={getWhatsappUrl(item, data)}
+              target={"_blank"}
+            >
+              <img
+                alt=""
+                src="https://cdn.iconscout.com/icon/free/png-256/free-whatsapp-logo-icon-download-in-svg-png-gif-file-formats--social-media-chat-message-pack-logos-icons-1466161.png?f=webp&w=256"
+              />
+            </Link>
 
-            <ShareIcon
+            {/* <img
+              style={{ width: 24, height: 24, objectFit: "fill" }}
+              src="https://faq.whatsapp.com/images/presma/whatsapp/whatsapp_logo_green.png"
+            />{" "} */}
+            {/* </a> */}
+            {/* <ShareIcon
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -242,8 +303,7 @@ const CustomerData = ({
                 window.location.href = whatsappUrl;
               }}
               className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
-            />
-
+            /> */}
             <PencilSquareIcon
               onClick={(e) => {
                 e.stopPropagation();
@@ -257,7 +317,6 @@ const CustomerData = ({
               }}
               className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
             ></PencilSquareIcon>
-
             <TrashIcon
               onClick={(e) => {
                 if (!isDemoUser(mobileNumber)) {
