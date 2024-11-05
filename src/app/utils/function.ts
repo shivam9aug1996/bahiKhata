@@ -197,9 +197,10 @@ export const transactionType = {
 export const calculateDuration = (dateStr) => {
   // Parse the date string into a Date object
   const inputDate = new Date(dateStr);
-
+  inputDate.setHours(0, 0, 0, 0);
   // Get the current date
   const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
 
   // Calculate the difference in milliseconds
   const differenceInMilliseconds = currentDate.getTime() - inputDate.getTime();
