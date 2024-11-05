@@ -84,8 +84,12 @@ const CustomerData = ({
     const fBal = formatNumberOrStringWithFallback(Math.abs(balance));
     const message =
       balance < 0
-        ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`
-        : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`;
+        ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${getUrl(
+            item
+          )}`
+        : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${getUrl(
+            item
+          )}`;
     // const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
     //   message
     // )}`;
@@ -98,6 +102,14 @@ const CustomerData = ({
 
     // // Redirect to the SMS app
     // window.location.href = whatsappUrl;
+  };
+
+  const getUrl = (item) => {
+    let url = `mykhata?businessId=${businessIdSelected}&partyId=${
+      item?._id
+    }&partyType=${pathname.includes("customers") ? "customer" : "supplier"}`;
+    const fUrl = `${window.location.protocol}//${window.location.host}/${url}`;
+    return fUrl;
   };
 
   return (
@@ -206,19 +218,17 @@ const CustomerData = ({
             </div>
           </button>
           <div className="flex flex-row absolute bottom-0 p-4 right-0">
-            <ClipboardDocumentIcon
-              className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2"
+            <Link
+              href={getUrl(item)}
+              target={"_blank"}
               onClick={() => {
-                let url = `mykhata?businessId=${businessIdSelected}&partyId=${
-                  item?._id
-                }&partyType=${
-                  pathname.includes("customers") ? "customer" : "supplier"
-                }`;
-                const fUrl = `${window.location.protocol}//${window.location.host}/${url}`;
-                navigator.clipboard.writeText(fUrl);
+                navigator.clipboard.writeText(getUrl(item));
                 toast.success("Copied");
               }}
-            />
+            >
+              <ClipboardDocumentIcon className="w-5 h-5 text-gray-500 hover:text-cyan-500 cursor-pointer mr-2" />
+            </Link>
+
             <ChatBubbleBottomCenterIcon
               onClick={(e) => {
                 e.stopPropagation();
@@ -237,8 +247,12 @@ const CustomerData = ({
                 );
                 const message =
                   balance < 0
-                    ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`
-                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${window.location.protocol}//${window.location.host}/${url}`;
+                    ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${getUrl(
+                        item
+                      )}`
+                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${getUrl(
+                        item
+                      )}`;
                 const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
                   message
                 )}`;
