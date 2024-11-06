@@ -15,7 +15,7 @@ const Header = () => {
   return (
     <div
       className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-center items-start sticky top-0"
-      style={{ zIndex: isMyKhataView ? 2 : 1 }}
+      style={{ zIndex: isMyKhataView ? 11 : 1 }}
     >
       <div className="flex flex-row items-center justify-between w-full">
         <Link
