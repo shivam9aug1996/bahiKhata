@@ -22,7 +22,7 @@ export async function generateMetadata(
     //let h = headersList.get("next-url"); // to get url
     const fUrl = `${protocol}://${host}/api/transactionList/public/getMeta?businessId=${businessId}&partyId=${partyId}&partyType=${partyType}`;
     console.log(fUrl);
-    let data = await fetch(fUrl, { cache: "force-cache" });
+    let data = await fetch(fUrl, { cache: "no-cache" });
     data = await data?.json();
     console.log(data);
     const bName = data?.data?.businessName;
@@ -31,6 +31,10 @@ export async function generateMetadata(
       return {
         title: bName,
         description: pName,
+        openGraph: {
+          title: bName,
+          description: pName,
+        },
       };
     } else {
       return {
