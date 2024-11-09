@@ -84,16 +84,16 @@ const CustomerData = ({
     const fBal = formatNumberOrStringWithFallback(Math.abs(balance));
     const message =
       balance < 0
-        ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${getUrl(
-            item
-          )}`
-        : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${getUrl(
-            item
-          )}`;
+        ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein:
+        ${getUrl(item)}`
+        : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein:
+        ${getUrl(item)}`;
     // const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
     //   message
     // )}`;
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
 
     console.log("jhgfdsdfgh", message);
     return whatsappUrl;
@@ -245,13 +245,13 @@ const CustomerData = ({
                 );
                 const message =
                   balance < 0
-                    ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein: ${getUrl(
-                        item
-                      )}`
-                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein: ${getUrl(
-                        item
-                      )}`;
-                const smsUrl = `sms:${phoneNumber}?body=${message}`;
+                    ? `Dear Sir/Madam, Aapka ₹ ${fBal} ka payment ${businessName} (+91-9634396572) par pending hai. Details dekhne ke liye yahan click karein:
+                    ${getUrl(item)}`
+                    : `Dear Sir/Madam, Humne aapke taraf se ₹ ${fBal} ka extra payment ${businessName} (+91-9634396572) par receive kiya hai. Details dekhne ke liye yahan click karein:
+                    ${getUrl(item)}`;
+                const smsUrl = `sms:${phoneNumber}?body=${encodeURIComponent(
+                  message
+                )}`;
                 //                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
                 //   message
                 // )}`;
