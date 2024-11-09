@@ -22,7 +22,7 @@ export async function generateMetadata(
     //let h = headersList.get("next-url"); // to get url
     const fUrl = `${protocol}://${host}/api/transactionList/public/getMeta?businessId=${businessId}&partyId=${partyId}&partyType=${partyType}`;
     console.log(fUrl);
-    let data = await fetch(fUrl, { cache: "no-cache" });
+    let data = await fetch(fUrl, { cache: "force-cache" });
     data = await data?.json();
     console.log(data);
     const bName = data?.data?.businessName;
