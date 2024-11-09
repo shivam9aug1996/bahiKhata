@@ -7,6 +7,7 @@ import TransactionSkeleton from "./TransactionSkeleton";
 import {
   countNonEmptyKeys,
   formatNumberOrStringWithFallback,
+  isValidData,
   transactionType,
 } from "../utils/function";
 
