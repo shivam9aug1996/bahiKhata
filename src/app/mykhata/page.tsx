@@ -1,57 +1,55 @@
-// "use client";
-// import React, { useState } from "react";
-// import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-// import { Button } from "@nextui-org/react";
-// import { useRouter } from "next/navigation";
-
-// const page = () => {
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const router = useRouter();
-
-//   return (
-//     <div className="flex" style={{ height: "100vh" }}>
-//       <div className="flex flex-row h-10 relative" style={{ maxWidth: 250 }}>
-//         <input
-//           type="number"
-//           maxLength={10}
-//           placeholder="Mobile number.."
-//           onChange={(e) => {
-//             setSearchQuery(e.target.value);
-//           }}
-//           value={searchQuery}
-//           className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 w-full"
-//         />
-//         <span className="inset-y-0 right-0 flex items-center pr-3 absolute">
-//           <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
-//         </span>
-//       </div>
-//       <Button
-//         onClick={() => {
-//           router.push(`/mykhata/${searchQuery}`);
-//         }}
-//         type="button"
-//         className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-//       >
-//         {"Submit"}
-//       </Button>
-//     </div>
-//   );
-// };
-
-// export default page;
-
-"use client";
+import { Metadata, ResolvingMetadata } from "next";
+import { headers } from "next/headers";
 import React from "react";
-import { useSearchParams } from "next/navigation";
-import Transaction from "../components/Transaction";
 import PublicTransaction from "../components/PublicTransaction";
 
-const page = () => {
-  const searchParams = useSearchParams();
-  const businessId = searchParams.get("businessId");
+export async function generateMetadata(
+  { params, searchParams }: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  try {
+    const sParams = await searchParams;
+    const businessId = sParams?.businessId;
+    const partyId = sParams?.partyId;
+    const partyType = sParams?.partyType;
+    const headersList = await headers();
+    const previousImages = (await parent).icons;
+    console.log("ytrdfghjkl", previousImages);
+    //console.log("uyfghjkl", headersList.get("x-forwarded-proto"));
+    const host = headersList.get("host"); // to get domain
+    const protocol = headersList.get("x-forwarded-proto");
+    //let h = headersList.get("next-url"); // to get url
+    const fUrl = `${protocol}://${host}/api/transactionList/public/getMeta?businessId=${businessId}&partyId=${partyId}&partyType=${partyType}`;
+    console.log(fUrl);
+    let data = await fetch(fUrl, { cache: "force-cache" });
+    data = await data?.json();
+    console.log(data);
+    const bName = data?.data?.businessName;
+    const pName = data?.data?.partyName;
+    if (bName && pName) {
+      return {
+        title: bName,
+        description: pName,
+      };
+    } else {
+      return {
+        title: "BahiKhata",
+        description: "Simplify Business Management",
+      };
+    }
+  } catch (error) {
+    return {
+      title: "BahiKhata",
+      description: "Simplify Business Management",
+    };
+  }
+}
 
-  const partyId = searchParams.get("partyId");
-  const partyType = searchParams.get("partyType");
+const page = ({ params, searchParams }) => {
+  const businessId = searchParams?.businessId;
+  const partyId = searchParams?.partyId;
+  const partyType = searchParams?.partyType;
 
   return (
     <PublicTransaction

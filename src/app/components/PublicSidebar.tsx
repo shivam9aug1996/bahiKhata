@@ -1,49 +1,22 @@
-import {
-  AdjustmentsHorizontalIcon,
-  ArrowDownTrayIcon,
-  PencilSquareIcon,
-  PlusCircleIcon,
-  TrashIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
+import { AdjustmentsHorizontalIcon } from "@heroicons/react/20/solid";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
 import TransactionSkeleton from "./TransactionSkeleton";
-import Link from "next/link";
 import {
   countNonEmptyKeys,
   formatNumberOrStringWithFallback,
-  isDemoUser,
-  isValidData,
   transactionType,
 } from "../utils/function";
 
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getSelectedCustomer,
-  setSelectedCustomer,
-} from "../redux/features/businessSlice";
+import { useDispatch } from "react-redux";
+import { getSelectedCustomer } from "../redux/features/businessSlice";
 import Skeleton from "react-loading-skeleton";
 import { useRef } from "react";
-import generatePDF, { Margin } from "react-to-pdf";
-import {
-  transactionApi,
-  useLazyGetAllPublicTransactionQuery,
-  useLazyGetAllTransactionQuery,
-} from "../redux/features/transactionSlice";
-// import TransactionReport from "./TransactionReport";
-import toast from "react-hot-toast";
-import { Transition } from "@headlessui/react";
+import { useLazyGetAllPublicTransactionQuery } from "../redux/features/transactionSlice";
 import PaginationWrapper from "./PaginationWrapper";
 import { Image } from "@nextui-org/react";
-
-// const Pagination = dynamic(() => import("./Pagination"), {
-//   loading: () => (
-//     <Skeleton duration={0.6} height={42} style={{ marginTop: 16 }} />
-//   ),
-// });
 const TransactionModal = dynamic(() => import("./TransactionModal"), {
   loading: () => (
     <Loader wrapperStyle={{ alignItems: "flex-start", marginTop: "20rem" }} />
@@ -52,7 +25,6 @@ const TransactionModal = dynamic(() => import("./TransactionModal"), {
 const NoTransaction = dynamic(() => import("./NoTransaction"), {
   loading: () => <TransactionSkeleton />,
 });
-const TransactionReport = dynamic(() => import("./TransactionReport"));
 const PublicFilterTransactionModal = dynamic(
   () => import("./PublicFilterTransactionModal"),
   {
@@ -64,12 +36,10 @@ const PublicFilterTransactionModal = dynamic(
 const PublicSidebar = ({
   showSidebar,
   toggleSidebar,
-  isDeleteTransactionLoading,
   partyId,
   isOpen,
   setIsOpen,
   isGetTransactionLoading,
-  deleteTransaction,
   getTransactionData,
   businessIdSelected,
   isGetTransactionError,
@@ -79,10 +49,7 @@ const PublicSidebar = ({
   isFetching,
   isFilterOpen,
   setIsFilterOpen,
-  setIsDeleteOpen,
-  isDeleteOpen,
   partyType,
-  setIsTransactionsOpen,
   partyData,
 }) => {
   const customerSelected = partyData;
@@ -155,27 +122,9 @@ const PublicSidebar = ({
   };
 
   return (
-    <div
-      id={"sidebar"}
-      ref={containerRef}
-      // className={`shadow-md border bg-gray-100 fixed inset-y-0 right-0 z-500 transition-transform duration-300 ease-in-out transform overflow-auto hover:overflow-scroll max-h-full  ${
-      //   showSidebar ? "translate-x-0" : "translate-x-full"
-      // }`}
-    >
-      {isPdfDownloading && (
-        <TransactionReport
-          isPdfDownloading={isPdfDownloading}
-          filterData={isFilterOpen?.value}
-          targetRef={targetRef}
-          getAllTransactionData={getAllTransactionData}
-          customerSelected={customerSelected}
-          partyType={partyType}
-        />
-      )}
-
+    <div id={"sidebar"} ref={containerRef}>
       {/* <div>{JSON.stringify(isFilterOpen)}</div> */}
       <div className="mb-10">
-        {isDeleteTransactionLoading ? <Loader /> : null}
         {isOpen?.status && (
           <TransactionModal
             partyId={partyId}
@@ -193,23 +142,6 @@ const PublicSidebar = ({
             partyType={partyType}
           />
         )}
-
-        {/* <button
-            className="inline-block"
-            // href={
-            //   pathname.includes("/dashboard/customers")
-            //     ? "/dashboard/customers"
-            //     : "/dashboard/suppliers"
-            // }
-            onClick={() => {
-              dispatch(setSelectedCustomer(""));
-              // router.back();
-              setIsTransactionsOpen(false);
-            }}
-            // scroll={false}
-          >
-            <XMarkIcon className="w-7 h-7 text-gray-500 hover:text-red-500 cursor-pointer ml-4 mt-2" />
-          </button> */}
 
         <div className="flex-1 p-6 pb-2 pt-2">
           {customerSelected?.name &&
@@ -286,54 +218,6 @@ const PublicSidebar = ({
                 </span>
               )}
             </button>
-
-            {/* <ArrowDownTrayIcon
-              className="w-5 h-5 cursor-pointer"
-              onClick={() => {
-                if (!isPdfDownloading) {
-                  setIsPdfDownloading(true);
-                  toast.promise(
-                    getAllTransactions({
-                      businessId: businessIdSelected,
-                      partyId: partyId,
-                      ...isFilterOpen.value,
-                    })
-                      .unwrap()
-                      .then(() => {})
-                      .then(() => {
-                        setTimeout(() => {
-                          toast.promise(
-                            generatePDF(targetRef, {
-                              filename: "page.pdf",
-                              page: { margin: Margin.MEDIUM },
-                            })
-                              ?.then(() => {
-                                setIsPdfDownloading(false);
-                              })
-                              ?.catch(() => {
-                                setIsPdfDownloading(false);
-                              }),
-                            {
-                              loading: "Downloading",
-                              success: "Downloaded successfully",
-                              error: "Error when downloading",
-                            }
-                          );
-                        }, 500);
-                      })
-                      .catch((error) => {
-                        setIsPdfDownloading(false);
-                        console.log("Error:", error);
-                      }),
-                    {
-                      loading: "Data preparing",
-                      success: "Data prepared",
-                      error: "Error when preparing data",
-                    }
-                  );
-                }
-              }}
-            /> */}
           </div>
           {!businessIdSelected || !partyId ? <TransactionSkeleton /> : null}
           {isGetTransactionLoading ? (
@@ -401,38 +285,6 @@ const PublicSidebar = ({
                             }`}
                       </p>
                     </div>
-                    {/* <div className="flex flex-row">
-                      <PencilSquareIcon
-                        onClick={() => {
-                          setIsOpen({
-                            status: true,
-                            type: "edit",
-                            value: transaction,
-                          });
-                        }}
-                        className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer mr-2"
-                      ></PencilSquareIcon>
-
-                      <TrashIcon
-                        onClick={() => {
-                          if (!isDemoUser(mobileNumber)) {
-                            setIsDeleteOpen({
-                              ...isDeleteOpen,
-                              status: true,
-                              value: {
-                                businessId: businessIdSelected,
-                                partyId,
-                                transactionId: transaction?._id,
-                                partyType: partyType=="customer"
-                                  ? "customer"
-                                  : "supplier",
-                              },
-                            });
-                          }
-                        }}
-                        className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-                      />
-                    </div> */}
                   </div>
 
                   <p>
