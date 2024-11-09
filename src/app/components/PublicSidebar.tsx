@@ -122,7 +122,7 @@ const PublicSidebar = ({
   };
 
   return (
-    <div id={"sidebar"} ref={containerRef}>
+    <div id={"sidebar"} ref={containerRef} style={{ minHeight: "100vh" }}>
       {/* <div>{JSON.stringify(isFilterOpen)}</div> */}
       <div className="mb-10">
         {isOpen?.status && (
