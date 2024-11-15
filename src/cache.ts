@@ -39,7 +39,7 @@ async function setCache(cacheId, data) {
       cacheId,
       JSON.stringify({ data, createdAt }),
       "EX",
-      300
+      3600
     );
     return {
       message: "Cache created successfully",
