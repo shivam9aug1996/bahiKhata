@@ -94,7 +94,6 @@ export async function GET(req, res) {
     // Retrieve all businesses
 
     try {
-      const db = await connectDB(req);
       let cacheData = await getCache(userId);
       if (cacheData) {
         return NextResponse.json(
@@ -105,6 +104,8 @@ export async function GET(req, res) {
           { status: 200 }
         );
       }
+      const db = await connectDB(req);
+
       const businesses = await db
         .collection("businesses")
         .find({
