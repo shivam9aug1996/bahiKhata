@@ -4,6 +4,9 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 export async function GET(req, res) {
   if (req.method === "GET") {
     const businessId = new URL(req.url)?.searchParams?.get("businessId");
@@ -36,16 +39,16 @@ export async function GET(req, res) {
           { status: 200 }
         );
       }
-      let cacheData = await getCache(businessId);
-      if (cacheData) {
-        return NextResponse.json(
-          {
-            ...cacheData?.data?.data,
-            cache: true,
-          },
-          { status: 200 }
-        );
-      }
+      // let cacheData = await getCache(businessId);
+      // if (cacheData) {
+      //   return NextResponse.json(
+      //     {
+      //       ...cacheData?.data?.data,
+      //       cache: true,
+      //     },
+      //     { status: 200 }
+      //   );
+      // }
 
       const totalCustomers = await db
         .collection("customers")
@@ -87,7 +90,7 @@ export async function GET(req, res) {
       //   .collection("cache")
       //   .insertOne({ cacheId: businessId, data: aggregatedData });
 
-      await setCache(businessId, aggregatedData);
+      //await setCache(businessId, aggregatedData);
 
       return NextResponse.json(aggregatedData, { status: 200 });
       //}

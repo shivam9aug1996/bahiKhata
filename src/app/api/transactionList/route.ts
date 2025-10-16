@@ -11,6 +11,9 @@ import {
 import { deleteImage, uploadImage } from "../lib/global";
 import { deleteMultipleImages, uploadMultipleImages } from "../lib/globalFun";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business

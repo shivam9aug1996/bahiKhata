@@ -12,6 +12,9 @@ import {
 } from "../lib/dbconnection";
 import { deleteImage } from "../lib/global";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business

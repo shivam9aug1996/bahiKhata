@@ -12,6 +12,9 @@ import {
 } from "../lib/dbconnection";
 import { deleteImage } from "../lib/global";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 export async function POST(req, res) {
   if (req.method === "POST") {
     // Create a new business
@@ -27,7 +30,7 @@ export async function POST(req, res) {
     let balance = 0;
     const createdAt = new Date();
     try {
-      await deleteCache(businessId);
+      //await deleteCache(businessId);
       // await db
       //   .collection("customers")
       //   .dropIndex("businessId_1_name_1_mobileNumber_1_createdAt_-1");
@@ -294,7 +297,7 @@ export async function DELETE(req, res) {
           { status: 404 }
         );
       }
-      await deleteCache(businessId);
+      //await deleteCache(businessId);
 
       // Delete customer and their corresponding transactions
       session = await startTransaction(client);

@@ -5,6 +5,9 @@ import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
 import { secretKey } from "../../lib/keys";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 const saltRounds = 10;
 
 export async function POST(req, res) {

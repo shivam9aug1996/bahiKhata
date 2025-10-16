@@ -3,6 +3,9 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 export async function GET(req, res) {
   if (req.method === "GET") {
     // Create a new business
@@ -58,7 +61,7 @@ export async function GET(req, res) {
       //     );
       //   }
       // }
-      await deleteCache(businessId);
+      //await deleteCache(businessId);
       // for (let k = 1; k <= 10000; k++) {
       //   const result = await db.collection("customers").insertOne({
       //     businessId,
