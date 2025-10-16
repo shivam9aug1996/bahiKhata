@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "../../lib/dbconnection";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     try {

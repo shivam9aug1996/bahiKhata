@@ -12,6 +12,9 @@ import {
 } from "../lib/dbconnection";
 import { deleteImage } from "../lib/global";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = 'force-dynamic';
+
 export async function GET(req, res) {
   if (req.method === "GET") {
     // const userId = new URL(req.url)?.searchParams?.get("userId");
