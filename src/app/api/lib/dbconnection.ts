@@ -1,156 +1,104 @@
 import { isTokenVerified } from "@/json";
 import { MongoClient } from "mongodb";
-import { dbUrl } from "./keys";
 import AsyncLock from "async-lock";
+import { dbUrl } from "./keys";
 
-let cachedClient;
-let db;
-let cachedSession;
 const uri = dbUrl;
 
+// Async lock to prevent multiple simultaneous connections
 const lock = new AsyncLock();
 
-export const connectDB = async (req) => {
-  try {
-    let isToken;
-    if (req) {
-      isToken = await isTokenVerified(req);
+// Global caches — safe for local dev, and will re-initialize automatically on Vercel cold start
+let cachedClient = null;
+let cachedDb = null;
 
-      if (!isToken) {
-        return;
-      }
-    }
-    console.log("123456789 connectDB starting");
-
-    const client = await lock.acquire("connection", async () => {
-      if (!cachedClient) {
-        cachedClient = await connectCluster();
-      }
-      return cachedClient;
-    });
-
-    console.log("123456789 client id", client.topology.s.id);
-    const res = await connectDatabase(client);
-    console.log("123456789 connectDB started");
-    return res;
-  } catch (error) {
-    console.log("123456789 error in connectDB");
-    // throw error;
-  }
-};
-
-const connectCluster = async () => {
-  if (cachedClient) {
-    console.log("123456789 client already connected");
-    return cachedClient;
-  }
-
+// ✅ Always create a new MongoClient on Vercel cold starts
+const createClient = async () => {
   const client = new MongoClient(uri, {
-    // useNewUrlParser: false,
-    // useUnifiedTopology: true,
+    maxPoolSize: 10,
   });
-
-  try {
-    console.log("123456789 client connecting");
-    await client.connect();
-    db = null;
-    console.log("123456789 client connected");
-    cachedClient = client;
-    return client;
-  } catch (error) {
-    console.log("123456789 error in connectCluster");
-    // throw error;
-  }
+  await client.connect();
+  console.log("✅ MongoDB client connected");
+  return client;
 };
 
-const connectDatabase = async (client) => {
-  try {
-    if (db) {
-      return db;
-    } else {
-      if (client?.db) {
-        console.log("123456789 db connecting");
-        db = await client.db("basic-crud");
-        console.log("123456789 db connected");
-        return db;
-      } else {
-        console.log("123456789 error in connectDatabase");
-        // throw new Error("MongoDB client not connected.");
-      }
-    }
-  } catch (error) {
-    console.log(error);
-    // throw error;
-  }
-};
-
+// ✅ Get a connected client (reconnects if undefined)
 export const getClient = async () => {
+  if (cachedClient) return cachedClient;
+  cachedClient = await createClient();
   return cachedClient;
 };
 
-export const startSession = async () => {
+// ✅ Get a database connection (safe for both local & Vercel)
+export const connectDB = async (req) => {
   try {
-    if (cachedSession) {
-      return cachedSession;
-    } else {
-      if (cachedClient) {
-        cachedSession = cachedClient.startSession();
-        return cachedSession;
-      } else {
-        // throw new Error("MongoDB client not connected.");
+    let isToken = true;
+    if (req) {
+      isToken = await isTokenVerified(req);
+      if (!isToken) {
+        console.log("⛔ Token verification failed");
+        return null;
       }
     }
+
+    return await lock.acquire("connection", async () => {
+      if (cachedDb) return cachedDb;
+
+      const client = await getClient();
+      cachedDb = client.db("basic-crud");
+      console.log("✅ Database connected");
+      return cachedDb;
+    });
   } catch (error) {
-    console.error(error);
-    // throw error;
+    console.error("❌ Error in connectDB:", error);
+    return null;
   }
 };
 
-export const startTransaction = async (client) => {
+//
+// ✅ Transaction helpers (auto-connect + safe error handling)
+//
+
+// Start a transaction
+export const startTransaction = async () => {
   try {
-    const session = await client.startSession();
-    console.log("123456789 session started");
-    try {
-      await session?.startTransaction();
-      console.log("123456789 transaction started");
-      return session;
-    } catch (error) {
-      console.log("123456789 error startTransaction", error);
-      //  throw error;
-    }
+    const client = await getClient();
+    if (!client) throw new Error("MongoDB client not connected");
+
+    const session = client.startSession();
+    await session.startTransaction();
+    console.log("✅ Transaction started");
+    return session;
   } catch (error) {
-    console.log("123456789 error startSession", error);
-    //throw error;
+    console.error("❌ Error starting transaction:", error);
+    return null;
   }
 };
 
-export const abortTransaction = async (session) => {
-  try {
-    await session.abortTransaction();
-    console.log("123456789 transaction aborted");
-    try {
-      await session?.endSession();
-      console.log("123456789 session closed");
-    } catch (error) {
-      console.log("123456789 error endSession", error);
-    }
-  } catch (error) {
-    console.log("123456789 error abortTransaction", error);
-  }
-};
-
+// Commit a transaction
 export const commitTransaction = async (session) => {
+  if (!session) return;
   try {
     await session.commitTransaction();
-    console.log("123456789 transaction committed");
-    try {
-      await session?.endSession();
-      console.log("123456789 session closed");
-    } catch (error) {
-      console.log("123456789 error endSession", error);
-    }
+    console.log("✅ Transaction committed");
   } catch (error) {
-    console.log("123456789 error commitTransaction", error);
-    //throw error;
+    console.error("❌ Error committing transaction:", error);
+  } finally {
+    await session.endSession();
+    console.log("🧹 Session closed");
+  }
+};
+
+// Abort a transaction
+export const abortTransaction = async (session) => {
+  if (!session) return;
+  try {
+    await session.abortTransaction();
+    console.log("⚠️ Transaction aborted");
+  } catch (error) {
+    console.error("❌ Error aborting transaction:", error);
+  } finally {
+    await session.endSession();
+    console.log("🧹 Session closed");
   }
 };
