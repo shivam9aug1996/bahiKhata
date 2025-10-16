@@ -35,12 +35,12 @@ async function setCache(cacheId, data) {
   const createdAt = new Date();
   try {
     // Store data as a string, with an expiration time of 5 minutes (300 seconds)
-    await redisClient.set(
-      cacheId,
-      JSON.stringify({ data, createdAt }),
-      "EX",
-      3600
-    );
+    // await redisClient.set(
+    //   cacheId,
+    //   JSON.stringify({ data, createdAt }),
+    //   "EX",
+    //   3600
+    // );
     return {
       message: "Cache created successfully",
       data: {
@@ -69,6 +69,7 @@ async function getCache(cacheId) {
   //   throw new Error("Something went wrong");
   // }
   try {
+    return null
     const cacheData = await redisClient.get(cacheId);
     if (cacheData) {
       return {
@@ -98,7 +99,7 @@ async function deleteCache(cacheId) {
   //   throw new Error("Something went wrong");
   // }
   try {
-    await redisClient.del(cacheId);
+   // await redisClient.del(cacheId);
     return { message: "Cache deleted successfully" };
   } catch (error) {
     throw new Error("Error deleting cache");
