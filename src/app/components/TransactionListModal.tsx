@@ -29,11 +29,7 @@ const TransactionListModal = ({
           static
           as="div"
           className="relative"
-          onClose={(e) => {}}
-          onClick={(e) => {
-            e.stopPropagation();
-            closeModal();
-          }}
+          onClose={closeModal}
         >
           <Transition.Child
             as={Fragment}
