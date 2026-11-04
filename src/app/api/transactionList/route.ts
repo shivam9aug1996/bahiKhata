@@ -486,6 +486,7 @@ export async function DELETE(req, res) {
             _id: new ObjectId(transactionId),
             businessId,
             partyId,
+            partyType,
           },
           { session }
         );
