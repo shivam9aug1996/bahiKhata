@@ -362,7 +362,7 @@ export async function PUT(req, res) {
       const updatedResult = await db
         .collection("transactions")
         .updateOne(
-          { _id: new ObjectId(transactionId), businessId },
+          { _id: new ObjectId(transactionId), businessId, partyId, partyType },
           { $set: updatedValues },
           { session }
         );
@@ -381,14 +381,14 @@ export async function PUT(req, res) {
 
           const latestCreditTransaction = await db
             .collection("transactions")
-            .find({ partyId, businessId, type: "credit" }, { session })
+            .find({ partyId, businessId, partyType, type: "credit" }, { session })
             .sort({ date: -1, createdAt: -1 })
             .limit(1)
             .toArray();
 
           const latestDebitTransaction = await db
             .collection("transactions")
-            .find({ partyId, businessId, type: "debit" }, { session })
+            .find({ partyId, businessId, partyType, type: "debit" }, { session })
             .sort({ date: -1, createdAt: -1 })
             .limit(1)
             .toArray();
@@ -452,7 +452,7 @@ export async function DELETE(req, res) {
   if (req.method === "DELETE") {
     const { transactionId, businessId, partyId, partyType } = await req.json();
 
-    if (!transactionId || !businessId || !partyId || !partyType) {
+    if (!transactionId || !ObjectId.isValid(transactionId) || !businessId || !partyId || !ObjectId.isValid(partyId) || !["customer", "supplier"].includes(partyType)) {
       return NextResponse.json(
         { message: "Invalid data format" },
         { status: 400 }
