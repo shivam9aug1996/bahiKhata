@@ -32,7 +32,7 @@ export async function POST(req, res) {
       const groupAndProjectStages = [
         {
           $group: {
-            _id: "$partyId",
+            _id: { partyId: "$partyId", businessId: "$businessId", partyType: "$partyType" },
             partyType: { $first: "$partyType" },
             totalCreditAmount: {
               $sum: {
@@ -68,18 +68,19 @@ export async function POST(req, res) {
       console.log("kjhgfhjhfdfghj", totalTransactions);
 
       for (const transaction of totalTransactions) {
-        const { _id: partyId, partyType, totalAmount: balance } = transaction;
+        const { partyId, businessId: transactionBusinessId, partyType } = transaction._id;
+        const balance = transaction.totalAmount;
 
         const latestCreditTransaction = await db
           .collection("transactions")
-          .find({ partyId, type: "credit", partyType }, { session })
+          .find({ partyId, businessId: transactionBusinessId, type: "credit", partyType }, { session })
           .sort({ date: -1, createdAt: -1 })
           .limit(1)
           .toArray();
 
         const latestDebitTransaction = await db
           .collection("transactions")
-          .find({ partyId, type: "debit" }, { session })
+          .find({ partyId, businessId: transactionBusinessId, type: "debit", partyType }, { session })
           .sort({ date: -1, createdAt: -1 })
           .limit(1)
           .toArray();
@@ -87,7 +88,7 @@ export async function POST(req, res) {
         await db
           .collection(partyType === "customer" ? "customers" : "suppliers")
           .updateOne(
-            { _id: new ObjectId(partyId) },
+            { _id: new ObjectId(partyId), businessId: transactionBusinessId },
             {
               $set: {
                 balance,
