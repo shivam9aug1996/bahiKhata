@@ -35,9 +35,10 @@ export async function POST(req, res) {
     if (
       !businessId ||
       !partyId ||
-      !partyType ||
+      !["customer", "supplier"].includes(partyType) ||
+      !Number.isFinite(amount) ||
       amount <= 0 ||
-      !amount ||
+      !["credit", "debit"].includes(type) ||
       !date
     ) {
       return NextResponse.json(
@@ -88,14 +89,14 @@ export async function POST(req, res) {
 
       const latestCreditTransaction = await db
         .collection("transactions")
-        .find({ partyId, businessId, type: "credit" }, { session })
+        .find({ partyId, businessId, partyType, type: "credit" }, { session })
         .sort({ date: -1, createdAt: -1 })
         .limit(1)
         .toArray();
 
       const latestDebitTransaction = await db
         .collection("transactions")
-        .find({ partyId, businessId, type: "debit" }, { session })
+        .find({ partyId, businessId, partyType, type: "debit" }, { session })
         .sort({ date: -1, createdAt: -1 })
         .limit(1)
         .toArray();
@@ -251,7 +252,12 @@ export async function PUT(req, res) {
     const updatedFields1 = formData?.get("updatedFields");
 
     const partyType = formData?.get("partyType");
-    const updatedFields = JSON.parse(updatedFields1);
+    let updatedFields;
+    try {
+      updatedFields = JSON.parse(updatedFields1 || "{}");
+    } catch {
+      return NextResponse.json({ message: "Invalid updatedFields JSON" }, { status: 400 });
+    }
 
     let imageArray = [];
     for (let i = 0; i < formData.get("imageCount"); i++) {
@@ -274,8 +280,8 @@ export async function PUT(req, res) {
       !businessId ||
       !partyId ||
       !updatedFields ||
-      updatedFields?.amount <= 0 ||
-      !partyType
+      (updatedFields?.amount !== undefined && (!Number.isFinite(Number(updatedFields.amount)) || Number(updatedFields.amount) <= 0)) ||
+      !["customer", "supplier"].includes(partyType)
     ) {
       return NextResponse.json(
         { message: "Invalid data format" },
@@ -328,10 +334,17 @@ export async function PUT(req, res) {
         }
       }
       if (updatedFields.hasOwnProperty("amount")) {
-        updatedValues.amount = parseFloat(updatedFields.amount);
+        const parsedAmount = Number(updatedFields.amount);
+        if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+          return NextResponse.json({ message: "Invalid amount" }, { status: 400 });
+        }
+        updatedValues.amount = parsedAmount;
       }
 
       if (updatedFields.hasOwnProperty("type")) {
+        if (!["credit", "debit"].includes(updatedFields.type)) {
+          return NextResponse.json({ message: "Invalid transaction type" }, { status: 400 });
+        }
         updatedValues.type = updatedFields.type;
       }
       if (updatedFields.hasOwnProperty("description")) {
@@ -358,11 +371,12 @@ export async function PUT(req, res) {
         // If amount or type updated, calculate credit/debit and update customer's balance
         if (
           updatedFields.hasOwnProperty("amount") ||
-          updatedFields.hasOwnProperty("type")
+          updatedFields.hasOwnProperty("type") ||
+          updatedFields.hasOwnProperty("date")
         ) {
           const allTransactions = await db
             .collection("transactions")
-            .find({ partyId, businessId }, { session })
+            .find({ partyId, businessId, partyType }, { session })
             .toArray();
 
           const latestCreditTransaction = await db
@@ -454,7 +468,7 @@ export async function DELETE(req, res) {
       // console.log("session started");
       const transaction = await db
         .collection("transactions")
-        .findOne({ _id: new ObjectId(transactionId), businessId, partyId });
+        .findOne({ _id: new ObjectId(transactionId), businessId, partyId, partyType });
       if (!transaction) {
         return NextResponse.json(
           { message: "Transaction not found" },
@@ -487,7 +501,7 @@ export async function DELETE(req, res) {
       // Calculate the balance after deleting the transaction
       const allTransactions = await db
         .collection("transactions")
-        .find({ partyId, businessId }, { session })
+        .find({ partyId, businessId, partyType }, { session })
         .toArray();
 
       const latestCreditTransaction = await db
@@ -529,8 +543,8 @@ export async function DELETE(req, res) {
           },
           { session }
         );
-      await deleteMultipleImages(imageUrl);
       await commitTransaction(session);
+      await deleteMultipleImages(imageUrl);
 
       return NextResponse.json(
         { message: "Transaction deleted successfully" },
