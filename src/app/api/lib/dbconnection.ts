@@ -61,44 +61,45 @@ export const connectDB = async (req) => {
 
 // Start a transaction
 export const startTransaction = async () => {
-  try {
-    const client = await getClient();
-    if (!client) throw new Error("MongoDB client not connected");
+  const client = await getClient();
+  if (!client) throw new Error("MongoDB client not connected");
 
-    const session = client.startSession();
-    await session.startTransaction();
-    console.log("✅ Transaction started");
+  const session = client.startSession();
+  try {
+    session.startTransaction();
     return session;
   } catch (error) {
-    console.error("❌ Error starting transaction:", error);
-    return null;
+    await session.endSession();
+    throw error;
   }
 };
 
-// Commit a transaction
+// Commit failures must reach the route handler; never report a successful write
+// when MongoDB did not confirm the commit.
 export const commitTransaction = async (session) => {
-  if (!session) return;
+  if (!session) throw new Error("Cannot commit without a MongoDB session");
   try {
     await session.commitTransaction();
-    console.log("✅ Transaction committed");
   } catch (error) {
-    console.error("❌ Error committing transaction:", error);
+    try {
+      if (session.inTransaction()) await session.abortTransaction();
+    } catch (abortError) {
+      console.error("Error aborting failed transaction:", abortError);
+    }
+    throw error;
   } finally {
     await session.endSession();
-    console.log("🧹 Session closed");
   }
 };
 
-// Abort a transaction
+// Abort is best-effort so it does not hide the original route error.
 export const abortTransaction = async (session) => {
   if (!session) return;
   try {
-    await session.abortTransaction();
-    console.log("⚠️ Transaction aborted");
+    if (session.inTransaction()) await session.abortTransaction();
   } catch (error) {
-    console.error("❌ Error aborting transaction:", error);
+    console.error("Error aborting transaction:", error);
   } finally {
     await session.endSession();
-    console.log("🧹 Session closed");
   }
 };
