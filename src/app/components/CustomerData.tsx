@@ -133,9 +133,14 @@ const CustomerData = ({
 
       {getCustomerData?.data?.map((item, index) => (
         <div
-          className={`relative mb-4`}
+          className={`relative mb-4 cursor-pointer`}
           style={{ opacity: isFetching ? 0.5 : 1 }}
           key={item?._id}
+          onClick={() => {
+            dispatch(setSelectedCustomer(item));
+            setIsTransactionsOpen(true);
+            setSelectedTransaction(item?._id);
+          }}
         >
           <button
             key={index}
@@ -145,11 +150,6 @@ const CustomerData = ({
                 ? "scale-105"
                 : ""
             }`}
-            onClick={(e) => {
-              dispatch(setSelectedCustomer(item));
-              setIsTransactionsOpen(true);
-              setSelectedTransaction(item?._id);
-            }}
             //  href={`/dashboard/customers/${item?._id}`}
             //scroll={false}
           >
@@ -219,7 +219,8 @@ const CustomerData = ({
             <Link
               href={getUrl(item)}
               target={"_blank"}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 navigator.clipboard.writeText(getUrl(item));
                 toast.success("Copied");
               }}
@@ -268,6 +269,7 @@ const CustomerData = ({
               className="w-5 h-5 text-gray-300 hover:text-cyan-500 cursor-pointer mr-2"
               href={getWhatsappUrl(item, data)}
               target={"_blank"}
+              onClick={(e) => e.stopPropagation()}
             >
               <img
                 alt=""
