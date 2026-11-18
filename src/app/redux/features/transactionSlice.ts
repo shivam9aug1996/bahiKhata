@@ -100,6 +100,14 @@ export const transactionApi = createApi({
       }),
       invalidatesTags: ["transaction"],
     }),
+    bulkTransactionAction: builder.mutation({
+      query: (data) => ({
+        url: "/transactionList/bulk",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["transaction"],
+    }),
     getAllTransaction: builder.query({
       query: (data) => {
         let params = {
@@ -182,6 +190,7 @@ export const {
   useGetTransactionListQuery,
   useCreateTransactionMutation,
   useDeleteTransactionMutation,
+  useBulkTransactionActionMutation,
   useUpdateTransactionMutation,
   useLazyGetAllTransactionQuery,
   useGetPublicTransactionListQuery,
