@@ -21,6 +21,9 @@ import {
 } from "../utils/function";
 
 import { useDispatch, useSelector } from "react-redux";
+import { customerApi } from "../redux/features/customerSlice";
+import { supplierApi } from "../redux/features/supplierSlice";
+import { dashboardApi } from "../redux/features/dashboardSlice";
 import {
   getSelectedCustomer,
   setSelectedCustomer,
@@ -31,6 +34,7 @@ import generatePDF, { Margin } from "react-to-pdf";
 import {
   transactionApi,
   useLazyGetAllTransactionQuery,
+  useBulkTransactionActionMutation,
 } from "../redux/features/transactionSlice";
 // import TransactionReport from "./TransactionReport";
 import toast from "react-hot-toast";
@@ -106,10 +110,97 @@ const Sidebar = ({
   const dispatch = useDispatch();
   const targetRef = useRef();
   const [isPdfDownloading, setIsPdfDownloading] = useState(false);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedTransactionIds, setSelectedTransactionIds] = useState<string[]>([]);
+  const [selectionStartDate, setSelectionStartDate] = useState("");
+  const [selectionEndDate, setSelectionEndDate] = useState("");
+  const [bulkTransactionAction, { isLoading: isBulkActionLoading }] =
+    useBulkTransactionActionMutation();
+
+  const selectionContext = { businessId: businessIdSelected, partyId, partyType };
+
+  const toggleTransactionSelection = (transactionId: string, checked: boolean) => {
+    setSelectedTransactionIds((current) =>
+      checked
+        ? Array.from(new Set([...current, transactionId]))
+        : current.filter((id) => id !== transactionId)
+    );
+  };
+
+  const selectMatchingTransactions = async (filters: any) => {
+    try {
+      const result: any = await bulkTransactionAction({
+        action: "select",
+        ...selectionContext,
+        filters,
+      }).unwrap();
+      setSelectedTransactionIds((current) =>
+        Array.from(new Set([...current, ...(result.ids || [])]))
+      );
+      toast.success((result.count || 0) + " matching transactions added to selection");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Unable to select transactions");
+    }
+  };
+
+  const handleSelectAllTransactions = () =>
+    selectMatchingTransactions(isFilterOpen?.value || {});
+
+  const handleSelectByDate = () => {
+    if (!selectionStartDate || !selectionEndDate) {
+      toast.error("Please select both start and end dates");
+      return;
+    }
+    if (selectionStartDate > selectionEndDate) {
+      toast.error("Start date cannot be after end date");
+      return;
+    }
+    selectMatchingTransactions({
+      ...(isFilterOpen?.value || {}),
+      startDate: selectionStartDate,
+      endDate: selectionEndDate,
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (!selectedTransactionIds.length || isDemoUser(mobileNumber)) return;
+    const confirmed = window.confirm(
+      "Permanently delete " + selectedTransactionIds.length + " selected transaction(s)? This cannot be undone."
+    );
+    if (!confirmed) return;
+    try {
+      const result: any = await bulkTransactionAction({
+        action: "delete",
+        ...selectionContext,
+        transactionIds: selectedTransactionIds,
+      }).unwrap();
+      toast.success(result.deletedCount + " transactions deleted successfully");
+      setSelectedTransactionIds([]);
+      setIsSelectionMode(false);
+      setSelectionStartDate("");
+      setSelectionEndDate("");
+      setPage(1);
+      if (partyType === "customer") {
+        dispatch(customerApi.util.invalidateTags(["customer"]));
+      } else {
+        dispatch(supplierApi.util.invalidateTags(["supplier"]));
+      }
+      dispatch(dashboardApi.util.invalidateTags(["dashboard"]));
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Unable to delete selected transactions");
+    }
+  };
+
+  useEffect(() => {
+    setIsSelectionMode(false);
+    setSelectedTransactionIds([]);
+    setSelectionStartDate("");
+    setSelectionEndDate("");
+  }, [partyId, businessIdSelected]);
 
   useEffect(() => {
     dispatch(getSelectedCustomer());
-  }, []);
+  }, [dispatch]);
   const closeSidebar = (e) => {};
 
   useEffect(() => {
@@ -276,6 +367,91 @@ const Sidebar = ({
               }}
             />
           </div>
+
+          <div className="mt-3 rounded-md border p-3">
+            {!isSelectionMode ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSelectionMode(true);
+                  setSelectedTransactionIds([]);
+                }}
+                className="text-sm font-medium text-blue-600 hover:text-blue-800"
+              >
+                Select transactions
+              </button>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm font-semibold">
+                    Selection mode · {selectedTransactionIds.length} selected
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSelectionMode(false);
+                      setSelectedTransactionIds([]);
+                      setSelectionStartDate("");
+                      setSelectionEndDate("");
+                    }}
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  disabled={isBulkActionLoading}
+                  onClick={handleSelectAllTransactions}
+                  className="rounded border border-blue-200 px-3 py-2 text-sm text-blue-700 hover:bg-blue-50 disabled:opacity-50"
+                >
+                  Select all matching transactions across all pages
+                </button>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                  <label className="text-xs text-gray-600">
+                    From date
+                    <input
+                      type="date"
+                      value={selectionStartDate}
+                      onChange={(event) => setSelectionStartDate(event.target.value)}
+                      className="mt-1 block w-full rounded border px-2 py-2 text-sm text-gray-900"
+                    />
+                  </label>
+                  <label className="text-xs text-gray-600">
+                    To date
+                    <input
+                      type="date"
+                      value={selectionEndDate}
+                      onChange={(event) => setSelectionEndDate(event.target.value)}
+                      className="mt-1 block w-full rounded border px-2 py-2 text-sm text-gray-900"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    disabled={isBulkActionLoading}
+                    onClick={handleSelectByDate}
+                    className="self-end rounded border px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Add date range
+                  </button>
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t pt-3">
+                  <span className="text-xs text-gray-600">
+                    Selection is kept when you change pages.
+                  </span>
+                  <button
+                    type="button"
+                    disabled={!selectedTransactionIds.length || isBulkActionLoading || isDemoUser(mobileNumber)}
+                    onClick={handleBulkDelete}
+                    className="rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isBulkActionLoading ? "Please wait..." : "Delete selected (" + selectedTransactionIds.length + ")"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {!businessIdSelected || !partyId ? <TransactionSkeleton /> : null}
           {isGetTransactionLoading ? (
             <TransactionSkeleton />
@@ -316,6 +492,19 @@ const Sidebar = ({
                     }`}
                   >
                     <div className="flex flex-col">
+                      {isSelectionMode && (
+                        <label className="mb-2 flex items-center gap-2 text-sm text-gray-700">
+                          <input
+                            type="checkbox"
+                            checked={selectedTransactionIds.includes(transaction?._id)}
+                            onChange={(event) =>
+                              toggleTransactionSelection(transaction?._id, event.target.checked)
+                            }
+                            className="h-4 w-4 rounded border-gray-300"
+                          />
+                          Select transaction
+                        </label>
+                      )}
                       <p>
                         Amount: ₹
                         {formatNumberOrStringWithFallback(transaction?.amount)}{" "}
@@ -343,7 +532,7 @@ const Sidebar = ({
                       </p>
                     </div>
                     <div className="flex flex-row">
-                      <PencilSquareIcon
+                      {!isSelectionMode && <PencilSquareIcon
                         onClick={() => {
                           setIsOpen({
                             status: true,
@@ -352,9 +541,9 @@ const Sidebar = ({
                           });
                         }}
                         className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer mr-2"
-                      ></PencilSquareIcon>
+                      ></PencilSquareIcon>}
 
-                      <TrashIcon
+                      {!isSelectionMode && <TrashIcon
                         onClick={() => {
                           if (!isDemoUser(mobileNumber)) {
                             setIsDeleteOpen({
@@ -372,7 +561,7 @@ const Sidebar = ({
                           }
                         }}
                         className="w-5 h-5 text-gray-500 hover:text-red-500 cursor-pointer"
-                      />
+                      />}
                     </div>
                   </div>
 
